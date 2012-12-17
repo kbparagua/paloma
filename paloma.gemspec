@@ -7,5 +7,5 @@ Gem::Specification.new do |s|
   s.authors     = ["Karl Paragua", "Bia Esmero"]
   s.email       = 'kb.paragua@gmail.com'
   s.files       = ["lib/paloma.rb"]
-  s.homepage    = 'http://rubygems.org/gems/paloma'
+  s.homepage    = 'https://github.com/kbparagua/paloma'
 end
