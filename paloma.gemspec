@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'paloma'
-  s.version     = '0.0.0'
+  s.version     = '0.0.1'
   s.date        = '2012-12-17'
   s.summary     = "Javascript Callback Manager for Rails"
   s.description = "Javascript Callback Manager for Rails"
