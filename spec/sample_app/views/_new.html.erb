@@ -1,0 +1,9 @@
+<%= form_for @article do |f| %>
+  Title:
+  <%= f.text_field :title %>
+  
+  Body:
+  <%= f.text_area :body %>
+  
+  <%= f.submit %>
+<% end %>

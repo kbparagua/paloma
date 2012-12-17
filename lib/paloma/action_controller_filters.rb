@@ -45,6 +45,7 @@ module Paloma
   
   end
   
-  
   ::ActionController::Base.send :include, ActionControllerFilters
 end
+
+
