@@ -9,11 +9,15 @@ Gem::Specification.new do |s|
   s.files       = `git ls-files`.split("\n")
   s.homepage    = 'https://github.com/kbparagua/paloma'
   
+  s.add_dependency 'jquery-rails'
+  
   s.add_development_dependency 'rails', ['>= 3.1.0']
   s.add_development_dependency 'bundler', ['>= 1.0.0']
   s.add_development_dependency 'rake', ['>= 0']
   s.add_development_dependency 'sqlite3', ['>= 0']
   s.add_development_dependency 'rspec', ['>= 0']
+  s.add_development_dependency 'rspec-rails', ['~> 2.0']
   s.add_development_dependency 'capybara', ['>= 1.0']
   s.add_development_dependency 'database_cleaner', ['>= 0']
+  s.add_development_dependency 'launchy', ['>= 0']
 end

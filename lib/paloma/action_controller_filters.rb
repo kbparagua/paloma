@@ -3,6 +3,7 @@ module Paloma
     
     def self.included base
       base.module_eval do
+        prepend_view_path "#{Paloma.root}/app/views/"
         before_filter :js_callback
         after_filter :update_callback, :if => :html_response_from_render?
       end
@@ -20,7 +21,7 @@ module Paloma
       add_to_callbacks @__callback__, @__js_params__
       
       response_body[0] += view_context.render(
-        :file => "#{Paloma.root}/app/views/paloma/callback_hook",
+        :partial => "paloma/callback_hook",
         :locals => {:callbacks => session[:callbacks]})
       
       response.body = response_body[0]
