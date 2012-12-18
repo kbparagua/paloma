@@ -1,5 +1,11 @@
+# ActiveRecord Configuration
+require 'active_record/railtie'
+ActiveRecord::Base.configurations = {'test' => {:adapter => 'sqlite3', :database => ':memory:'}}
+ActiveRecord::Base.establish_connection('test')
+
+
 # Model
-class Article
+class Article < ActiveRecord::Base
   attr_accessible :title, :body
 end
 
