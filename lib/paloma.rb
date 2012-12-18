@@ -4,10 +4,11 @@ module Paloma
   end
 end
 
-require 'rails/all'
+require 'action_controller/railtie'
+require 'rails/generators'
 
 # TODO: Rails version checking
 
-require 'paloma/paloma_generator'
+require 'paloma/callback_generator'
 require 'paloma/action_controller_filters'
 require 'paloma/action_controller_extension'
