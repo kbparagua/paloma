@@ -149,3 +149,27 @@ You can manipulate callback behavior by using the `js_callback` command before t
 
     This will execute `clients/index` callback instead of `[controller]/index`.
 
+Passing Parameters
+-
+You can also pass parameters to the callback by passing a `:params` key to `js_callback`. The passed parameters
+will be available on the callback by the `params` object.
+
+**Example:**
+
+`users_controller.rb`
+```ruby
+def destroy
+    user = User.find params[:id]
+    user.destroy
+    
+    js_callback :params => {:user_id => params[:id]}
+end
+```
+
+`/paloma/users/destroy.js`
+```javascript
+Paloma.callbacks['users/destroy'] = function(params){
+    var id = params['user_id'];
+    alert('User ' + id + ' deleted.');
+};
+```
