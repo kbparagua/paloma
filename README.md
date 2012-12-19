@@ -3,13 +3,53 @@ Paloma
 Paloma provides a sexy way to organize javascript files using Rails' asset pipeline. 
 It adds the capability to execute specific javascript code after rendering the controller's response.
 
+Advantages
+-
+* Javascript files are organized per controller just like app/views folder of Rails.
+* Javascript file per controller's action.
+* The ability to choose what specific javascript code to run on a specific action.
+
+Quick Example
+-
+The javascript callback file `paloma/users/new.js`:
+
+```javascript
+Paloma.callbacks['users/new'] = function(params){
+    // This will only run after executing users/new action
+    alert('Hello New Sexy User');
+};
+```
+ 
+The Rails controller `app/controllers/users_controller.rb`:
+
+```ruby
+def UsersController < ApplicationController
+    def new
+        @user = User.new
+        # No special function to call, the javascript callback will be executed automatically
+    end
+end
+```
+
+That's it! Simply Sexy!
+
+Minimum Requirements
+-
+* jQuery 1.7 or higher
+* Rails 3.1 or higher
+
 
 Install
--------
-Add the following line to the Gemfile:
-    
-    gem 'paloma'
+-
+Without bundler:
+```
+sudo gem install paloma
+```
 
+With bundler, add this to your Gemfile:
+```
+gem paloma
+```
 
 Setup
 -----
