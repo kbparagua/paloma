@@ -58,9 +58,21 @@ On setup, the `paloma` folder will be generated in `app/assets/javascripts/` con
 rails g paloma:setup
 ```
 
+Directory Structure
+-
+`paloma` folder contains the javascript callbacks.
+
+* paloma
+    * [controllers]
+        * [action].js
+        * [other_action].js
+    * [other_controllers]
+        * [action].js
+        * [other_action].js
+        * [more_action].js
      
 Usage
------
+-
 Execute the following command to generate a folder, named as __\<controller_name\>__, which will be the container of all the callbacks that will be used within that controller. Inside this folder, __callbacks.js__ will also be generated.
     
     rails g paloma:add <controller_name>
