@@ -73,10 +73,34 @@ Directory Structure
      
 Usage
 -
-Execute the following command to generate a folder, named as __\<controller_name\>__, which will be the container of all the callbacks that will be used within that controller. Inside this folder, __callbacks.js__ will also be generated.
-    
-    rails g paloma:add <controller_name>
-    
-The next command allows the user to create the file __\<action_name\>.js__ under the __\<controller_name\> folder__.
+1. Generate a controller folder containing its required files:   
+```
+rails g paloma:add [controllers]
+```
+    **Example:**
+    ```
+    rails g paloma:add users
+    ```
 
-    rails g paloma:add <controller_name>/<action_name>
+    **Generates:**
+    * /paloma
+        * /users
+
+
+2. Generate a callback file for a controller's action:
+```
+rails g paloma:add [controllers]/[action]
+```
+    **Example:**
+    ```
+    rails g paloma:add users/new
+    ```
+
+    **Generates:**
+    * /paloma
+        * /users
+            * new.js
+
+
+**Note:** You can directly run `rails g paloma:add [controllers]/[action]` even the controller folder is not yet 
+existing on `paloma` folder. It will be created automatically.
