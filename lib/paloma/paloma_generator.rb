@@ -36,10 +36,9 @@ module Paloma
   #    - actual code to be executed when callback is called
   #
     
-  CALLBACKS = 'app/assets/javascripts/paloma/'
-  INDEX = CALLBACKS + 'index.js'
-  PALOMA = CALLBACKS + 'paloma.js'
-  
+  PARENT  = 'app/assets/javascripts/paloma/'
+  INDEX = PARENT + 'index.js'
+  PALOMA = PARENT + 'paloma.js'
   
   class SetupGenerator < ::Rails::Generators::Base
     source_root File.expand_path('../templates', __FILE__)
@@ -61,23 +60,33 @@ module Paloma
     
     def create_callback_file
       file = file_path.split('/')
-      folder = file[0]
+      controller = file[0]
       action = file[1]
       
-      #callbacks.js per folder(controller) in callbacks
-      has_callbacks = File.exists? CALLBACKS + "#{folder}/callbacks.js"
+      callbacks = PARENT + "#{controller}/_callbacks.js"
+      templates = "#{Paloma.root}/lib/paloma/templates/"
+      local = PARENT + "#{controller}/_local.js"
+      action_file = PARENT + "#{controller}/#{action}.js"
+      
+      #_callbacks.js per folder(controller)
+      has_callbacks = File.exists? callbacks
       unless has_callbacks
-        copy_file 'callbacks.js', CALLBACKS + "#{folder}/callbacks.js"
-        File.open(INDEX, 'a+'){|f| f << "\n//= require ./" + folder + '/callbacks' }
+        copy_file '_callbacks.js', callbacks
+        File.open(INDEX, 'a+'){|f| f << "\n//= require ./" + controller + '/_callbacks' }
+      end
+      
+      #_local.js per folder(controller)
+      has_local =File.exists? local
+      unless has_local
+        content = File.read(templates + '_local.js').gsub('controller', "#{controller}")
+        File.open(local, 'w'){ |f| f.write(content) }
       end
       
       #<action>.js on folder(controller) - code for callback
-      has_action = File.exists? CALLBACKS + "#{folder}/#{action}.js"
+      has_action = File.exists? action_file
       unless (action.nil? || has_action)
-        create_file CALLBACKS + "#{folder}/#{action}.js"
-        File.open(CALLBACKS + "#{folder}/#{action}.js", 'w+') do |f|
-          f.write("Paloma.callbacks['#{folder}/#{action}'] = function(params){\n\n};")
-        end
+        content = File.read(templates + 'action.js').gsub('controller/action', "#{controller}/#{action}")
+        File.open(action_file, 'w'){ |f| f.write(content) }
       end
     end    
   end
