@@ -197,3 +197,9 @@ end
 A request for `first_action` will lead to 2 redirects until it reaches the `third_action` and renders a result on the browser. When the `third_action` renders its response, Paloma will execute the callbacks for all the 3 actions.
 
 The order of execution will be `[controller]/first_action` first, then `[controller]/second_action`, and finally `[controller]/third_action`.
+
+
+Gotchas
+-
+* Callbacks will not be executed if the response is `js`, `json`, `xml` or any other format except `html`.
+This will not work: `render "something.js.erb"`
