@@ -2,19 +2,32 @@
 
 <div class="callback-details" id="callback-details-<%= callback_details_id %>">
   <script type="text/javascript">
-    var id = "callback-details-<%= callback_details_id %>";
-    $(".callback-details[id!=" + id + "]").remove(); // Remove any callback details if any 
+    var id = "callback-details-<%= callback_details_id %>",
+      callbacks = [];
       
+    // Remove any callback details if any 
+    $('.callback-details[id!=" + id + "]').remove(); 
+    
+    
+    // Convert callbacks to javascript variable      
     <% callbacks.each do |callback| %>
-      var params = eval($('<div/>').html("(<%= callback[:params].to_json %>)").text()),
-        callbackName = "<%= callback[:name] %>",
-        callback = Paloma.callbacks[callbackName];
-  
-      console.log("Paloma: Fetching [" + callbackName + "]");
+      callbacks.push({
+        name: '<%= callback[:name] %>', 
+        params: eval($('<div/>').html("(<%= callback[:params].to_json %>)").text())
+      }); 
+    <% end %>
+    
+    
+    // Run Callbacks
+    for (var i = 0, len = callbacks.length; i < len; i++){
+      var callback = callbacks[i],
+        callbackFunction = Paloma.callbacks[callback.name];
+      
+      console.log("Paloma: Fetching [" + callback.name + "]");      
       if (callback != undefined){
-        console.log("Paloma: Calling [" + callbackName + "]");
-        $(document).ready(function(e){ callback(params); });
+        console.log("Paloma: Calling [" + callback.name + "]");
+        callbackFunction(callback.params);
       }
-    <% end %> 
+    }
   </script>
 </div>

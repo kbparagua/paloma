@@ -1,3 +1,2 @@
-window.Paloma = {callbacks:{}};
-
+//= require ./paloma
 //= require ./articles/callbacks
