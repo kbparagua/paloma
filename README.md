@@ -173,3 +173,27 @@ Paloma.callbacks['users/destroy'] = function(params){
     alert('User ' + id + ' deleted.');
 };
 ```
+
+Callback Chains
+-
+Callback chains are created after a redirect action. The chain will continue to increase its length until a render action is detected.
+
+**Example:**
+
+```ruby
+def first_action
+    redirect_to second_action_path
+end
+
+def second_action
+    redirect_to third_action_path
+end
+
+def third_action
+    render :template => 'third_action_view'
+end
+```
+
+A request for `first_action` will lead to 2 redirects until it reaches the `third_action` and renders a result on the browser. When the `third_action` renders its response, Paloma will execute the callbacks for all the 3 actions.
+
+The order of execution will be `[controller]/first_action` first, then `[controller]/second_action`, and finally `[controller]/third_action`.
