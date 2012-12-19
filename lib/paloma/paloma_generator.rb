@@ -4,7 +4,7 @@ module Paloma
   #   rails g paloma:setup
   #     - Generates the following:
   #         - 'paloma' folder under app/assets/javascripts/paloma
-  #         - index.js under the 'paloma' folder
+  #         - index.js and paloma.js under the 'paloma' folder
   #
   #
   # Usage: 
@@ -26,6 +26,9 @@ module Paloma
   #    - contains code for requiring all callbacks of all folders
   #    - always updated when new folders and callback.js files are created
   #
+  #  paloma.js
+  #    - declaration of namespace used in all callbacks
+  #
   #  <controller_name>/callbacks.js
   #    - contains code for requiring all callbacks under the same folder <controller_name> 
   #
@@ -35,6 +38,7 @@ module Paloma
     
   CALLBACKS = 'app/assets/javascripts/paloma/'
   INDEX = CALLBACKS + 'index.js'
+  PALOMA = CALLBACKS + 'paloma.js'
   
   
   class SetupGenerator < ::Rails::Generators::Base
@@ -44,6 +48,9 @@ module Paloma
       #index.js on callbacks folder
       has_index = File.exists? INDEX
       copy_file 'index.js', INDEX unless has_index  
+      
+      has_paloma = File.exists? PALOMA
+      copy_file 'paloma.js', PALOMA unless has_paloma
     end
     
   end
