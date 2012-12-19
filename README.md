@@ -1,55 +1,106 @@
-paloma
+Paloma
 ======
+Paloma provides a sexy way to organize javascript files using Rails' asset pipeline. 
+It adds the capability to execute specific javascript code after rendering the controller's response.
 
-Javascript Callback Manager for Rails 3
+Advantages
+-
+* Javascript files are organized per controller just like app/views folder of Rails.
+* Javascript file per controller's action.
+* The ability to choose what specific javascript code to run on a specific action.
+
+Quick Example
+-
+The javascript callback file `paloma/users/new.js`:
+
+```javascript
+Paloma.callbacks['users/new'] = function(params){
+    // This will only run after executing users/new action
+    alert('Hello New Sexy User');
+};
+```
+ 
+The Rails controller `app/controllers/users_controller.rb`:
+
+```ruby
+def UsersController < ApplicationController
+    def new
+        @user = User.new
+        # No special function to call, the javascript callback will be executed automatically
+    end
+end
+```
+
+That's it! Simply Sexy!
+
+Minimum Requirements
+-
+* jQuery 1.7 or higher
+* Rails 3.1 or higher
 
 
 Install
--------
-Add the following line to the Gemfile:
-    
-    gem 'paloma'
-     
+-
+Without bundler:
+```
+sudo gem install paloma
+```
+
+With bundler, add this to your Gemfile:
+```
+gem paloma
+```
+
+Setup
+-
+On setup, the `paloma` folder will be generated in `app/assets/javascripts/` containing its required files. Run:
+``` 
+rails g paloma:setup
+```
+
+Directory Structure
+-
+`paloma` folder contains the javascript callbacks.
+
+* paloma
+    * [controllers]
+        * [action].js
+        * [other_action].js
+    * [other_controllers]
+        * [action].js
+        * [other_action].js
+        * [more_action].js
      
 Usage
------
->*On the first run of either of the two commands mentioned below, the __callbacks__ folder will be generated in __app/assets/javascripts/__. Inside the callbacks folder, __index.js__ will also be created.*
+-
+1. Generate a controller folder containing its required files:   
+```
+rails g paloma:add [controllers]
+```
+    **Example:**
+    ```
+    rails g paloma:add users
+    ```
 
-The following are the commands which can be executed in the terminal to generate files needed for the callbacks:
-    
-    rails g paloma:add <controller_name>
-    
->*Execute the command above to generate a folder, named as __\<controller_name\>__ which will be the container of all the callbacks that will be used within that controller. Inside this folder, __callbacks.js__ will also be generated.*
-
-    rails g paloma:add <controller_name>/<action_name>
-
-> *This command allows the user to create the file __\<action_name\>.js__ under the __\<controller_name\> folder__.*
+    **Generates:**
+    * /paloma
+        * /users
 
 
-Generated Files
----------------
-###index.js
-Contains code for requiring all callbacks of all folders and is automatically updated when new folders and callback.js files are created
+2. Generate a callback file for a controller's action:
+```
+rails g paloma:add [controllers]/[action]
+```
+    **Example:**
+    ```
+    rails g paloma:add users/new
+    ```
 
-    # app/assets/javascripts/callbacks/index.js
-    
-    window.Paloma = {callbacks:{}};
-    //= require ./<controller_name>/callbacks
+    **Generates:**
+    * /paloma
+        * /users
+            * new.js
 
-###callbacks.js
-Contains code for requiring all callbacks under the same folder <controller_name>
 
-    # app/assets/javascripts/callbacks/<controller_name>/callbacks.js
-    
-    //= require_tree .
-
-###\<action_name\>.js
-Actual code to be executed when callback is called
-
-    # app/assets/javascripts/callbacks/<controller_name>/<action_name>.js
-    
-    Paloma.callbacks['<controller_name>/<action_name>'] = function(params){
-        ...
-        //put your code here
-        ...
-    };
+**Note:** You can directly run `rails g paloma:add [controllers]/[action]` even the controller folder is not yet 
+existing on `paloma` folder. It will be created automatically.
