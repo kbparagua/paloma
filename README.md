@@ -174,6 +174,41 @@ Paloma.callbacks['users/destroy'] = function(params){
 };
 ```
 
+Callback Helpers
+-
+Callback helpers are inside Paloma objects in order to prevent conflicts from different functions and variables.
+
+1. Global
+
+    Helper functions and variables can defined in `paloma/paloma.js` inside the `Paloma.g` object.
+    
+    **Example:**
+    ```javascript
+    Paloma.g = {
+        helper: function(){
+            // do something sexy
+        },
+        
+        helper_variable: 1000
+    };
+    ```
+    
+2. Controller's Scope
+
+    Helper functions that you will only use for a certain controller can be defined in `paloma/[controllers]/_local.js` inside
+    the `Paloma.[controllers]` object.
+    
+    **Example:**
+    ```javascript
+    Paloma.users = {
+        local_helper: function(){
+            // do something sexy
+        },
+        
+        helper_variable: 1
+    };
+    ```
+    
 Callback Chains
 -
 Callback chains are created after a redirect action. The chain will continue to increase its length until a render action is detected.
