@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    paloma (0.0.2)
+    paloma (0.0.4)
       jquery-rails
 
 GEM

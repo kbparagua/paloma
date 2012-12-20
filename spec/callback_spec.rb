@@ -15,6 +15,8 @@ feature 'Callbacks' do
     fill_in 'article[body]', :with => 'sexy paloma body'
     click_button 'Save'
     
+    print page.html
+    
     page.has_selector?('#from-articles-create-callback').should == true
     page.has_selector?('#from-articles-show-callback').should == true
   end

@@ -19,15 +19,17 @@
     
     
     // Run Callbacks
-    for (var i = 0, len = callbacks.length; i < len; i++){
-      var callback = callbacks[i],
-        callbackFunction = Paloma.callbacks[callback.name];
-      
-      console.log("Paloma: Fetching [" + callback.name + "]");      
-      if (callbackFunction != undefined){
-        console.log("Paloma: Calling [" + callback.name + "]");
-        callbackFunction(callback.params);
+    $(document).ready(function(){
+      for (var i = 0, len = callbacks.length; i < len; i++){
+        var callback = callbacks[i],
+          callbackFunction = Paloma.callbacks[callback.name];
+        
+        console.log("Paloma: Fetching [" + callback.name + "]");      
+        if (callbackFunction != undefined){
+          console.log("Paloma: Calling [" + callback.name + "]");
+          callbackFunction(callback.params);
+        }
       }
-    }
+    });
   </script>
 </div>
