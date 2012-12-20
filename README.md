@@ -11,7 +11,7 @@ Advantages
 
 Quick Example
 -
-The javascript callback file `paloma/users/new.js`:
+The javascript callback file `app/assets/javascripts/paloma/users/new.js`:
 
 ```javascript
 Paloma.callbacks['users/new'] = function(params){
@@ -48,7 +48,7 @@ sudo gem install paloma
 
 With bundler, add this to your Gemfile:
 ```
-gem paloma
+gem 'paloma'
 ```
 
 Setup
@@ -56,6 +56,11 @@ Setup
 On setup, the `paloma` folder will be generated in `app/assets/javascripts/` containing its required files. Run:
 ``` 
 rails g paloma:setup
+```
+
+Require `paloma` in your `application.js`:
+```
+//= require paloma
 ```
 
 Directory Structure
@@ -136,7 +141,7 @@ You can manipulate callback behavior by using the `js_callback` command before t
     end
     ```
 
-    This will execute `[controller]/new` callback instead of `[controller]/edit`.
+    This will execute `[controllers]/new` callback instead of `[controllers]/edit`.
     
 3. Using other action's callback from other controller.
 
@@ -147,7 +152,7 @@ You can manipulate callback behavior by using the `js_callback` command before t
     end
     ```
 
-    This will execute `clients/index` callback instead of `[controller]/index`.
+    This will execute `clients/index` callback instead of `[controllers]/index`.
 
 Passing Parameters
 -
@@ -231,7 +236,7 @@ end
 
 A request for `first_action` will lead to 2 redirects until it reaches the `third_action` and renders a result on the browser. When the `third_action` renders its response, Paloma will execute the callbacks for all the 3 actions.
 
-The order of execution will be `[controller]/first_action` first, then `[controller]/second_action`, and finally `[controller]/third_action`.
+The order of execution will be `[controllers]/first_action` first, then `[controllers]/second_action`, and finally `[controllers]/third_action`.
 
 
 Gotchas
