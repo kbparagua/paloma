@@ -13,6 +13,7 @@ capybara-*.html
 /spec/tmp/*
 *.gem
 /spec/sample_app/log
+/spec/sample_app/paloma_test
 **.orig
 rerun.txt
 pickle-email-*.html

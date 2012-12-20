@@ -24,7 +24,7 @@
         callbackFunction = Paloma.callbacks[callback.name];
       
       console.log("Paloma: Fetching [" + callback.name + "]");      
-      if (callback != undefined){
+      if (callbackFunction != undefined){
         console.log("Paloma: Calling [" + callback.name + "]");
         callbackFunction(callback.params);
       }
