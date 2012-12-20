@@ -71,9 +71,10 @@ module Paloma
       #_callbacks.js per folder(controller)
       has_callbacks = File.exists? callbacks
       unless has_callbacks
+        Dir.mkdir(PARENT + "#{controller}")
         content = File.read(templates + '_callbacks.js').gsub('controller', "#{controller}")
         File.open(callbacks, 'w'){ |f| f.write(content) }
-        File.open(INDEX, 'a+'){|f| f << "\n//= require ./" + controller + '/_callbacks' }
+        File.open(INDEX, 'a+'){ |f| f << "\n//= require ./" + controller + '/_callbacks' }
       end
       
       #_local.js per folder(controller)
