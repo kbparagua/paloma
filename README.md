@@ -243,3 +243,8 @@ Gotchas
 -
 * Callbacks will not be executed if the response is `js`, `json`, `xml` or any other format except `html`.
 This will not work: `render "something.js.erb"`
+
+Credits
+-
+* [Karl Bryan Paragua](http://www.daftcoder.com "Daftcoder.com")
+* Bianca Camille Esmero
