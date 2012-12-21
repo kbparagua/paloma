@@ -1,5 +1,5 @@
 require 'spec_helper'
-
+=begin
 feature 'Callbacks' do
   
   it 'should execute articles/new callback', :js => true do
@@ -14,8 +14,6 @@ feature 'Callbacks' do
     fill_in 'article[title]', :with => 'sexy paloma'
     fill_in 'article[body]', :with => 'sexy paloma body'
     click_button 'Save'
-    
-    print page.html
     
     page.has_selector?('#from-articles-create-callback').should == true
     page.has_selector?('#from-articles-show-callback').should == true
@@ -65,3 +63,4 @@ feature 'Callbacks' do
     page.has_selector?('#from-articles-edit-callback').should == true
   end
 end
+=end

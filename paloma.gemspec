@@ -11,12 +11,11 @@ Gem::Specification.new do |s|
   s.add_dependency 'jquery-rails'
   
   s.add_development_dependency 'rails', ['>= 3.1.0']
-  s.add_development_dependency 'bundler', ['>= 1.0.0']
   s.add_development_dependency 'rake', ['>= 0']
   s.add_development_dependency 'sqlite3', ['>= 0']
   s.add_development_dependency 'rspec', ['>= 0']
   s.add_development_dependency 'rspec-rails', ['~> 2.0']
+  s.add_development_dependency 'generator_spec', ['~> 0.8.7']
   s.add_development_dependency 'capybara', ['>= 1.0']
   s.add_development_dependency 'database_cleaner', ['>= 0']
-  s.add_development_dependency 'launchy', ['>= 0']
 end

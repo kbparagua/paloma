@@ -27,7 +27,8 @@ app.initialize!
 # Routes
 app.routes.draw do
   resources :articles, :controller => 'Articles'
+  resources :categories, :module => 'SampleNamespace'
 end
 
-require "#{Paloma.root}/spec/sample_app/model"
+require "#{Paloma.root}/spec/sample_app/models"
 require "#{Paloma.root}/spec/sample_app/controllers"

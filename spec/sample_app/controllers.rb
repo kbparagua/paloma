@@ -52,3 +52,11 @@ class ArticlesController < ApplicationController
   end
   
 end
+
+module SampleNamespace
+  class CategoriesController < ApplicationController
+    def index
+      raise controller_path.inspect
+    end
+  end
+end
