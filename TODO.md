@@ -3,7 +3,7 @@ TODO
 
 Features
 -
-* Handle namespaced models
+* Handle namespaced controllers
 * Setup for coffescript (although I hate coffescript)
 * A way to manually trigger callbacks with parameters
 
