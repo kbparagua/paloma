@@ -1,2 +1,2 @@
-//= require ./controller/_local
+//= require ./_local.js
 //= require_tree .

@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 0.0.8
+-
+* Bug Fix: _callback.js cannot find _local.js
+
 Version 0.0.7
 -
 * Fix A Major Bug that copies the _local.js template instead of _callbacks.js
