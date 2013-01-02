@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 0.0.7
+-
+* Fix A Major Bug that copies the _local.js template instead of _callbacks.js
+
 Version 0.0.6
 -
 * `SetupGenerator` moved from `paloma_generator.rb` to `paloma/generators/setup_generator.rb`

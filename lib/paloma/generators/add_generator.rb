@@ -62,7 +62,7 @@ module Paloma
     
     def generate_from_template destination_filename
       filename = destination_filename.split('/').last
-      content = File.read("#{Paloma.templates}/_local.js").gsub(/controller/, @controller_name)
+      content = File.read("#{Paloma.templates}/#{filename}").gsub(/controller/, @controller_name)
       File.open(destination_filename, 'w'){ |f| f.write(content) }
     end 
   end

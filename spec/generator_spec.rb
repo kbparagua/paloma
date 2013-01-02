@@ -80,6 +80,11 @@ feature Paloma::AddGenerator, 'creating action with existing controller folder' 
           file 'new_action.js' do
             contains "Paloma.callbacks['existing_controller_folder/new_action']"
           end
+          
+          file '_callbacks.js' do
+            contains "//= require ./existing_controller_folder/_local"
+            contains "//= require_tree ."
+          end
         end
       end
     }
