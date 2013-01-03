@@ -63,7 +63,7 @@ end
 feature Paloma::AddGenerator, 'creating action with existing controller folder' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['existing_controller_folder/new_action']
+  arguments ['existing_controller_folder new_action']
   
   before do
     prepare_destination
@@ -96,7 +96,7 @@ end
 feature Paloma::AddGenerator, 'creating both controller folder and action file' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['new_controller_folder/new_action']
+  arguments ['new_controller_folder new_action']
   
   before do
     prepare_destination

@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 1.0.0
+-
+* `AddGenerator` changed from `rails g paloma:add controller/action` to `rails g paloma:add controller action`
+
 Version 0.0.8
 -
 * Bug Fix: _callback.js cannot find _local.js

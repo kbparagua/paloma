@@ -26,7 +26,7 @@ module Paloma
     source_root Paloma.templates
     
     def create_callback_file
-      arg = file_path.split('/')
+      arg = file_path.split(' ')
       @controller_name = arg[0]
       action_name = arg[1]
       
