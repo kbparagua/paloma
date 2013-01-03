@@ -25,16 +25,21 @@ module Paloma
   class AddGenerator < ::Rails::Generators::NamedBase
     source_root Paloma.templates
     
-    def create_callback_file
+    def create_callback_file    
       arg = file_path.split(' ')
-      @controller_name = arg[0]
       action_name = arg[1]
       
-      controller_folder = "#{Paloma.destination}/#{@controller_name}/" 
+      namespace = arg[0].split('/')
+      namespace_folder = "#{Paloma.destination}/#{namespace[0]}" if (namespace.size > 1)
+      @controller_name = (namespace.size > 1) ? namespace[1] : arg[0]
+      
+      controller_folder = namespace_folder.present? ? "#{namespace_folder}/#{@controller_name}" : "#{Paloma.destination}/#{@controller_name}"  
+          
       callbacks_js = "#{controller_folder}/_callbacks.js"
       local_js = "#{controller_folder}/_local.js"
       action_js = "#{controller_folder}/#{action_name}.js"
-        
+      
+      Dir.mkdir(namespace_folder) if(namespace_folder.present? && !Dir.exists?(namespace_folder))
       Dir.mkdir(controller_folder) unless Dir.exists?(controller_folder)
       
       generate_from_template local_js unless File.exists?(local_js)
@@ -48,7 +53,7 @@ module Paloma
           
         File.open(action_js, 'w'){ |f| f.write(content) }
       end
-      
+
       # Require controller's _callbacks.js to Paloma's main index.js file.
       # Located on "#{Paloma.destination}/index.js" or by default on
       # app/assets/javascripts/paloma/index.js
