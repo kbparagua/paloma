@@ -144,3 +144,37 @@ feature Paloma::AddGenerator, 'creating namespaced controller folder and action 
     }
   end  
 end
+
+
+
+feature Paloma::AddGenerator, 'creating controller folder and action file under an existing namespace' do
+  include GeneratorSpec::TestCase
+  destination TEMP
+  arguments ['namespace/new_controller_folder new_action']
+  
+  before do
+    prepare_destination
+    mimic_setup
+    Dir.mkdir "#{Paloma.destination}/namespace"
+    
+    run_generator
+  end
+  
+  specify do
+    destination_root.should have_structure {
+      directory Paloma.destination do
+        directory 'namespace' do
+          directory 'new_controller_folder' do
+            file 'new_action.js' do
+              contains "Paloma.callbacks['new_controller_folder/new_action']"
+            end
+          end
+        end
+        
+        file 'index.js' do
+          contains '//= require ./namespace/new_controller_folder/_callbacks'
+        end        
+      end
+    }
+  end
+end

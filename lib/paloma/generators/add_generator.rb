@@ -25,13 +25,17 @@ module Paloma
   class AddGenerator < ::Rails::Generators::NamedBase
     source_root Paloma.templates
     
-    def create_callback_file    
+    def create_callback_file
       arg = file_path.split(' ')
+      @controller_name = arg[0]
       action_name = arg[1]
       
       namespace = arg[0].split('/')
-      namespace_folder = "#{Paloma.destination}/#{namespace[0]}" if (namespace.size > 1)
-      @controller_name = (namespace.size > 1) ? namespace[1] : arg[0]
+      if namespace.length > 1
+        namespace_name = namespace[0]
+        namespace_folder = "#{Paloma.destination}/#{namespace[0]}"
+        @controller_name = namespace[1]
+      end
       
       controller_folder = namespace_folder.present? ? "#{namespace_folder}/#{@controller_name}" : "#{Paloma.destination}/#{@controller_name}"  
           
@@ -57,13 +61,29 @@ module Paloma
       # Require controller's _callbacks.js to Paloma's main index.js file.
       # Located on "#{Paloma.destination}/index.js" or by default on
       # app/assets/javascripts/paloma/index.js
+      controller = namespace_folder.present? ? "#{namespace_name}/#{@controller_name}" : "#{@controller_name}"
       File.open(Paloma.index_js, 'a+'){ |f| 
-        f << "\n//= require ./#{@controller_name}/_callbacks"
+        f << "\n//= require ./" + controller + "/_callbacks"
       }
     end
     
     
     private
+    
+    #return an array: [namespace_name, controller_name, action_name]
+    def split_arguments args
+      files = []
+      arg = args.split(' ')
+      
+      namespace = arg[0].split('/')
+      files << (namespace.length > 1) ? namespace[0] : nil
+      
+      controller = namespace[1].split(' ')
+      files << controller[0]
+      
+      raise files.inspect
+    end
+    
     
     def generate_from_template destination_filename
       filename = destination_filename.split('/').last
