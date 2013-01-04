@@ -26,24 +26,19 @@ module Paloma
     source_root Paloma.templates
     
     def create_callback_file
-      arg = file_path.split(' ')
-      @controller_name = arg[0]
-      action_name = arg[1]
+      args =  split_arguments(file_path)
       
-      namespace = arg[0].split('/')
-      if namespace.length > 1
-        namespace_name = namespace[0]
-        namespace_folder = "#{Paloma.destination}/#{namespace[0]}"
-        @controller_name = namespace[1]
-      end
-      
-      controller_folder = namespace_folder.present? ? "#{namespace_folder}/#{@controller_name}" : "#{Paloma.destination}/#{@controller_name}"  
-          
+      namespace_name = args[0]
+      namespace_folder = args[1]
+      @controller_name = args[2]
+      controller_folder = args[3]
+      action_name = args[4]
+                
       callbacks_js = "#{controller_folder}/_callbacks.js"
       local_js = "#{controller_folder}/_local.js"
       action_js = "#{controller_folder}/#{action_name}.js"
       
-      Dir.mkdir(namespace_folder) if(namespace_folder.present? && !Dir.exists?(namespace_folder))
+      Dir.mkdir(namespace_folder) unless (namespace_folder.nil? || Dir.exists?(namespace_folder))
       Dir.mkdir(controller_folder) unless Dir.exists?(controller_folder)
       
       generate_from_template local_js unless File.exists?(local_js)
@@ -70,18 +65,22 @@ module Paloma
     
     private
     
-    #return an array: [namespace_name, controller_name, action_name]
     def split_arguments args
-      files = []
       arg = args.split(' ')
       
       namespace = arg[0].split('/')
-      files << (namespace.length > 1) ? namespace[0] : nil
+      namespace_name = (namespace.length > 1) ? namespace[0] : nil
+      namespace_folder = namespace_name.nil? ? nil : "#{Paloma.destination}/#{namespace_name}"
+            
+      controller = namespace_name.nil? ? 
+                    namespace[0].split(' ') : namespace[1].split(' ')
+      controller_folder = namespace_folder.nil? ? 
+                            "#{Paloma.destination}/#{controller[0]}" : 
+                            "#{namespace_folder}/#{controller[0]}"
       
-      controller = namespace[1].split(' ')
-      files << controller[0]
-      
-      raise files.inspect
+      #return an array: 
+      #  [namespace_name, namespace_folder, controller_name, controller_folder, action_name]
+      files = [namespace_name, namespace_folder, controller[0], controller_folder, arg[1]]
     end
     
     
