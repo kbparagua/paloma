@@ -32,11 +32,14 @@ module Paloma
       namespace_folder = args[1]
       @controller_name = args[2]
       controller_folder = args[3]
-      action_name = args[4]
+      
+      actions = []
+      args[4..(args.length+1)].each do |action|
+        actions << action
+      end
                 
       callbacks_js = "#{controller_folder}/_callbacks.js"
       local_js = "#{controller_folder}/_local.js"
-      action_js = "#{controller_folder}/#{action_name}.js"
       
       Dir.mkdir(namespace_folder) unless (namespace_folder.nil? || Dir.exists?(namespace_folder))
       Dir.mkdir(controller_folder) unless Dir.exists?(controller_folder)
@@ -45,12 +48,15 @@ module Paloma
       generate_from_template callbacks_js unless File.exists?(callbacks_js)        
       
       # Create a js file for action if there is an action argument
-      if action_name.present? && !File.exists?(action_js)
-        content = File.read("#{Paloma.templates}/action.js").gsub(
-          /controller\/action/, 
-          "#{@controller_name}/#{action_name}")
-          
-        File.open(action_js, 'w'){ |f| f.write(content) }
+      actions.each do |action|
+        action_js = "#{controller_folder}/#{action}.js"
+        if action.present? && !File.exists?(action_js)
+          content = File.read("#{Paloma.templates}/action.js").gsub(
+            /controller\/action/, 
+            "#{@controller_name}/#{action}")
+            
+          File.open(action_js, 'w'){ |f| f.write(content) }  
+        end
       end
 
       # Require controller's _callbacks.js to Paloma's main index.js file.
@@ -66,21 +72,28 @@ module Paloma
     private
     
     def split_arguments args
+      #split controller from actions
       arg = args.split(' ')
       
+      #Split namespace from controller
       namespace = arg[0].split('/')
       namespace_name = (namespace.length > 1) ? namespace[0] : nil
       namespace_folder = namespace_name.nil? ? nil : "#{Paloma.destination}/#{namespace_name}"
             
-      controller = namespace_name.nil? ? 
-                    namespace[0].split(' ') : namespace[1].split(' ')
+      controller = namespace_name.nil? ? namespace[0].split(' ') : namespace[1].split(' ')
       controller_folder = namespace_folder.nil? ? 
                             "#{Paloma.destination}/#{controller[0]}" : 
                             "#{namespace_folder}/#{controller[0]}"
+       
+      # [namespace_name, namespace_folder, controller_name, controller_folder]
+      files = [namespace_name, namespace_folder, controller[0], controller_folder]
       
-      #return an array: 
-      #  [namespace_name, namespace_folder, controller_name, controller_folder, action_name]
-      files = [namespace_name, namespace_folder, controller[0], controller_folder, arg[1]]
+      arg.delete_at(0)
+      arg.each do |action|
+        files << action #Add actions
+      end
+      
+      files
     end
     
     

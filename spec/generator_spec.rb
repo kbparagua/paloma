@@ -178,3 +178,39 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
     }
   end
 end
+
+
+
+feature Paloma::AddGenerator, 'create multiple actions in an existing controller folder' do
+  include GeneratorSpec::TestCase
+  destination TEMP
+  arguments ['existing_controller_folder first_action second_action third_action']
+  
+  before do
+    prepare_destination
+    mimic_setup
+    Dir.mkdir "#{Paloma.destination}/existing_controller_folder"
+    
+    run_generator
+  end
+  
+  specify do
+    destination_root.should have_structure {
+      directory Paloma.destination do
+        directory 'existing_controller_folder' do
+          file 'first_action.js' do
+            contains "Paloma.callbacks['existing_controller_folder/first_action']"
+          end
+          
+          file 'second_action.js' do
+            contains "Paloma.callbacks['existing_controller_folder/second_action']"
+          end
+          
+          file 'third_action.js' do
+            contains "Paloma.callbacks['existing_controller_folder/third_action']"
+          end
+        end
+      end
+    }
+  end
+end

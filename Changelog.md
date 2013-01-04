@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 1.2.0
+-
+* AddGenerator with multiple actions: `rails g paloma:add namespace/controller action1 action2 action3`
+
 Version 1.1.0
 -
 * Handle namespaced controllers: `rails g paloma:add namespace/controller action`
