@@ -1,1 +1,1 @@
-//= require ./paloma
+//= require ./paloma.js

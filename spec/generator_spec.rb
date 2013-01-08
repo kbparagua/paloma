@@ -63,7 +63,7 @@ end
 feature Paloma::AddGenerator, 'creating action with existing controller folder' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['existing_controller_folder new_action']
+  arguments ['existing_controller_folder', 'new_action']
   
   before do
     prepare_destination
@@ -80,11 +80,14 @@ feature Paloma::AddGenerator, 'creating action with existing controller folder' 
           file 'new_action.js' do
             contains "Paloma.callbacks['existing_controller_folder/new_action']"
           end
-          
+
+=begin
+          #_callbacks.js file created upon creation of controller folder          
           file '_callbacks.js' do
             contains "//= require ./_local.js"
             contains "//= require_tree ."
           end
+=end
         end
       end
     }
@@ -96,7 +99,7 @@ end
 feature Paloma::AddGenerator, 'creating both controller folder and action file' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['new_controller_folder new_action']
+  arguments ['new_controller_folder', 'new_action']
   
   before do
     prepare_destination
@@ -122,7 +125,7 @@ end
 feature Paloma::AddGenerator, 'creating namespaced controller folder and action file' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['namespace/new_controller_folder new_action']
+  arguments ['namespace/new_controller_folder', 'new_action']
   
   before do
     prepare_destination
@@ -136,7 +139,7 @@ feature Paloma::AddGenerator, 'creating namespaced controller folder and action 
         directory 'namespace' do
           directory 'new_controller_folder' do
             file 'new_action.js' do
-              contains "Paloma.callbacks['new_controller_folder/new_action']"
+              contains "Paloma.callbacks['namespace/new_controller_folder/new_action']"
             end
           end
         end
@@ -150,7 +153,7 @@ end
 feature Paloma::AddGenerator, 'creating controller folder and action file under an existing namespace' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['namespace/new_controller_folder new_action']
+  arguments ['namespace/new_controller_folder', 'new_action']
   
   before do
     prepare_destination
@@ -166,14 +169,10 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
         directory 'namespace' do
           directory 'new_controller_folder' do
             file 'new_action.js' do
-              contains "Paloma.callbacks['new_controller_folder/new_action']"
+              contains "Paloma.callbacks['namespace/new_controller_folder/new_action']"
             end
           end
-        end
-        
-        file 'index.js' do
-          contains '//= require ./namespace/new_controller_folder/_callbacks'
-        end        
+        end    
       end
     }
   end
@@ -184,7 +183,7 @@ end
 feature Paloma::AddGenerator, 'create multiple actions in an existing controller folder' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['existing_controller_folder first_action second_action third_action']
+  arguments ['existing_controller_folder', 'first_action', 'second_action', 'third_action']
   
   before do
     prepare_destination

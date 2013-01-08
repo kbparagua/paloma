@@ -24,48 +24,23 @@ module Paloma
     
   class AddGenerator < ::Rails::Generators::NamedBase
     source_root Paloma.templates
+    argument :actions, :type => :array, :required => false
     
     def create_callback_file
-      args =  split_arguments(file_path)
+      args = split_arguments(file_path)
       
-      namespace_name = args[0]
-      namespace_folder = args[1]
+      @namespace_name = args[0]
+      @namespace_folder = args[1]
       @controller_name = args[2]
-      controller_folder = args[3]
+      @controller_folder = args[3]
       
-      actions = []
-      args[4..(args.length+1)].each do |action|
-        actions << action
-      end
-                
-      callbacks_js = "#{controller_folder}/_callbacks.js"
-      local_js = "#{controller_folder}/_local.js"
-      
-      Dir.mkdir(namespace_folder) unless (namespace_folder.nil? || Dir.exists?(namespace_folder))
-      Dir.mkdir(controller_folder) unless Dir.exists?(controller_folder)
-      
-      generate_from_template local_js unless File.exists?(local_js)
-      generate_from_template callbacks_js unless File.exists?(callbacks_js)        
-      
-      # Create a js file for action if there is an action argument
-      actions.each do |action|
-        action_js = "#{controller_folder}/#{action}.js"
-        if action.present? && !File.exists?(action_js)
-          content = File.read("#{Paloma.templates}/action.js").gsub(
-            /controller\/action/, 
-            "#{@controller_name}/#{action}")
-            
-          File.open(action_js, 'w'){ |f| f.write(content) }  
-        end
-      end
+      generate_folder(@namespace_folder)
+      generate_folder(@controller_folder)
 
-      # Require controller's _callbacks.js to Paloma's main index.js file.
-      # Located on "#{Paloma.destination}/index.js" or by default on
-      # app/assets/javascripts/paloma/index.js
-      controller = namespace_folder.present? ? "#{namespace_name}/#{@controller_name}" : "#{@controller_name}"
-      File.open(Paloma.index_js, 'a+'){ |f| 
-        f << "\n//= require ./" + controller + "/_callbacks"
-      }
+      # Create a js file for action if there is an action argument
+      if actions.present?
+        generate_actions actions  
+      end
     end
     
     
@@ -80,27 +55,86 @@ module Paloma
       namespace_name = (namespace.length > 1) ? namespace[0] : nil
       namespace_folder = namespace_name.nil? ? nil : "#{Paloma.destination}/#{namespace_name}"
             
-      controller = namespace_name.nil? ? namespace[0].split(' ') : namespace[1].split(' ')
+      controller_name = namespace_name.nil? ? namespace[0].split(' ')[0] : namespace[1].split(' ')[0]
       controller_folder = namespace_folder.nil? ? 
-                            "#{Paloma.destination}/#{controller[0]}" : 
-                            "#{namespace_folder}/#{controller[0]}"
+                            "#{Paloma.destination}/#{controller_name}" : 
+                            "#{namespace_folder}/#{controller_name}"
        
       # [namespace_name, namespace_folder, controller_name, controller_folder]
-      files = [namespace_name, namespace_folder, controller[0], controller_folder]
-      
-      arg.delete_at(0)
-      arg.each do |action|
-        files << action #Add actions
+      files = [namespace_name, namespace_folder, controller_name, controller_folder]
+    end
+    
+    
+    def generate_actions actions
+      actions.each do |action|
+        action_js = "#{@controller_folder}/#{action}.js"
+        if action.present? && !File.exists?(action_js)
+          controller_path = @namespace_name.nil? ? @controller_name : "#{@namespace_name}/#{@controller_name}"
+          
+          content = File.read("#{Paloma.templates}/action.js").gsub(
+            /controller\/action/, 
+            "#{controller_path}/#{action}")
+            
+          File.open(action_js, 'w'){ |f| f.write(content) }
+          
+          puts "create #{action_js}"  
+        end
       end
+    end
+    
+    
+    def generate_folder folder
+      unless (folder.nil? || Dir.exists?(folder))
+        Dir.mkdir(folder)  
+        
+        callbacks_js = "#{folder}/_callbacks.js"
+        local_js = "#{folder}/_local.js"
+        
+        generate_from_template local_js unless File.exists?(local_js)
+        generate_from_template callbacks_js unless File.exists?(callbacks_js)
+        
+        if folder == @namespace_folder
+          content = File.read(callbacks_js).gsub('//= require_tree .', '')
+          File.open(callbacks_js, 'w'){ |f| f.write(content) }
+        end
+        
+        require_callbacks folder  
+      end
+    end
+    
+    
+    def require_callbacks folder
+      # Require controller's _callbacks.js to Paloma's main index.js file.
+      # Located on "#{Paloma.destination}/index.js" or by default on
+      # app/assets/javascripts/paloma/index.js
       
-      files
+      if (@namespace_folder.present? && folder != @namespace_folder)
+        File.open("#{@namespace_folder}/_callbacks.js", 'a+'){ |f|
+          is_present = f.lines.grep("\n//= require ./#{@controller_name}/_callbacks.js").any?
+          f << "\n//= require ./#{@controller_name}/_callbacks.js" unless is_present
+        }
+      end
+       
+      controller = @namespace_folder.present? ? @namespace_name : @controller_name
+      
+      unless (@namespace_folder.present? && folder != @namespace_folder)
+        File.open(Paloma.index_js, 'a+'){ |f|
+          f << "\n//= require ./#{controller}/_callbacks.js"
+        }
+      end
     end
     
     
     def generate_from_template destination_filename
-      filename = destination_filename.split('/').last
-      content = File.read("#{Paloma.templates}/#{filename}").gsub(/controller/, @controller_name)
+      controller = destination_filename.gsub(/[\/|\w|_]+\/paloma\//, '')
+      
+      filename = controller.split('/').last
+      controller = controller.gsub('/' + filename, '')
+      controller = controller.gsub('/', '.')
+      
+      content = File.read("#{Paloma.templates}/#{filename}").gsub(/controller/, controller)
       File.open(destination_filename, 'w'){ |f| f.write(content) }
+      puts "create #{destination_filename}"
     end 
   end
 end
