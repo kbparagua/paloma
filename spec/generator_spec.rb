@@ -4,6 +4,7 @@ require 'fileutils'
 
 TEMP = "#{File.dirname(__FILE__)}/tmp/"
 
+# rails g paloma:setup
 feature Paloma::SetupGenerator do
   include GeneratorSpec::TestCase
   destination TEMP
@@ -33,7 +34,7 @@ def mimic_setup
 end
 
 
-
+# rails g paloma:add sexy_controller
 feature Paloma::AddGenerator, 'creating controller folder only' do
   include GeneratorSpec::TestCase
   destination TEMP
@@ -68,27 +69,43 @@ feature Paloma::AddGenerator, 'creating controller folder only' do
 end
 
 
-
-feature Paloma::AddGenerator, 'creating action with existing controller folder' do
+# rails g paloma:add namespace/new_controller_folder
+feature Paloma::AddGenerator, 'creating a namespaced controller folder' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['existing_controller_folder', 'new_action']
+  arguments ['namespace/new_controller_folder']
   
   before do
     prepare_destination
     mimic_setup
-    Dir.mkdir "#{Paloma.destination}/existing_controller_folder"
-    
     run_generator
   end
   
   specify do
     destination_root.should have_structure {
       directory Paloma.destination do
-        directory 'existing_controller_folder' do
-          file 'new_action.js' do
-            contains "Paloma.callbacks['existing_controller_folder/new_action']"
+        directory 'namespace' do
+          directory 'new_controller_folder' do
+            file '_callbacks.js' do
+              contains '//= require ./_local.js'
+              contains '//= require_tree .'
+            end
+            
+            file '_local.js' do
+              contains 'Paloma.namespace.new_controller_folder = {'
+            end
           end
+          file '_callbacks.js' do
+            contains "//= require ./_local.js"
+            contains "//= require ./new_controller_folder/_callbacks.js"
+          end
+          
+          file '_local.js' do
+            contains "Paloma.namespace = {"
+          end
+        end
+        file 'index.js' do
+          contains "//= require ./namespace/_callbacks.js"
         end
       end
     }
@@ -96,7 +113,7 @@ feature Paloma::AddGenerator, 'creating action with existing controller folder' 
 end
 
 
-
+# rails g paloma:add new_controller_folder new_action
 feature Paloma::AddGenerator, 'creating both controller folder and action file' do
   include GeneratorSpec::TestCase
   destination TEMP
@@ -135,7 +152,35 @@ feature Paloma::AddGenerator, 'creating both controller folder and action file' 
 end
 
 
+# rails g paloma:add existing_controller_folder new_action
+feature Paloma::AddGenerator, 'creating action with existing controller folder' do
+  include GeneratorSpec::TestCase
+  destination TEMP
+  arguments ['existing_controller_folder', 'new_action']
+  
+  before do
+    prepare_destination
+    mimic_setup
+    Dir.mkdir "#{Paloma.destination}/existing_controller_folder"
+    
+    run_generator
+  end
+  
+  specify do
+    destination_root.should have_structure {
+      directory Paloma.destination do
+        directory 'existing_controller_folder' do
+          file 'new_action.js' do
+            contains "Paloma.callbacks['existing_controller_folder/new_action']"
+          end
+        end
+      end
+    }
+  end
+end
 
+
+# rails g paloma:add namespace/new_controller_folder new_action
 feature Paloma::AddGenerator, 'creating namespaced controller folder and action file' do
   include GeneratorSpec::TestCase
   destination TEMP
@@ -176,11 +221,11 @@ feature Paloma::AddGenerator, 'creating namespaced controller folder and action 
 end
 
 
-
+# rails g paloma:add existing_namespace/new_controller_folder new_action
 feature Paloma::AddGenerator, 'creating controller folder and action file under an existing namespace' do
   include GeneratorSpec::TestCase
   destination TEMP
-  arguments ['namespace/new_controller_folder', 'new_action']
+  arguments ['existing_namespace/new_controller_folder', 'new_action']
   
   before do
     prepare_destination
@@ -193,10 +238,14 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
   specify do
     destination_root.should have_structure {
       directory Paloma.destination do
-        directory 'namespace' do
+        directory 'existing_namespace' do
           directory 'new_controller_folder' do
             file 'new_action.js' do
-              contains "Paloma.callbacks['namespace/new_controller_folder/new_action']"
+              contains "Paloma.callbacks['existing_namespace/new_controller_folder/new_action']"
+            end
+            
+            file '_local.js' do
+              contains 'Paloma.existing_namespace.new_controller_folder = {'
             end
           end
           
@@ -210,7 +259,49 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
 end
 
 
+# rails g paloma:add new_controller_folder first_action second_action third_action
+feature Paloma::AddGenerator, 'create controller folder and multiple action files' do
+  include GeneratorSpec::TestCase
+  destination TEMP
+  arguments ['new_controller_folder', 'first_action', 'second_action', 'third_action']
+  
+  before do
+    prepare_destination
+    mimic_setup
+    run_generator
+  end
+  
+  specify do
+    destination_root.should have_structure {
+      directory Paloma.destination do
+        directory 'new_controller_folder' do
+          file '_local.js' do
+            contains 'Paloma.new_controller_folder = {'
+          end
+          
+          file 'first_action.js' do
+            contains "Paloma.callbacks['new_controller_folder/first_action']"
+          end
+          
+          file 'second_action.js' do
+            contains "Paloma.callbacks['new_controller_folder/second_action']"
+          end
+          
+          file 'third_action.js' do
+            contains "Paloma.callbacks['new_controller_folder/third_action']"
+          end
+        end
+        
+        file 'index.js' do
+          contains '//= require ./new_controller_folder/_callbacks.js'
+        end
+      end
+    }
+  end
+end
 
+
+# rails g paloma:add existing_controller_folder first_action second_action third_action
 feature Paloma::AddGenerator, 'create multiple actions in an existing controller folder' do
   include GeneratorSpec::TestCase
   destination TEMP
@@ -228,16 +319,95 @@ feature Paloma::AddGenerator, 'create multiple actions in an existing controller
     destination_root.should have_structure {
       directory Paloma.destination do
         directory 'existing_controller_folder' do
-          file 'first_action.js' do
-            contains "Paloma.callbacks['existing_controller_folder/first_action']"
+          ['first', 'second', 'third'].each do |action|
+            file ("#{action}_action.js") do
+              contains "Paloma.callbacks['existing_controller_folder/#{action}_action']"
+            end
           end
-          
-          file 'second_action.js' do
-            contains "Paloma.callbacks['existing_controller_folder/second_action']"
+        end
+      end
+    }
+  end
+end
+
+
+# rails g paloma:add namespace/new_controller_folder first_action second_action third_action
+feature Paloma::AddGenerator, 'create multiple actions in a new namespaced controller' do
+  include GeneratorSpec::TestCase
+  destination TEMP
+  arguments ['namespace/new_controller_folder', 'first_action', 'second_action', 'third_action']
+  
+  before do
+    prepare_destination
+    mimic_setup
+    run_generator
+  end
+  
+  specify do
+    destination_root.should have_structure {
+      directory Paloma.destination do
+        directory 'namespace' do
+          directory 'new_controller_folder' do
+            file '_local.js' do
+              contains 'Paloma.namespace.new_controller_folder'
+            end
+            
+            ['first', 'second', 'third'].each do |action|
+              file ("#{action}_action.js") do
+                contains "Paloma.callbacks['namespace/new_controller_folder/#{action}_action']"
+              end
+            end
           end
+          file '_callbacks.js' do
+            contains '//= require ./new_controller_folder/_callbacks.js'
+          end 
           
-          file 'third_action.js' do
-            contains "Paloma.callbacks['existing_controller_folder/third_action']"
+          file '_local.js' do
+            contains 'Paloma.namespace'
+          end
+        end
+        file 'index.js' do
+          contains '//= require ./namespace/_callbacks.js'
+        end
+      end
+    }
+  end
+end
+
+
+# rails g paloma:add existing_names/new_controller_folder first_action second_action third_action
+feature Paloma::AddGenerator, 'create multiple actions in an existing namespaced controller' do
+  include GeneratorSpec::TestCase
+  destination TEMP
+  arguments ['existing_namespace/new_controller_folder', 'first_action', 'second_action', 'third_action']
+  
+  before do
+    prepare_destination
+    mimic_setup
+    Dir.mkdir "#{Paloma.destination}/existing_namespace"
+    File.open("#{Paloma.destination}/existing_namespace/_callbacks.js", 'w'){ |f| 
+      f.write('//= require ./_local.js') }
+    
+    run_generator
+  end
+  
+  specify do
+    destination_root.should have_structure {
+      directory Paloma.destination do
+        directory 'existing_namespace' do
+          directory 'new_controller_folder' do
+            ['first', 'second', 'third'].each do |action|
+              file ("#{action}_action.js") do
+                contains "Paloma.callbacks['existing_namespace/new_controller_folder/#{action}_action']"
+              end
+            end
+            
+            file '_local.js' do
+              contains 'Paloma.existing_namespace.new_controller_folder'
+            end
+          end
+          file '_callbacks.js' do
+            contains '//= require ./new_controller_folder/_callbacks.js'
           end
         end
       end
