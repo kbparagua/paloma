@@ -29,7 +29,7 @@ def mimic_setup
   # Mimic SetupGenerator results before running the AddGenerator
   FileUtils.cd TEMP
   FileUtils.mkpath Paloma.destination
-  File.open("#{Paloma.destination}/index.js", 'w') { |f| f.write('// test')}
+  File.open("#{Paloma.destination}/index.js", 'w') { |f| f.write('//= require ./paloma.js')}
 end
 
 
@@ -48,10 +48,19 @@ feature Paloma::AddGenerator, 'creating controller folder only' do
   specify do
     destination_root.should have_structure {
       directory Paloma.destination do
-        directory 'sexy_controller'
+        directory 'sexy_controller' do
+          file '_callbacks.js' do
+            contains "//= require ./_local.js"
+            contains "//= require_tree ."
+          end
+          
+          file '_local.js' do
+            contains "Paloma.sexy_controller = {"
+          end
+        end
         
         file 'index.js' do
-          contains '//= require ./sexy_controller/_callbacks'
+          contains '//= require ./sexy_controller/_callbacks.js'
         end
       end
     }
@@ -80,14 +89,6 @@ feature Paloma::AddGenerator, 'creating action with existing controller folder' 
           file 'new_action.js' do
             contains "Paloma.callbacks['existing_controller_folder/new_action']"
           end
-
-=begin
-          #_callbacks.js file created upon creation of controller folder          
-          file '_callbacks.js' do
-            contains "//= require ./_local.js"
-            contains "//= require_tree ."
-          end
-=end
         end
       end
     }
@@ -114,7 +115,20 @@ feature Paloma::AddGenerator, 'creating both controller folder and action file' 
           file 'new_action.js' do
             contains "Paloma.callbacks['new_controller_folder/new_action']"
           end
+          
+          file '_callbacks.js' do
+            contains "//= require ./_local.js"
+            contains "//= require_tree ."
+          end
+          
+          file '_local.js' do
+            contains "Paloma.new_controller_folder = {"  
+          end
         end
+        
+        file 'index.js' do
+          contains "//= require ./new_controller_folder/_callbacks.js"
+        end        
       end
     }
   end
@@ -142,6 +156,19 @@ feature Paloma::AddGenerator, 'creating namespaced controller folder and action 
               contains "Paloma.callbacks['namespace/new_controller_folder/new_action']"
             end
           end
+          
+          file '_callbacks.js' do
+            contains "//= require ./_local.js"
+            contains "//= require ./new_controller_folder/_callbacks.js"
+          end
+          
+          file '_local.js' do
+            contains "Paloma.namespace = {"
+          end
+        end
+        
+        file 'index.js' do
+          contains "//= require ./namespace/_callbacks.js"
         end
       end
     }
@@ -171,6 +198,10 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
             file 'new_action.js' do
               contains "Paloma.callbacks['namespace/new_controller_folder/new_action']"
             end
+          end
+          
+          file '_callbacks.js' do
+            contains "//= require ./new_controller_folder/_callbacks.js"
           end
         end    
       end
