@@ -261,7 +261,7 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
           # Investigate this.
           # How is _callback.js generated here? It is not on the before block
           file '_callbacks.js' do
-            contains "//= require ./new_controller_folder/_xcallbacks.js"
+            contains "//= require ./new_controller_folder/_callbacks.js"
           end
         end    
       end
