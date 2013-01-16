@@ -239,7 +239,7 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
   before do
     prepare_destination
     mimic_setup
-    Dir.mkdir "#{Paloma.destination}/namespace"
+    Dir.mkdir "#{Paloma.destination}/existing_namespace"
     
     run_generator
   end
