@@ -56,7 +56,7 @@ end
 module SampleNamespace
   class CategoriesController < ApplicationController
     def index
-      raise controller_path.inspect
+      @categories = Category.all
     end
   end
 end

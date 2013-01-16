@@ -22,7 +22,7 @@ module Paloma
     # js_callback :params => {}
     #
     def js_callback options = {}, extras = {}
-      default_callback = "#{controller_name}/#{action_name}"
+      default_callback = "#{controller_path}/#{action_name}"
       params = {}
       
       if options.is_a? Hash
@@ -33,7 +33,7 @@ module Paloma
 
       elsif options.is_a? Symbol
         params = extras[:params] 
-        callback = "#{controller_name}/#{options}"
+        callback = "#{controller_path}/#{options}"
       
       elsif options.nil? || options.is_a?(TrueClass)
         callback = default_callback

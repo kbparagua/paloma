@@ -9,8 +9,20 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
 end
 
 
-desc "Run tests"
+desc "Run all tests"
 task :test do
-  puts "Testing..."
   sh "bundle exec rake spec"
 end
+
+
+desc "Run callback tests"
+task :test_callbacks do
+  sh "rspec ./spec/callback_spec.rb"
+end
+
+
+desc "Run generator tests"
+task :test_generators do
+  sh "rspec ./spec/generator_spec.rb"
+end
+

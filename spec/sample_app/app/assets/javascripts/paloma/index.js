@@ -1,2 +1,3 @@
 //= require ./paloma
-//= require ./articles/callbacks
+//= require ./articles/_callbacks.js
+//= require ./sample_namespace/_callbacks.js

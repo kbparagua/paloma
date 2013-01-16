@@ -1,5 +1,5 @@
 require 'spec_helper'
-=begin
+
 feature 'Callbacks' do
   
   it 'should execute articles/new callback', :js => true do
@@ -62,5 +62,12 @@ feature 'Callbacks' do
     
     page.has_selector?('#from-articles-edit-callback').should == true
   end
+  
+  
+  it 'should execute sample_namespace/categories/index callback', :js => true do
+    1.upto(10).each { |i| Category.create :name => "Category #{i}" }
+    
+    visit sample_namespace_categories_path
+    page.has_selector?('#from-categories-index').should == true
+  end
 end
-=end
