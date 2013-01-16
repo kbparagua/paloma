@@ -200,6 +200,15 @@ feature Paloma::AddGenerator, 'creating namespaced controller folder and action 
             file 'new_action.js' do
               contains "Paloma.callbacks['namespace/new_controller_folder/new_action']"
             end
+            
+            file '_local.js' do
+              contains 'Paloma.namespace.new_controller_folder = {'
+            end
+            
+            file '_callbacks.js' do
+              contains '//= require ./_local.js'
+              contains '//= require_tree .'
+            end
           end
           
           file '_callbacks.js' do
@@ -249,8 +258,10 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
             end
           end
           
+          # Investigate this.
+          # How is _callback.js generated here? It is not on the before block
           file '_callbacks.js' do
-            contains "//= require ./new_controller_folder/_callbacks.js"
+            contains "//= require ./new_controller_folder/_xcallbacks.js"
           end
         end    
       end
@@ -375,7 +386,7 @@ feature Paloma::AddGenerator, 'create multiple actions in a new namespaced contr
 end
 
 
-# rails g paloma:add existing_names/new_controller_folder first_action second_action third_action
+# rails g paloma:add existing_namespace/new_controller_folder first_action second_action third_action
 feature Paloma::AddGenerator, 'create multiple actions in an existing namespaced controller' do
   include GeneratorSpec::TestCase
   destination TEMP
