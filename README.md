@@ -75,6 +75,9 @@ Directory Structure
         * [action].js
         * [other_action].js
         * [more_action].js
+    * [namespace]
+        * [controllers]
+            * [action].js
      
 Generators
 -
@@ -94,11 +97,11 @@ rails g paloma:add [controllers]
 
 2. Generate a callback file for a controller's action:
 ```
-rails g paloma:add [controllers]/[action]
+rails g paloma:add [controllers] [action]
 ```
     **Example:**
     ```
-    rails g paloma:add users/new
+    rails g paloma:add users new
     ```
 
     **Generates:**
@@ -107,7 +110,40 @@ rails g paloma:add [controllers]/[action]
             * new.js
 
 
-**Note:** You can directly run `rails g paloma:add [controllers]/[action]` even the controller folder is not yet 
+3. Generate multiple callback files:
+```
+rails g paloma:add [controllers] [action_1] [action_2] ... [action_n]
+```
+    **Example:**
+    ```
+    rails g paloma:add users new create edit update
+    ```
+
+    **Generates:**
+    * /paloma
+        * /users
+            * new.js
+            * create.js
+            * edit.js
+            * update.js
+
+4. Generate namespaced controller and callbacks:
+```
+rails g paloma:add [namespace]/[controllers] [action_1] [action_2] ... [action_n]
+```
+
+    **Example:**
+    ```
+    rails g paloma:add admin/users new
+    ```
+
+    **Generates:**
+    * /paloma
+        * /admin
+            * /users
+                * new.js
+                
+**Note:** You can directly run `rails g paloma:add [controllers] [action]` or `rails g paloma:add [namespace]/[controllers] [action]` even the controller folder is not yet 
 existing on `paloma` folder. It will be created automatically.
 
 
@@ -154,6 +190,21 @@ You can manipulate callback behavior by using the `js_callback` command before t
 
     This will execute `clients/index` callback instead of `[controllers]/index`.
 
+
+4. Using other action's callback from a namespaced controller.
+
+    ```ruby
+    class UsersController < ApplicationController
+        def destroy
+            @user = User.find params[:id]
+            @user.destroy
+            
+            js_callback :controller => 'admin/users', :action => :destroy
+        end
+    end
+    ```
+
+    This will execute `admin/users/destroy` callback instead of `users/destroy`.
 Passing Parameters
 -
 You can also pass parameters to the callback by passing a `:params` key to `js_callback`. The passed parameters
@@ -185,7 +236,7 @@ Callback helpers are inside Paloma objects in order to prevent conflicts from di
 
 1. Global
 
-    Helper functions and variables can defined in `paloma/paloma.js` inside the `Paloma.g` object.
+    Helper functions and variables can be defined in `paloma/paloma.js` inside the `Paloma.g` object.
     
     **Example:**
     ```javascript
@@ -197,7 +248,23 @@ Callback helpers are inside Paloma objects in order to prevent conflicts from di
         helper_variable: 1000
     };
     ```
+
+3. Namespace's Scope
+
+    Helper functions and variables that is shared inside a namespace can be defined in `paloma/[namespace]/_local.js` inside
+    the `Paloma.[namespace]` object.
     
+    **Example:**
+    ```javascript
+    Paloma.admin = {
+        namespaced_helper: function(){
+            // do something sexy
+        },
+        
+        helper_variable: 1
+    };
+    ```
+
 2. Controller's Scope
 
     Helper functions that you will only use for a certain controller can be defined in `paloma/[controllers]/_local.js` inside
