@@ -205,6 +205,8 @@ You can manipulate callback behavior by using the `js_callback` command before t
     ```
 
     This will execute `admin/users/destroy` callback instead of `users/destroy`.
+
+
 Passing Parameters
 -
 You can also pass parameters to the callback by passing a `:params` key to `js_callback`. The passed parameters
