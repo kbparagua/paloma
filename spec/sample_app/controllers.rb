@@ -58,5 +58,11 @@ module SampleNamespace
     def index
       @categories = Category.all
     end
+    
+    
+    def new
+      @category = Category.new
+      js_callback :index
+    end
   end
 end

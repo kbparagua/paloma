@@ -70,4 +70,11 @@ feature 'Callbacks' do
     visit sample_namespace_categories_path
     page.has_selector?('#from-categories-index').should == true
   end
+  
+  
+  it 'should execute sample_namespace/categories/index callback instead of new callback', :js => true do
+    visit new_sample_namespace_category_path
+    
+    page.has_selector?('#from-categories-index').should == true
+  end
 end
