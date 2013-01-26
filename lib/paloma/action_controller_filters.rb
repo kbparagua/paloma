@@ -25,13 +25,16 @@ module Paloma
         :locals => {:callbacks => session[:callbacks]})
       
       before_body_end_index = response_body[0].rindex('</body>')
-      before_body_end_content = response_body[0][0, before_body_end_index].html_safe
-      after_body_end_content = response_body[0][before_body_end_index..-1].html_safe
       
-      response_body[0] = before_body_end_content + paloma_txt + after_body_end_content
-      
-      response.body = response_body[0]
-      clear_callbacks
+      if before_body_end_index.present?
+        before_body_end_content = response_body[0][0, before_body_end_index].html_safe
+        after_body_end_content = response_body[0][before_body_end_index..-1].html_safe
+        
+        response_body[0] = before_body_end_content + paloma_txt + after_body_end_content
+        
+        response.body = response_body[0]
+        clear_callbacks
+      end
     end
     
     
