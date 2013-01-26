@@ -8,6 +8,7 @@ Advantages
 * Javascript files are organized per controller just like app/views folder of Rails.
 * Javascript file per controller's action.
 * The ability to choose what specific javascript code to run on a specific action.
+* Easily make ruby variables available on your javascript files.
 
 Quick Example
 -
