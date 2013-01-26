@@ -4,6 +4,7 @@ feature 'Callbacks' do
   
   it 'should execute articles/new callback', :js => true do
     visit new_article_path  
+
     page.has_selector?('#from-articles-new-callback').should == true
   end
 

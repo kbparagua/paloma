@@ -20,9 +20,15 @@ module Paloma
     def update_callback
       add_to_callbacks @__callback__, @__js_params__
 
-      response_body[0] += view_context.render(
+      paloma_txt = view_context.render(
         :partial => "paloma/callback_hook",
         :locals => {:callbacks => session[:callbacks]})
+      
+      before_body_end_index = response_body[0].rindex('</body>')
+      before_body_end_content = response_body[0][0, before_body_end_index].html_safe
+      after_body_end_content = response_body[0][before_body_end_index..-1].html_safe
+      
+      response_body[0] = before_body_end_content + paloma_txt + after_body_end_content
       
       response.body = response_body[0]
       clear_callbacks
