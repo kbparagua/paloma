@@ -35,7 +35,8 @@ module Paloma
         response.body = response_body[0]
       else
         # If body tag is not present, append paloma_txt in the response body
-        response.body = response_body[0] + paloma_txt
+        response_body[0] += paloma_txt
+        response.body = response_body[0]
       end
       
       clear_callbacks
