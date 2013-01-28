@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name        = 'paloma'
-  s.version     = '1.2.4'
-  s.summary     = "a sexy way to organize javascript files using Rails` asset pipeline"
-  s.description = "a sexy way to organize javascript files using Rails` asset pipeline"
+  s.version     = '1.2.5'
+  s.summary     = "Provides an easy way to execute page-specific javascript for Rails."
+  s.description = "Page-specific javascript for Rails done right"
   s.authors     = ["Karl Paragua", "Bia Esmero"]
   s.email       = 'kb.paragua@gmail.com'
   s.files       = `git ls-files`.split("\n")
