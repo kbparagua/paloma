@@ -31,10 +31,14 @@ module Paloma
         after_body_end_content = response_body[0][before_body_end_index..-1].html_safe
         
         response_body[0] = before_body_end_content + paloma_txt + after_body_end_content
-        
+       
         response.body = response_body[0]
-        clear_callbacks
+      else
+        # If body tag is not present, append paloma_txt in the response body
+        response.body = response_body[0] + paloma_txt
       end
+      
+      clear_callbacks
     end
     
     

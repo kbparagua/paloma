@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'paloma'
-  s.version     = '1.2.2'
+  s.version     = '1.2.3'
   s.summary     = "a sexy way to organize javascript files using Rails` asset pipeline"
   s.description = "a sexy way to organize javascript files using Rails` asset pipeline"
   s.authors     = ["Karl Paragua", "Bia Esmero"]
