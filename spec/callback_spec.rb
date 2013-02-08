@@ -78,4 +78,13 @@ feature 'Callbacks' do
     
     page.has_selector?('#from-categories-index').should == true
   end
+  
+  
+  it 'should receive the controller and action name on params automatically', :js => true do
+    article = Article.create :title => 'Sexylicious', :body => 'Yeah'
+    
+    visit article_path(article)
+    
+    page.has_selector?('#controller-and-action-received').should == true
+  end
 end

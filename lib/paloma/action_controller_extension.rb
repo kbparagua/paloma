@@ -42,6 +42,11 @@ module Paloma
         callback = nil
       end
       
+      
+      params ||= {}
+      params[:controller] = controller_path.to_s
+      params[:action] = action_name.to_s
+      
       @__callback__ = callback
       @__js_params__ = params
     end 
