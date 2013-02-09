@@ -56,7 +56,8 @@ feature Paloma::AddGenerator, 'creating controller folder only' do
           end
           
           file '_local.js' do
-            contains "Paloma.sexy_controller = {"
+            contains "Paloma.callbacks['sexy_controller'] = {};"
+            contains "Paloma.sexy_controller = { /* Put local variables and functions here */ };"
           end
         end
         
@@ -92,6 +93,7 @@ feature Paloma::AddGenerator, 'creating a namespaced controller folder' do
             end
             
             file '_local.js' do
+              contains "Paloma.callbacks['namespace/new_controller_folder'] = {};"
               contains 'Paloma.namespace.new_controller_folder = {'
             end
           end
@@ -130,7 +132,7 @@ feature Paloma::AddGenerator, 'creating both controller folder and action file' 
       directory Paloma.destination do
         directory 'new_controller_folder' do
           file 'new_action.js' do
-            contains "Paloma.callbacks['new_controller_folder/new_action']"
+            contains "Paloma.callbacks['new_controller_folder']['new_action']"
           end
           
           file '_callbacks.js' do
@@ -171,7 +173,7 @@ feature Paloma::AddGenerator, 'creating action with existing controller folder' 
       directory Paloma.destination do
         directory 'existing_controller_folder' do
           file 'new_action.js' do
-            contains "Paloma.callbacks['existing_controller_folder/new_action']"
+            contains "Paloma.callbacks['existing_controller_folder']['new_action']"
           end
         end
       end
@@ -198,7 +200,7 @@ feature Paloma::AddGenerator, 'creating namespaced controller folder and action 
         directory 'namespace' do
           directory 'new_controller_folder' do
             file 'new_action.js' do
-              contains "Paloma.callbacks['namespace/new_controller_folder/new_action']"
+              contains "Paloma.callbacks['namespace/new_controller_folder']['new_action']"
             end
             
             file '_local.js' do
@@ -250,7 +252,7 @@ feature Paloma::AddGenerator, 'creating controller folder and action file under 
         directory 'existing_namespace' do
           directory 'new_controller_folder' do
             file 'new_action.js' do
-              contains "Paloma.callbacks['existing_namespace/new_controller_folder/new_action']"
+              contains "Paloma.callbacks['existing_namespace/new_controller_folder']['new_action']"
             end
             
             file '_local.js' do
@@ -289,15 +291,15 @@ feature Paloma::AddGenerator, 'create controller folder and multiple action file
           end
           
           file 'first_action.js' do
-            contains "Paloma.callbacks['new_controller_folder/first_action']"
+            contains "Paloma.callbacks['new_controller_folder']['first_action']"
           end
           
           file 'second_action.js' do
-            contains "Paloma.callbacks['new_controller_folder/second_action']"
+            contains "Paloma.callbacks['new_controller_folder']['second_action']"
           end
           
           file 'third_action.js' do
-            contains "Paloma.callbacks['new_controller_folder/third_action']"
+            contains "Paloma.callbacks['new_controller_folder']['third_action']"
           end
         end
         
@@ -330,7 +332,7 @@ feature Paloma::AddGenerator, 'create multiple actions in an existing controller
         directory 'existing_controller_folder' do
           ['first', 'second', 'third'].each do |action|
             file ("#{action}_action.js") do
-              contains "Paloma.callbacks['existing_controller_folder/#{action}_action']"
+              contains "Paloma.callbacks['existing_controller_folder']['#{action}_action']"
             end
           end
         end
@@ -363,7 +365,7 @@ feature Paloma::AddGenerator, 'create multiple actions in a new namespaced contr
             
             ['first', 'second', 'third'].each do |action|
               file ("#{action}_action.js") do
-                contains "Paloma.callbacks['namespace/new_controller_folder/#{action}_action']"
+                contains "Paloma.callbacks['namespace/new_controller_folder']['#{action}_action']"
               end
             end
           end
@@ -407,7 +409,7 @@ feature Paloma::AddGenerator, 'create multiple actions in an existing namespaced
           directory 'new_controller_folder' do
             ['first', 'second', 'third'].each do |action|
               file ("#{action}_action.js") do
-                contains "Paloma.callbacks['existing_namespace/new_controller_folder/#{action}_action']"
+                contains "Paloma.callbacks['existing_namespace/new_controller_folder']['#{action}_action']"
               end
             end
             

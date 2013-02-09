@@ -2,14 +2,14 @@ require 'spec_helper'
 
 feature 'Callbacks' do
   
-  it 'should execute articles/new callback', :js => true do
-    visit new_article_path  
+  it 'should execute [articles][new] callback', :js => true do
+    visit new_article_path
 
     page.has_selector?('#from-articles-new-callback').should == true
   end
 
 
-  it 'should execute callbacks for articles/create and articles/show', :js => true do
+  it 'should execute callbacks for [articles][create] and [articles][show]', :js => true do
     visit new_article_path
     
     fill_in 'article[title]', :with => 'sexy paloma'
@@ -42,7 +42,7 @@ feature 'Callbacks' do
   end
   
   
-  it 'should not execute articles/update callback', :js => true do
+  it 'should not execute [articles][update] callback', :js => true do
     article = Article.create :title => "Sexy Paloma Baby!", :body => "OMG"
     
     visit edit_article_path(article)
@@ -54,7 +54,7 @@ feature 'Callbacks' do
   end
   
   
-  it 'should execute articles/edit callback after failed update', :js => true do
+  it 'should execute [articles][edit] callback after failed update', :js => true do
     article = Article.create :title => 'Sexy Paloma Baby!', :body => 'Yeah'
     
     visit edit_article_path(article)
@@ -65,7 +65,7 @@ feature 'Callbacks' do
   end
   
   
-  it 'should execute sample_namespace/categories/index callback', :js => true do
+  it 'should execute [sample_namespace/categories][index] callback', :js => true do
     1.upto(10).each { |i| Category.create :name => "Category #{i}" }
     
     visit sample_namespace_categories_path
@@ -73,7 +73,7 @@ feature 'Callbacks' do
   end
   
   
-  it 'should execute sample_namespace/categories/index callback instead of new callback', :js => true do
+  it 'should execute [sample_namespace/categories][index] callback instead of new callback', :js => true do
     visit new_sample_namespace_category_path
     
     page.has_selector?('#from-categories-index').should == true

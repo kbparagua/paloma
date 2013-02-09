@@ -18,7 +18,7 @@ module Paloma
 
         
     def update_callback
-      add_to_callbacks @__callback__, @__js_params__
+      add_to_callbacks @__paloma_callback__
 
       paloma_txt = view_context.render(
         :partial => "paloma/callback_hook",
@@ -43,10 +43,10 @@ module Paloma
     end
     
     
-    def add_to_callbacks name, params
-      return true if name.nil?
+    def add_to_callbacks callback
+      return true if callback.nil?
       session[:callbacks] ||= []
-      session[:callbacks].push({:name => name, :params => params})
+      session[:callbacks].push(callback)
     end
     
     

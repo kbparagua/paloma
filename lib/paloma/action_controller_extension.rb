@@ -9,7 +9,7 @@ module Paloma
 
   module ActionControllerExtension
     def redirect_js_hook options = {}, response_status = {}
-      add_to_callbacks @__callback__, @__js_params__
+      add_to_callbacks @__paloma_callback__
       original_redirect_to options, response_status
     end      
     alias_method :redirect_to, :redirect_js_hook
@@ -22,33 +22,28 @@ module Paloma
     # js_callback :params => {}
     #
     def js_callback options = {}, extras = {}
-      default_callback = "#{controller_path}/#{action_name}"
+      callback = {:controller => controller_path, :action => action_name}
       params = {}
       
       if options.is_a? Hash
         params = options[:params]
         callback = options[:controller].present? && options[:action].present? ? 
-          "#{options[:controller]}/#{options[:action]}" :
-          default_callback
+          {:controller => options[:controller], :action => options[:action]} :
+          callback
 
       elsif options.is_a? Symbol
         params = extras[:params] 
-        callback = "#{controller_path}/#{options}"
+        callback[:action] = options
       
-      elsif options.nil? || options.is_a?(TrueClass)
-        callback = default_callback
-      
-      else # false
+      elsif options.is_a? FalseClass
         callback = nil
       end
-      
       
       params ||= {}
       params[:controller] = controller_path.to_s
       params[:action] = action_name.to_s
       
-      @__callback__ = callback
-      @__js_params__ = params
+      @__paloma_callback__ = callback.present? ? callback.merge({:params => params}) : nil 
     end 
   end
   

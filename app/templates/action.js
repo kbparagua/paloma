@@ -1,5 +1,4 @@
-Paloma.callbacks['controller/action'] = function(params){
-
-  // alert('Paloma');
+Paloma.callbacks['controller']['action'] = function(params)
+{
 
 };
