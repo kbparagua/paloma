@@ -94,4 +94,11 @@ feature 'Callbacks' do
     
     page.has_selector?('#controller-with-namespace-and-action-received').should == true
   end
+  
+  
+  it 'should receive the callback controller and action name on params automatically', :js => true do
+    visit new_article_path
+    
+    page.has_selector?('#callback-details-received').should == true
+  end
 end

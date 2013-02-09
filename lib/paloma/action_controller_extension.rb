@@ -40,8 +40,16 @@ module Paloma
       end
       
       params ||= {}
+      
+      # Include request details
       params[:controller] = controller_path.to_s
       params[:action] = action_name.to_s
+      
+      # Include callback details
+      if callback.present?
+        params[:callback_controller] = callback[:controller]
+        params[:callback_action] = callback[:action]
+      end
       
       @__paloma_callback__ = callback.present? ? callback.merge({:params => params}) : nil 
     end 
