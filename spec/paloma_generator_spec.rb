@@ -1,8 +1,6 @@
 require 'spec_helper'
-require 'generator_spec/test_case'
-require 'fileutils'
+require 'generator_helper'
 
-TEMP = "#{File.dirname(__FILE__)}/tmp/"
 
 # rails g paloma:setup
 feature Paloma::SetupGenerator do
@@ -22,15 +20,6 @@ feature Paloma::SetupGenerator do
       end
     }
   end
-end
-
-
-
-def mimic_setup
-  # Mimic SetupGenerator results before running the AddGenerator
-  FileUtils.cd TEMP
-  FileUtils.mkpath Paloma.destination
-  File.open("#{Paloma.destination}/index.js", 'w') { |f| f.write('//= require ./paloma.js')}
 end
 
 
