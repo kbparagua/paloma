@@ -31,10 +31,8 @@
       // Run Callbacks
       $(document).ready(function(){
         for (var i = 0, len = callbacks.length; i < len; i++){
-          var callback = callbacks[i],
-            callbackFunction = Paloma.callbacks[callback.controller][callback.action];
-            
-          if (callbackFunction != undefined){ callbackFunction(callback.params); }
+          var callback = callbacks[i];
+          Paloma.execute(callback.controller, callback.action, callback.params);
         }
       });
     })();
