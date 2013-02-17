@@ -2,35 +2,45 @@
 
 <div class="callback-details" id="callback-details-<%= callback_details_id %>">
   <script type="text/javascript">
-    var id = "callback-details-<%= callback_details_id %>",
-      callbacks = [];
+    (function(){
       
-    // Remove any callback details if any 
-    $('.callback-details[id!=" + id + "]').remove(); 
-    
-    
-    // Convert callbacks to javascript variable      
-    <% callbacks.each do |callback| %>
-      callbacks.push({
-        controller: '<%= callback[:controller] %>', 
-        action:     '<%= callback[:action] %>', 
-        params:     eval($('<div/>').html("(<%= callback[:params].to_json %>)").text())
-      }); 
-    <% end %>
-    
-    
-    // Run Callbacks
-    $(document).ready(function(){
-      for (var i = 0, len = callbacks.length; i < len; i++){
-        var callback = callbacks[i],
-          callbackFunction = Paloma.callbacks[callback.controller][callback.action];
-        
-        console.log("Paloma: Fetching [" + callback.controller + "][" + callback.action +"]");      
-        if (callbackFunction != undefined){
-          console.log("Paloma: Calling [" + callback.name + "][" + callback.action + "]");
-          callbackFunction(callback.params);
-        }
+      // Do not continue if Paloma.js is not found.
+      if (window['Paloma'] === undefined && window['console'] !== undefined){
+        console.warn("Paloma.js not found. Require it in your application.js.");
+        return true;
       }
-    });
+      
+      
+      var id = "callback-details-<%= callback_details_id %>",
+        callbacks = [];
+        
+      // Remove any callback details if any 
+      $('.callback-details[id!=" + id + "]').remove(); 
+      
+      
+      // Convert callbacks to javascript variable      
+      <% callbacks.each do |callback| %>
+        callbacks.push({
+          controller: '<%= callback[:controller] %>', 
+          action:     '<%= callback[:action] %>', 
+          params:     eval($('<div/>').html("(<%= callback[:params].to_json %>)").text())
+        }); 
+      <% end %>
+      
+      
+      // Run Callbacks
+      $(document).ready(function(){
+        for (var i = 0, len = callbacks.length; i < len; i++){
+          var callback = callbacks[i],
+            callbackFunction = Paloma.callbacks[callback.controller][callback.action];
+          
+          console.log("Paloma: Fetching [" + callback.controller + "][" + callback.action +"]");      
+          if (callbackFunction != undefined){
+            console.log("Paloma: Calling [" + callback.name + "][" + callback.action + "]");
+            callbackFunction(callback.params);
+          }
+        }
+      });
+    })();
   </script>
 </div>
