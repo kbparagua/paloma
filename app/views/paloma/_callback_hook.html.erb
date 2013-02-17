@@ -33,12 +33,8 @@
         for (var i = 0, len = callbacks.length; i < len; i++){
           var callback = callbacks[i],
             callbackFunction = Paloma.callbacks[callback.controller][callback.action];
-          
-          console.log("Paloma: Fetching [" + callback.controller + "][" + callback.action +"]");      
-          if (callbackFunction != undefined){
-            console.log("Paloma: Calling [" + callback.name + "][" + callback.action + "]");
-            callbackFunction(callback.params);
-          }
+            
+          if (callbackFunction != undefined){ callbackFunction(callback.params); }
         }
       });
     })();
