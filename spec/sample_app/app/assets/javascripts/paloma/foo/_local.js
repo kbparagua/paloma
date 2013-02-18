@@ -1,0 +1,1 @@
+Paloma.callbacks['foo'] = {}

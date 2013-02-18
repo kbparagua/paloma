@@ -14,9 +14,16 @@ Paloma.execute = function(controller, action, params){
   
   // Parse parameters
   params = params || {};
-  var controller_full_path = controller.split('/');
-  params['callback_controller'] = controller_full_path.pop();
-  params['callback_namespace'] = controller_full_path.join('/');
+  
+  // Request details
+  var requestControllerPath = params['controller_path'].split('/');
+  params['controller'] = requestControllerPath.pop();
+  params['namespace'] = requestControllerPath.join('/');
+  
+  // Callback details
+  var callbackControllerPath = controller.split('/');
+  params['callback_controller'] = callbackControllerPath.pop();
+  params['callback_namespace'] = callbackControllerPath.join('/');
   params['callback_controller_path'] = controller;
   params['callback_action'] = action;
   

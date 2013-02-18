@@ -11,8 +11,8 @@ feature 'Paloma params', :js => true do
       expect(page.evaluate_script('params.callback_controller')).to eq('foo')
     end
     
-    specify 'callback_action == callback_from_different_action' do
-      expect(page.evaluate_script('params.callback_action')).to eq('callback_from_different_action')
+    specify 'callback_action == basic_action' do
+      expect(page.evaluate_script('params.callback_action')).to eq('basic_action')
     end     
     
     specify 'callback_namespace should be empty' do
@@ -21,6 +21,22 @@ feature 'Paloma params', :js => true do
     
     specify 'callback_controller_path == foo' do
       expect(page.evaluate_script('params.callback_controller_path')).to eq('foo')
+    end
+    
+    specify 'controller == foo' do
+      expect(page.evaluate_script('params.controller')).to eq('foo')
+    end
+    
+    specify 'action == callback_from_another_action' do
+      expect(page.evaluate_script('params.action')).to eq('callback_from_another_action')
+    end
+    
+    specify 'namespace should be empty' do
+      expect(page.evaluate_script('params.namespace')).to eq('')
+    end
+    
+    specify 'controller_path == foo' do
+      expect(page.evaluate_script('params.controller_path')).to eq('foo')
     end
   end
   

@@ -9,6 +9,7 @@ class FooController < ApplicationController
 
   def callback_from_another_action
     js_callback :basic_action
+    render :inline => '<h1>Callback From Another Action</h1>', :layout => 'application'
   end
   
   def callback_from_another_controller
