@@ -3,66 +3,31 @@ class ApplicationController < ActionController::Base
 end
 
 
-class ArticlesController < ApplicationController
+class FooController < ApplicationController
+  def basic_action
+  end
 
-  def index
-    @articles = Article.all
-    js_callback :params => {:article_count => @articles.size}
+  def callback_from_another_action
+    js_callback :basic_action
   end
   
-
-  def show
-    @article = Article.find params[:id]
+  def callback_from_another_controller
+    js_callback :controller => 'baz', :action => 'basic_action'
   end
-  
-  
-  def new
-    @article = Article.new
-  end
-  
-  
-  def create
-    @article = Article.new params[:article]
-       
-    if @article.save
-      redirect_to @article
-    else
-      js_callback :new
-      render :new
-    end
-  end
-  
-  
-  def edit
-    @article = Article.find params[:id]
-    render :new
-  end
-  
-  
-  def update
-    @article = Article.find params[:id]
-    
-    if @article.update_attributes params[:article]
-      js_callback false
-      redirect_to @article
-    else
-      js_callback :controller => :articles, :action => :edit
-      render :new
-    end
-  end
-  
 end
 
+
+
+class BarController < ApplicationController
+  def basic_action
+  end
+end
+
+
+
 module SampleNamespace
-  class CategoriesController < ApplicationController
-    def index
-      @categories = Category.all
-    end
-    
-    
-    def new
-      @category = Category.new
-      js_callback :index
+  class BazController < ApplicationController
+    def basic_action
     end
   end
 end

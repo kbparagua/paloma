@@ -26,12 +26,32 @@ app.initialize!
 
 # Routes
 app.routes.draw do
-  resources :articles, :controller => 'Articles'
+  resource :foo, :controller => 'Foo' do
+    collection do
+      get :basic_action
+      get :callback_from_another_action
+      get :callback_from_another_controller
+      get :callback_from_namespaced_controller
+    end
+  end
+  
+  
+  resource :bar, :controller => 'bar' do
+    collection do
+      get :basic_action
+    end
+  end
+  
   
   namespace :sample_namespace do
-    resources :categories
+    resource :baz, :controller => 'baz' do
+      collection do
+        get :basic_action
+      end
+    end
   end
 end
+
 
 require "#{Paloma.root}/spec/sample_app/models"
 require "#{Paloma.root}/spec/sample_app/controllers"
