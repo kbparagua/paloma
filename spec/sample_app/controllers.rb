@@ -9,7 +9,7 @@ class FooController < ApplicationController
 
   def callback_from_another_action
     js_callback :basic_action
-    render :inline => '<h1>Callback From Another Action</h1>', :layout => 'application'
+    render :inline => '<h1>Foo! Callback From Another Action</h1>', :layout => 'application'
   end
   
   def callback_from_another_controller
@@ -29,6 +29,11 @@ end
 module SampleNamespace
   class BazController < ApplicationController
     def basic_action
+    end
+    
+    def callback_from_another_action
+      js_callback :cotroller => 'sample_namespace/baz', :action => 'basic_action'
+      render :inline => '<h1>Baz! Callback From Another action</h1>', :layout => 'application'
     end
   end
 end

@@ -7,43 +7,49 @@ feature 'Paloma params', :js => true do
       visit callback_from_another_action_foo_path
     end
     
-    specify 'callback_controller == foo' do
-      expect(page.evaluate_script('params.callback_controller')).to eq('foo')
+    describe 'Callback Details' do
+      specify 'callback_controller == foo' do
+        expect(page.evaluate_script('params.callback_controller')).to eq('foo')
+      end
+      
+      specify 'callback_action == basic_action' do
+        expect(page.evaluate_script('params.callback_action')).to eq('basic_action')
+      end     
+      
+      specify 'callback_namespace should be empty' do
+        expect(page.evaluate_script('params.callback_namespace')).to eq('')
+      end
+      
+      specify 'callback_controller_path == foo' do
+        expect(page.evaluate_script('params.callback_controller_path')).to eq('foo')
+      end
     end
     
-    specify 'callback_action == basic_action' do
-      expect(page.evaluate_script('params.callback_action')).to eq('basic_action')
-    end     
     
-    specify 'callback_namespace should be empty' do
-      expect(page.evaluate_script('params.callback_namespace')).to eq('')
-    end
-    
-    specify 'callback_controller_path == foo' do
-      expect(page.evaluate_script('params.callback_controller_path')).to eq('foo')
-    end
-    
-    specify 'controller == foo' do
-      expect(page.evaluate_script('params.controller')).to eq('foo')
-    end
-    
-    specify 'action == callback_from_another_action' do
-      expect(page.evaluate_script('params.action')).to eq('callback_from_another_action')
-    end
-    
-    specify 'namespace should be empty' do
-      expect(page.evaluate_script('params.namespace')).to eq('')
-    end
-    
-    specify 'controller_path == foo' do
-      expect(page.evaluate_script('params.controller_path')).to eq('foo')
+    describe 'Request Details' do
+      specify 'controller == foo' do
+        expect(page.evaluate_script('params.controller')).to eq('foo')
+      end
+      
+      specify 'action == callback_from_another_action' do
+        expect(page.evaluate_script('params.action')).to eq('callback_from_another_action')
+      end
+      
+      specify 'namespace should be empty' do
+        expect(page.evaluate_script('params.namespace')).to eq('')
+      end
+      
+      specify 'controller_path == foo' do
+        expect(page.evaluate_script('params.controller_path')).to eq('foo')
+      end
     end
   end
   
-=begin  
+
+=begin
   describe 'Namespaced callback' do
     before do
-      visit sample_namespace_categories_path
+      visit callback_from_another_action_sample_namespace_baz_path
     end
     
     specify 'callback_controller == categories' do

@@ -1,1 +1,1 @@
-//= require ./categories/_callbacks.js
+//= require ./baz/_callbacks.js

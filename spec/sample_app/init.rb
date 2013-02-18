@@ -47,6 +47,7 @@ app.routes.draw do
     resource :baz, :controller => 'baz' do
       collection do
         get :basic_action
+        get :callback_from_another_action
       end
     end
   end
