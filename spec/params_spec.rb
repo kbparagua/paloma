@@ -46,27 +46,46 @@ feature 'Paloma params', :js => true do
   end
   
 
-=begin
   describe 'Namespaced callback' do
     before do
       visit callback_from_another_action_sample_namespace_baz_path
     end
     
-    specify 'callback_controller == categories' do
-      expect(page.evaluate_script('params.callback_controller')).to eq('categories')
+    describe 'Callback Details' do
+      specify 'callback_controller == baz' do
+        expect(page.evaluate_script('params.callback_controller')).to eq('baz')
+      end
+      
+      specify 'callback_action == basic_action' do
+        expect(page.evaluate_script('params.callback_action')).to eq('basic_action')
+      end     
+      
+      specify 'callback_namespace == sample_namespace' do
+        expect(page.evaluate_script('params.callback_namespace')).to eq('sample_namespace')
+      end
+      
+      specify 'callback_controller_path == baz' do
+        expect(page.evaluate_script('params.callback_controller_path')).to eq('sample_namespace/baz')
+      end
     end
     
-    specify 'callback_controller_path == sample_namespace/categories' do
-      expect(page.evaluate_script('params.callback_controller_path')).to eq('sample_namespace/categories')
-    end
     
-    specify 'callback_action == index' do
-      expect(page.evaluate_script('params.callback_action')).to eq('index')  
+    describe 'Request Details' do
+      specify 'controller == baz' do
+        expect(page.evaluate_script('params.controller')).to eq('baz')
+      end
+      
+      specify 'action == callback_from_another_action' do
+        expect(page.evaluate_script('params.action')).to eq('callback_from_another_action')
+      end
+      
+      specify 'namespace == sample_namespace' do
+        expect(page.evaluate_script('params.namespace')).to eq('sample_namespace')
+      end
+      
+      specify 'controller_path == sample_namespace/baz' do
+        expect(page.evaluate_script('params.controller_path')).to eq('sample_namespace/baz')
+      end
     end
-    
-    specify 'callback_namespace == sample_namespace' do
-      expect(page.evaluate_script('params.callback_namespace')).to eq('sample_namespace')      
-    end  
   end
-=end
 end

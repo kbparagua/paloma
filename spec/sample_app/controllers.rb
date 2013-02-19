@@ -32,7 +32,7 @@ module SampleNamespace
     end
     
     def callback_from_another_action
-      js_callback :cotroller => 'sample_namespace/baz', :action => 'basic_action'
+      js_callback :controller => 'sample_namespace/baz', :action => 'basic_action'
       render :inline => '<h1>Baz! Callback From Another action</h1>', :layout => 'application'
     end
   end
