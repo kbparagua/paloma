@@ -30,46 +30,57 @@ Paloma.execute = function(controller, action, params){
   callback(params);
 };
 
-
 Paloma._filters = {};
 
 // Filter class
 Paloma.Filter = function(name){
   this.name = name;
   this.type = undefined;
-  this.only = undefined;
+  this.actions = undefined;
   this.func = undefined;
+  this.exception = false;  
 };
 
 
-Paloma.Filter.prototype.before = function(only, func){
-  this.type = 'before';
-  this._setProperties(only, func);
-};
+// Generate filter methods
+(function(){
+  var Basic = function(type){
+    return function(actions, func){
+      this.type = type;
+      this._setProperties(actions, func);
+    };
+  };
+  
+  
+  var All = function(type){
+    return function(func){
+      this.type = type;
+      this._setProperties('all', func);
+    };
+  };
+  
+  
+  var Except = function(type){
+    return function(actions, func){
+      this.type = type;
+      this.exception = true;
+      this._setProperties(actions, func);
+    };
+  };
 
 
-Paloma.Filter.prototype.after = function(only, func){
-  this.type = 'after';
-  this._setProperty(only, func);
-};
+  var types = ['before', 'after', 'around'];
+  for (var i = 0. n = types.length; i < n; i++){
+    var type = types[i];
+    Paloma.Filter.prototype[type] = new Basic(type);
+    Paloma.Filter.prototype[type + '_all'] = new All(type);
+    Paloma.Filter.prototype['except_' + type] = new Except(type);
+  }
+})();
 
 
-Paloma.Filter.prototype.around = function(only, func){
-  this.type = 'around';
-  this._setProperty(only, func);
-};
-
-
-var types = ['before', 'after', 'around'];
-for (var i = 0, n = types.length; i < n; i++)}{
-  var type = types[i];
-  Paloma.Filter.prototype[type + '_all'] = function(){};
-  Paloma.Filter.prototype['except_' + type] = function(){}; 
-}
-
-
-Paloma.Filter.prototype._setProperties = function(only, func){
-  this.only = only;
+Paloma.Filter.prototype._setProperties = function(actions, func){
+  this.actions = actions;
   this.func = func;
 };
 
