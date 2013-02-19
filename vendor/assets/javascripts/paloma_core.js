@@ -27,6 +27,7 @@ Paloma.execute = function(controller, action, params){
   params['callback_controller_path'] = controller;
   params['callback_action'] = action;
   
+  
   // Filters
   var namespaceFilter = {
     before  : Paloma._getFilter('before', params['callback_namespace'], action),
@@ -55,7 +56,7 @@ Paloma.execute = function(controller, action, params){
 
 
 
-Paloma._filters = {'before' : {}, 'after' : {}, 'around' ; {}};
+Paloma._filters = {'before' : {}, 'after' : {}, 'around' : {}};
 
 
 Paloma._getFilter = function(type, namespace_or_controller_path, action){
@@ -95,7 +96,7 @@ Paloma.Filter.prototype.perform = function(params){
       this._setProperties(actions, func);
     };
   };
-  
+
   var All = function(type){
     return function(func){
       Paloma._filters[type][this.name] = this;
@@ -114,7 +115,7 @@ Paloma.Filter.prototype.perform = function(params){
   };
 
   var types = ['before', 'after', 'around'];
-  for (var i = 0. n = types.length; i < n; i++){
+  for (var i = 0, n = types.length; i < n; i++){
     var type = types[i];
     Paloma.Filter.prototype[type] = new Basic(type);
     Paloma.Filter.prototype[type + '_all'] = new All(type);
