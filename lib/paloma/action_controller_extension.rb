@@ -16,12 +16,12 @@ module Paloma
     
     
     #
-    # js_callback false
-    # js_callback :new, :params => {}
-    # js_callback :controller => '', :action => '', :params => {}
-    # js_callback :params => {}
+    # js false
+    # js :new, :params => {}
+    # js :controller => '', :action => '', :params => {}
+    # js :params => {}
     #
-    def js_callback options = {}, extras = {}
+    def js options = {}, extras = {}
       callback = {:controller => controller_path, :action => action_name}
       params = {}
       

@@ -4,7 +4,7 @@ module Paloma
     def self.included base
       base.module_eval do
         prepend_view_path "#{Paloma.root}/app/views/"
-        before_filter :js_callback
+        before_filter :js
         after_filter :update_callback, :if => :html_response_from_render?
       end
     end
