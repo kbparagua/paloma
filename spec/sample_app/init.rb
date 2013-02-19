@@ -32,6 +32,7 @@ app.routes.draw do
       get :callback_from_another_action
       get :callback_from_another_controller
       get :callback_from_namespaced_controller
+      get :skip_callback
     end
   end
   
