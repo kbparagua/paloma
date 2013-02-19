@@ -27,10 +27,49 @@ Paloma.execute = function(controller, action, params){
   params['callback_controller_path'] = controller;
   params['callback_action'] = action;
   
+  // Filters
+  var namespaceFilter = {
+    before  : Paloma._getFilter('before', params['callback_namespace'], action),
+    after   : Paloma._getFilter('after', params['callback_namespace'], action),
+    around  : Paloma._getFilter('around', params['callback_namespace'], action)
+  };
+  
+  var controllerFilter = {
+    before  : Paloma._getFilter('before', controller, action),
+    after   : Paloma._getFilter('after', controller, action),
+    around  : Paloma._getFilter('around', controller, action)
+  };
+  
+  
+  // Start executions
+  if (namespaceFilter.before)   { namespaceFilter.before.perform(params); }
+  if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
+  if (controllerFilter.before)  { controllerFilter.before.perform(params); }
+  if (controllerFilter.around)  { controllerFilter.around.perform(params); }
   callback(params);
+  if (namespaceFilter.after)    { namespaceFilter.after.perform(params); }
+  if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
+  if (controllerFilter.after)   { controllerFilter.after.perform(params); }
+  if (controllerFilter.around)  { controllerFilter.around.perform(params); }
 };
 
-Paloma._filters = {};
+
+
+Paloma._filters = {'before' : {}, 'after' : {}, 'around' ; {}};
+
+
+Paloma._getFilter = function(type, namespace_or_controller_path, action){
+  var filter = Paloma._filters[type][namespace_or_controller_path];
+  if (filter === undefined){ return null; }
+  
+  var allActions = filter.actions == 'all',
+    isQualified = filter.exception == false && filter.actions.indexOf(action) != -1,
+    isExcepted = filter.exception == true && filter.actions.indexOf(action) != -1;
+    
+  if (allActions || isQualified || !isExcepted){ return filter; }
+  return null;
+};
+
 
 // Filter class
 Paloma.Filter = function(name){
@@ -42,32 +81,37 @@ Paloma.Filter = function(name){
 };
 
 
+Paloma.Filter.prototype.perform = function(params){
+  return this.func(params);
+};
+
+
 // Generate filter methods
 (function(){
   var Basic = function(type){
     return function(actions, func){
+      Paloma._filters[type][this.name] = this;
       this.type = type;
       this._setProperties(actions, func);
     };
   };
   
-  
   var All = function(type){
     return function(func){
+      Paloma._filters[type][this.name] = this;
       this.type = type;
       this._setProperties('all', func);
     };
   };
   
-  
   var Except = function(type){
     return function(actions, func){
+      Paloma._filters[type][this.name] = this;
       this.type = type;
       this.exception = true;
       this._setProperties(actions, func);
     };
   };
-
 
   var types = ['before', 'after', 'around'];
   for (var i = 0. n = types.length; i < n; i++){
