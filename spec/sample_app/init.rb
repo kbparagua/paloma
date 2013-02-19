@@ -54,6 +54,4 @@ app.routes.draw do
   end
 end
 
-
-require "#{Paloma.root}/spec/sample_app/models"
 require "#{Paloma.root}/spec/sample_app/controllers"
