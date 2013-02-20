@@ -29,29 +29,18 @@ Paloma.execute = function(controller, action, params){
   
   
   // Filters
-  var namespaceFilter = {
-    before  : Paloma._getFilter('before', params['callback_namespace'], action),
-    after   : Paloma._getFilter('after', params['callback_namespace'], action),
-    around  : Paloma._getFilter('around', params['callback_namespace'], action)
-  };
-  
-  var controllerFilter = {
-    before  : Paloma._getFilter('before', controller, action),
-    after   : Paloma._getFilter('after', controller, action),
-    around  : Paloma._getFilter('around', controller, action)
-  };
-  
   
   // Start executions
-  if (namespaceFilter.before)   { namespaceFilter.before.perform(params); }
-  if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
-  if (controllerFilter.before)  { controllerFilter.before.perform(params); }
-  if (controllerFilter.around)  { controllerFilter.around.perform(params); }
+  //Paloma._performFilters('before', params['callback_namespace'], action, params);
+  Paloma._performFilters('before', controller, action, params);
+  //if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
+  //if (controllerFilter.before)  { controllerFilter.before.perform(params); }
+  //if (controllerFilter.around)  { controllerFilter.around.perform(params); }
   callback(params);
-  if (namespaceFilter.after)    { namespaceFilter.after.perform(params); }
-  if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
-  if (controllerFilter.after)   { controllerFilter.after.perform(params); }
-  if (controllerFilter.around)  { controllerFilter.around.perform(params); }
+  //if (namespaceFilter.after)    { namespaceFilter.after.perform(params); }
+  //if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
+  //if (controllerFilter.after)   { controllerFilter.after.perform(params); }
+  ///if (controllerFilter.around)  { controllerFilter.around.perform(params); }
 };
 
 
@@ -59,26 +48,35 @@ Paloma.execute = function(controller, action, params){
 Paloma._filters = {'before' : {}, 'after' : {}, 'around' : {}};
 
 
-Paloma._getFilter = function(type, namespace_or_controller_path, action){
-  var filter = Paloma._filters[type][namespace_or_controller_path];
-  if (filter === undefined){ return null; }
-  
-  var allActions = filter.actions == 'all',
-    isQualified = filter.exception == false && filter.actions.indexOf(action) != -1,
-    isExcepted = filter.exception == true && filter.actions.indexOf(action) != -1;
-    
-  if (allActions || isQualified || !isExcepted){ return filter; }
-  return null;
+Paloma._performFilters = function(type, namespace_or_controller_path, action, params){
+  var filters = Paloma._filters[type][namespace_or_controller_path];
+  if (filters === undefined){ return null; }    
+
+  for (var filterName in filters){
+    var filter = filters[filterName];
+    if (Paloma.Filter._isApplicable(filter, action){ filter.perform(params); }
+  } 
 };
 
 
+
 // Filter class
-Paloma.Filter = function(name){
-  this.name = name;
+Paloma.Filter = function(scope){
+  this.scope = scope;
+  this.name = undefined;
   this.type = undefined;
   this.actions = undefined;
   this.func = undefined;
   this.exception = false;  
+};
+
+
+Paloma.Filter._isApplicable = function(filter, action){  
+  var allActions = filter.actions == 'all',
+    isQualified = filter.exception == false && filter.actions.indexOf(action) != -1,
+    isExcepted = filter.exception == true && filter.actions.indexOf(action) != -1;
+    
+  return (allActions || isQualified || !isExcepted);
 };
 
 
@@ -90,27 +88,24 @@ Paloma.Filter.prototype.perform = function(params){
 // Generate filter methods
 (function(){
   var Basic = function(type){
-    return function(actions, func){
-      Paloma._filters[type][this.name] = this;
-      this.type = type;
-      this._setProperties(actions, func);
+    return function(actions, name, func){
+      this._setProperties(type, actions, name, func);
+      this._addToFilters();
     };
   };
 
   var All = function(type){
-    return function(func){
-      Paloma._filters[type][this.name] = this;
-      this.type = type;
-      this._setProperties('all', func);
+    return function(name, func){
+      this._setProperties(type, 'all', name, func);
+      this._addToFilters();
     };
   };
   
   var Except = function(type){
-    return function(actions, func){
-      Paloma._filters[type][this.name] = this;
-      this.type = type;
+    return function(actions, name, func){
       this.exception = true;
-      this._setProperties(actions, func);
+      this._setProperties(actions, name, func);
+      this._addToFilters();
     };
   };
 
@@ -124,7 +119,16 @@ Paloma.Filter.prototype.perform = function(params){
 })();
 
 
-Paloma.Filter.prototype._setProperties = function(actions, func){
+
+Paloma.Filter.prototype._addToFilters = function(){
+  Paloma._filters[this.type][this.scope] = Paloma._filters[this.type][this.scope] || {};
+  Paloma._filters[this.type][this.scope][this.name] = this;
+};
+
+
+Paloma.Filter.prototype._setProperties = function(type, actions, name, func){
+  this.type = type;
+  this.name = name;
   this.actions = actions;
   this.func = func;
 };
@@ -132,6 +136,5 @@ Paloma.Filter.prototype._setProperties = function(actions, func){
 
 // API
 Paloma.filter = function(namespace_or_controller){
-  Paloma._filters[namespace_or_controller] = new Paloma.Filter(namespace_or_controller);
-  return Paloma._filters[namespace_or_controller];
+  return (new Paloma.Filter(namespace_or_controller));
 };
