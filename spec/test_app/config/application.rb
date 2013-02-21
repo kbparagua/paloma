@@ -8,6 +8,12 @@ require "active_resource/railtie"
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
+
+# Issue: Sprockets cannot find jquery
+# Solution: http://www.ruby-forum.com/topic/2484569
+require "jquery-rails"
+
+
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
   Bundler.require(*Rails.groups(:assets => %w(development test)))
