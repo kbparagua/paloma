@@ -16,5 +16,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails', ['~> 2.0']
   s.add_development_dependency 'generator_spec', ['~> 0.8.7']
   s.add_development_dependency 'capybara', ['>= 1.0']
-  s.add_development_dependency 'database_cleaner', ['>= 0']
 end
