@@ -54,7 +54,7 @@ Paloma._performFilters = function(type, namespace_or_controller_path, action, pa
 
   for (var filterName in filters){
     var filter = filters[filterName];
-    if (Paloma.Filter._isApplicable(filter, action){ filter.perform(params); }
+    if (Paloma.Filter._isApplicable(filter, action)){ filter.perform(params); }
   } 
 };
 
