@@ -61,14 +61,12 @@ Paloma._performFilters = function(type, namespace_or_controller_path, action, pa
 
 
 // FilterScope Class
-Paloma.FilterScope = function(name){ 
-  this.name = name; 
-  Paloma._filters[this.name] = {};    
-};
+Paloma.FilterScope = function(name){ this.name = name; };
 
 Paloma.FilterScope.prototype.as = function(filterName){
   return (new Paloma.Filter(this.name, filterName));
 };
+
 
 
 // Filter class
@@ -119,7 +117,6 @@ Paloma.Filter.prototype.perform = function(method){
 
 
 // Filter Helpers
-
 Paloma.Filter._isApplicable = function(filter, action){  
   var allActions = filter.actions == 'all',
     isQualified = filter.exception == false && filter.actions.indexOf(action) != -1,
