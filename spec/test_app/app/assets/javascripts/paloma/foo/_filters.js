@@ -1,7 +1,7 @@
 (function(){ var filter = new Paloma.FilterScope('foo');
   
   filter.as('filter A').
-  before('basic action').
+  before('basic action', 'callback_from_another_action').
   perform(function(params)
   {
     window.beforeFilter = 'foo/basic_action';

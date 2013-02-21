@@ -91,7 +91,7 @@ Paloma.Filter.prototype.perform = function(method){
 // Generate filter methods
 (function(){
   var Basic = function(type){
-    return function(actions){ return this._setProperties(type, actions); };
+    return function(){ return this._setProperties(type, arguments); };
   };
 
   var All = function(type){
@@ -99,9 +99,9 @@ Paloma.Filter.prototype.perform = function(method){
   };
   
   var Except = function(type){
-    return function(actions){
+    return function(){
       this.exception = true;
-      return this._setProperties(type, actions);
+      return this._setProperties(type, arguments);
     };
   };
 
@@ -133,7 +133,11 @@ Paloma.Filter.prototype._addToFilters = function(){
 
 
 Paloma.Filter.prototype._setProperties = function(type, actions){
+  // if all
+  if (typeof actions === 'string'){ this.actions = actions; }
+  // if arguments, convert to array
+  else { this.actions = Array.prototype.slice.call(actions); }
+  
   this.type = type;
-  this.actions = actions;
   return this;
 };
