@@ -39,8 +39,6 @@ module Paloma
         response.body = response_body[0]
       end
       
-      #puts response.body
-      
       clear_callbacks
     end
     
