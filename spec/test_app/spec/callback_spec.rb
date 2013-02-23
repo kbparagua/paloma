@@ -1,31 +1,46 @@
 require 'spec_helper'
 
-feature 'Callbacks', :js => true do
+describe 'Paloma callback', :type => :feature, :js => true do
 
-  specify 'callback == foo/basic_action' do
-    visit basic_action_foo_path
-    expect(page.evaluate_script('callback')).to eq('foo/basic_action')
+  context 'within a non-namespaced controller' do
+    context 'when js() is not directly invoked' do
+      it 'is ["request_controller"]["request_action"]' do
+        visit basic_action_foo_path
+        page.evaluate_script('callback').should eq "['foo']['basic_action']"
+      end
+    end
+    
+    
+    context 'when js(:action)' do
+      it 'is ["request_controller"][:action]' do
+        visit callback_from_another_action_foo_path
+        page.evaluate_script('callback').should eq "['foo']['basic_action']"
+      end
+    end
+    
+    
+    context 'when js(:controller => "controller", :action => "action")' do
+      it 'is ["controller"]["action"]' do 
+        visit callback_from_another_controller_foo_path
+        page.evaluate_script('callback').should eq "['bar']['basic_action']"
+      end
+    end
+    
+    
+    context 'when js(false)' do
+      it 'is not executed' do
+        visit skip_callback_foo_path
+        page.evaluate_script('window["callback"] === undefined').should be_true
+      end
+    end
   end
   
-  specify 'callback == foo/basic_action instead of foo/callback_from_another_action' do
-    visit callback_from_another_action_foo_path
-    expect(page.evaluate_script('callback')).to eq('foo/basic_action')
-  end
   
-  specify 'callback == bar/basic_action instead of foo/callback_from_another_controller' do
-    visit callback_from_another_controller_foo_path
-    expect(page.evaluate_script('callback')).to eq('bar/basic_action')
-  end
-  
-  specify 'callback == undefined instead of foo/skip_callback' do
-    visit skip_callback_foo_path
-    expect(page.evaluate_script('window["callback"] === undefined')).to eq(true)
-  end
-  
+=begin
   specify ('callback == sample_namespace/baz/basic_action instead of' + 
     'foo/callback_from_namespaced_controller') do
     visit callback_from_namespaced_controller_foo_path
     expect(page.evaluate_script('callback')).to eq('sample_namespace/baz/basic_action')
   end
- 
+=end 
 end

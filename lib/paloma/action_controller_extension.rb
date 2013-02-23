@@ -45,7 +45,7 @@ module Paloma
       params[:controller_path] = controller_path
       params[:action] = action_name
       
-      @__paloma_callback__ = callback.present? ? callback.merge({:params => params}) : nil 
+      @__paloma_callback__ = callback.present? ? callback.merge({:params => params}) : nil
     end 
   end
   
