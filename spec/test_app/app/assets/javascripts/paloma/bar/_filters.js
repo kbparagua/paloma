@@ -1,5 +1,6 @@
 // For testing only
-window.filtersExecuted = [];
+window.filtersExecuted = {before : [], after : []};
+
 
 (function(){ var filter = new Paloma.FilterScope('bar');
   
@@ -8,14 +9,14 @@ window.filtersExecuted = [];
   before('basic_action', 'another_basic_action').
   perform(function(params)
   {
-    filtersExecuted.push('Standard Before');
+    filtersExecuted.before.push('Standard Before');
   }); 
   
   
   filter.as('Before All').
   before_all().perform(function(params)
   {
-    filtersExecuted.push('Before All');
+    filtersExecuted.before.push('Before All');
   });
   
   
@@ -23,7 +24,7 @@ window.filtersExecuted = [];
   except_before('basic_action').
   perform(function(params)
   {
-    filtersExecuted.push('Except Before');
+    filtersExecuted.before.push('Except Before');
   });
   
   
@@ -32,14 +33,14 @@ window.filtersExecuted = [];
   after('basic_action', 'another_basic_action').
   perform(function(params)
   {
-    filtersExecuted.push('Standard After');
+    filtersExecuted.after.push('Standard After');
   });
   
   
   filter.as('After All').
   after_all().perform(function(params)
   {
-    filtersExecuted.push('After All');
+    filtersExecuted.after.push('After All');
   });
   
   
@@ -47,7 +48,34 @@ window.filtersExecuted = [];
   except_after('basic_action').
   perform(function(params)
   {
-    filtersExecuted.push('Except After');
+    filtersExecuted.after.push('Except After');
+  });
+  
+  
+  // Around
+  filter.as('Standard Around').
+  around('basic_action', 'another_basic_action').
+  perform(function(params)
+  {
+    var execution = window.callback ? 'after' : 'before';
+    filtersExecuted[execution].push('Standard Around');
+  });
+  
+  
+  filter.as('Around All').
+  around_all().perform(function(params)
+  {
+    var execution = window.callback ? 'after' : 'before';
+    filtersExecuted[execution].push('Around All');
+  });
+  
+  
+  filter.as('Except Around').
+  except_around('basic_action').
+  perform(function(params)
+  {
+    var execution = window.callback ? 'after' : 'before';
+    filtersExecuted[execution].push('Except Around');
   });
   
 })();

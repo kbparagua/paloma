@@ -31,16 +31,13 @@ Paloma.execute = function(controller, action, params){
   // Filters
   
   // Start executions
-  //Paloma._performFilters('before', params['callback_namespace'], action, params);
   Paloma._performFilters('before', controller, action, params);
-  //if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
-  //if (controllerFilter.before)  { controllerFilter.before.perform(params); }
-  //if (controllerFilter.around)  { controllerFilter.around.perform(params); }
+  Paloma._performFilters('around', controller, action, params);
+  
   if (callbackFound) { callback(params); }
-  //if (namespaceFilter.after)    { namespaceFilter.after.perform(params); }
-  //if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
+  
   Paloma._performFilters('after', controller, action, params);
-  ///if (controllerFilter.around)  { controllerFilter.around.perform(params); }
+  Paloma._performFilters('around', controller, action, params);
 };
 
 
