@@ -51,5 +51,66 @@ describe 'Callback params', :type => :feature, :js => true do
       :callback_action => 'basic_action',
       :callback_namespace => '',
       :callback_controller_path => 'foo'})
-  end    
+  end
+  
+  
+  context 'within a namespaced callback' do
+    before do
+      visit callback_from_another_action_sample_namespace_baz_path
+    end
+    
+    include_examples('check params', {
+      :controller => 'baz',
+      :action => 'callback_from_another_action',
+      :namespace => 'sample_namespace',
+      :controller_path => 'sample_namespace/baz',
+      :callback_controller => 'baz',
+      :callback_action => 'basic_action',
+      :callback_namespace => 'sample_namespace',
+      :callback_controller_path => 'sample_namespace/baz'}) 
+  end
+  
+  
+  context 'with passed parameter' do
+    before do
+      visit different_params_bar_path
+    end
+    
+    context 'of type TrueClass or FalseClass' do
+      it 'has the boolean equivalent' do
+        page.evaluate_script("params['boolean'] == true").should be_true
+      end
+    end
+    
+    context 'of type Array' do
+      it 'has the array equivalent' do
+        page.evaluate_script("JSON.stringify(params['array']) == JSON.stringify([1, 2, 3])").should be_true
+      end
+    end
+    
+    context 'of type String' do
+      it 'has the string equivalent' do
+        page.evaluate_script("params['string'] == 'Banana'").should be_true
+      end
+    end
+    
+    context 'of type Fixnum' do
+      it 'has the number equivalent' do
+        page.evaluate_script("params['integer'] == 69").should be_true
+      end
+    end
+    
+    context 'of type Float' do
+      it 'has the number equivalent' do
+        page.evaluate_script("params['float'] == 3.1416").should be_true
+      end
+    end
+    
+    context 'of type Hash' do
+      it 'has the object equivalent' do
+        page.evaluate_script(
+          "JSON.stringify(params['hash']) == JSON.stringify({a : 'Hello', b : 'World'})").should be_true
+      end
+    end
+  end
 end

@@ -13,6 +13,7 @@ TestApp::Application.routes.draw do
   resource :bar, :controller => 'bar' do
     collection do
       get :basic_action
+      get :different_params
     end
   end
   
