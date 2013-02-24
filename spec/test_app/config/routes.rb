@@ -14,6 +14,8 @@ TestApp::Application.routes.draw do
     collection do
       get :basic_action
       get :different_params
+      get :another_basic_action
+      get :yet_another_basic_action
     end
   end
   

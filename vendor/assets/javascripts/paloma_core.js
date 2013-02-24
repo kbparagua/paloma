@@ -3,13 +3,13 @@ window.Paloma = {callbacks:{}};
 // Execute callback that corresponds to the controller and action passed.
 Paloma.execute = function(controller, action, params){
   
-  // Stop execution if callback object for controller is not found.
+  var callbackFound = true;
+  
   var callback = Paloma.callbacks[controller];
-  if (callback === undefined || callback === null){ return false; }
+  if (callback === undefined || callback === null){ callbackFound = false; }
     
-  // Stop execution if a callback for action is not found.
   callback = callback[action];
-  if (callback === undefined || callback === null){ return false; }
+  if (callback === undefined || callback === null){ callbackFound = false; }
 
   
   // Parse parameters
@@ -36,10 +36,10 @@ Paloma.execute = function(controller, action, params){
   //if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
   //if (controllerFilter.before)  { controllerFilter.before.perform(params); }
   //if (controllerFilter.around)  { controllerFilter.around.perform(params); }
-  callback(params);
+  if (callbackFound) { callback(params); }
   //if (namespaceFilter.after)    { namespaceFilter.after.perform(params); }
   //if (namespaceFilter.around)   { namespaceFilter.around.perform(params); }
-  //if (controllerFilter.after)   { controllerFilter.after.perform(params); }
+  Paloma._performFilters('after', controller, action, params);
   ///if (controllerFilter.around)  { controllerFilter.around.perform(params); }
 };
 
@@ -120,9 +120,9 @@ Paloma.Filter.prototype.perform = function(method){
 Paloma.Filter._isApplicable = function(filter, action){  
   var allActions = filter.actions == 'all',
     isQualified = filter.exception == false && filter.actions.indexOf(action) != -1,
-    isExcepted = filter.exception == true && filter.actions.indexOf(action) != -1;
-    
-  return (allActions || isQualified || !isExcepted);
+    isNotExcepted = filter.exception == true && filter.actions.indexOf(action) == -1;
+  
+  return (allActions || isQualified || isNotExcepted);
 };
 
 

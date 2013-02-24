@@ -4,6 +4,16 @@ class BarController < ApplicationController
   end
   
   
+  def another_basic_action
+    render :inline => '<h1>Bar! Another Basic Action</h1>', :layout => 'application'
+  end
+  
+  
+  def yet_another_basic_action
+    render :inline => '<h1>Bar! Yet Another Basic Action</h1>', :layout => 'application'
+  end
+  
+  
   def different_params
     js :params => {
       :boolean => true, 
