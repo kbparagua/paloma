@@ -23,6 +23,8 @@ TestApp::Application.routes.draw do
     resource :baz, :controller => 'baz' do
       collection do
         get :basic_action
+        get :another_basic_action
+        get :yet_another_basic_action
         get :callback_from_another_action
       end
     end

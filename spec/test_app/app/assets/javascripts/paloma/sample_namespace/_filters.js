@@ -2,21 +2,21 @@
 window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
 
 
-(function(){ var filter = new Paloma.FilterScope('bar');
+(function(){ var filter = new Paloma.FilterScope('sample_namespace');
   
   // Before
   filter.as('Standard Before').
   before('basic_action', 'another_basic_action').
   perform(function(params)
   {
-    filtersExecuted.before.push('Standard Before');
+    filtersExecuted.before.push('Namespaced Standard Before');
   }); 
   
   
   filter.as('Before All').
   before_all().perform(function(params)
   {
-    filtersExecuted.before.push('Before All');
+    filtersExecuted.before.push('Namespaced Before All');
   });
   
   
@@ -24,7 +24,7 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
   except_before('basic_action').
   perform(function(params)
   {
-    filtersExecuted.before.push('Except Before');
+    filtersExecuted.before.push('Namespaced Except Before');
   });
   
   
@@ -33,14 +33,14 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
   after('basic_action', 'another_basic_action').
   perform(function(params)
   {
-    filtersExecuted.after.push('Standard After');
+    filtersExecuted.after.push('Namespaced Standard After');
   });
   
   
   filter.as('After All').
   after_all().perform(function(params)
   {
-    filtersExecuted.after.push('After All');
+    filtersExecuted.after.push('Namespaced After All');
   });
   
   
@@ -48,7 +48,7 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
   except_after('basic_action').
   perform(function(params)
   {
-    filtersExecuted.after.push('Except After');
+    filtersExecuted.after.push('Namespaced Except After');
   });
   
   
@@ -58,7 +58,7 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
   perform(function(params)
   {
     var execution = window.callback ? 'after' : 'before';
-    filtersExecuted[execution].push('Standard Around');
+    filtersExecuted[execution].push('Namespaced Standard Around');
   });
   
   
@@ -66,7 +66,7 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
   around_all().perform(function(params)
   {
     var execution = window.callback ? 'after' : 'before';
-    filtersExecuted[execution].push('Around All');
+    filtersExecuted[execution].push('Namespaced Around All');
   });
   
   
@@ -75,7 +75,7 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
   perform(function(params)
   {
     var execution = window.callback ? 'after' : 'before';
-    filtersExecuted[execution].push('Except Around');
+    filtersExecuted[execution].push('Namespaced Except Around');
   });
   
 })();

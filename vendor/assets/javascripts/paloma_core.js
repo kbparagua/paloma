@@ -28,9 +28,12 @@ Paloma.execute = function(controller, action, params){
   params['callback_action'] = action;
   
   
-  // Filters
-  
   // Start executions
+  if (params['callback_namespace'] != ''){
+    Paloma._performFilters('before', params['callback_namespace'], action, params);
+    Paloma._performFilters('around', params['callback_namespace'], action, params);
+  }
+  
   Paloma._performFilters('before', controller, action, params);
   Paloma._performFilters('around', controller, action, params);
   
@@ -38,6 +41,11 @@ Paloma.execute = function(controller, action, params){
   
   Paloma._performFilters('after', controller, action, params);
   Paloma._performFilters('around', controller, action, params);
+  
+  if (params['callback_namespace'] != ''){
+    Paloma._performFilters('after', params['callback_namespace'], action, params);
+    Paloma._performFilters('around', params['callback_namespace'], action, params);
+  }
 };
 
 
