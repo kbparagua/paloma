@@ -54,9 +54,11 @@ Paloma._filters = {'before' : {}, 'after' : {}, 'around' : {}};
 
 
 Paloma._performFilters = function(type, namespace_or_controller_path, action, params){
+  console.log("Trying to perform [" + type + "] filters for " + namespace_or_controller_path)
   var filters = Paloma._filters[type][namespace_or_controller_path];
   if (filters === undefined){ return null; }    
 
+  console.log(filters);
   for (var filterName in filters){
     var filter = filters[filterName];
     if (Paloma.Filter._isApplicable(filter, action)){ filter.method(params); }
