@@ -4,27 +4,46 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
 
 (function(){ var filter = new Paloma.FilterScope('sample_namespace');
   
-  // To-Be-Skipped Filters
-  var types = ['Before', 'After', 'Around'];
-  for (var i = 0, n = types.length; i < n; i++){
-    var skipTypes = ['All', 'Only', 'Except'];
-    for (var j = 0, len = skipTypes.length; j < len; j++){
-      var name = skipTypes[j] + ' - Skip This ' + types[i] +' Filter';
-
-      filter.as(name).
-      before_all().perform(function(params){
-        filtersExecuted.before.push(name);
-      });  
-    }
-  }
+  // To-Be-Skipped Before Filters
+  filter.as('All - Skip This Before Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('All - Skip This Before Filter');
+  });
   
-
-
-  filter.as('Skip This After Filter').
-  after_all().perform(function(params){
-    filtersExecuted.before.push('Skip This Filter Please');
+  filter.as('Only - Skip This Before Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('Only - Skip This Before Filter');
   });
 
+  filter.as('Except - Skip This Before Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('Except - Skip This Before Filter');
+  });
+
+
+  // To-Be-Skipped After Filters
+  filter.as('All - Skip This After Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('All - Skip This After Filter');
+  });
+  
+  filter.as('Only - Skip This After Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('Only - Skip This After Filter');
+  });
+
+  filter.as('Except - Skip This After Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('Except - Skip This After Filter');
+  });
+
+
+  // To-Be-Skipped Around Filters
+  filter.as('All - Skip This Around Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('All - Skip This Around Filter');
+  });
+  
+  filter.as('Only - Skip This Around Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('Only - Skip This Around Filter');
+  });
+
+  filter.as('Except - Skip This Around Filter').before_all().perform(function(params){
+    filtersExecuted.before.push('Except - Skip This Around Filter');
+  });
 
   // Before
   filter.as('Namespaced Standard Before').

@@ -104,9 +104,54 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
     include_examples 'except', {:name => 'Around', :type => 'after', :method => '#except_around',
       :namespaced => namespaced}
   end
-  
-  
+
+
+
+  shared_examples 'skip filters' do |type|
+    name = type.titleize
+    filter = "- Skip This #{name} Filter"
+
+    describe "#skip_#{type}_filter" do
+      context 'when not appended with #only or #expect' do
+        it "skips passed #{type} filters for all actions" do
+          visit basic_action_sample_namespace_baz_path
+          page.evaluate_script("filtersExecuted.#{type}").should_not include "All #{filter}"
+        end
+      end
+
+      context 'with #only' do
+        it "skips passed #{type} filters for actions passed on #only" do
+          visit another_basic_action_sample_namespace_baz_path
+          page.evaluate_script("filtersExecuted.#{type}").should_not include "Only #{filter}"
+        end
+
+        it "performs passed #{type} filters for actions not passed on #only" do
+          visit basic_action_sample_namespace_baz_path
+          page.evaluate_script("filtersExecuted.#{type}").should include "Only #{filter}"
+        end
+      end
+
+      context 'with #except' do
+        it "skips passed #{type} filters for actions not passed on #except" do
+          visit yet_another_basic_action_sample_namespace_baz_path
+          page.evaluate_script("filtersExecuted.#{type}").should_not include "Except #{filter}"
+        end
+
+        it "performs passed #{type} filters for actions passed on #except" do
+          visit another_basic_action_sample_namespace_baz_path
+          page.evaluate_script("filtersExecuted.#{type}").should include "Except #{filter}"
+        end
+      end
+    end  
+  end
+
+
+
   # Testing starts here
   include_examples 'filters', false # non-namespaced filters
-  include_examples 'filters', true  # namespaced filters   
+  include_examples 'filters', true  # namespaced filters
+
+  include_examples 'skip filters', 'before'
+  include_examples 'skip filters', 'after'
+  include_examples 'skip filters', 'around'
 end
