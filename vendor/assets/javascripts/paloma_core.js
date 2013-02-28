@@ -43,7 +43,7 @@ Paloma.execute = function(controller, action, params){
 
 
 Paloma._filters = {'before' : {}, 'after' : {}, 'around' : {}};
-
+Paloma._scopes = {};
 
 Paloma._getOrderedFilters = function(before_or_after, namespace, controller, action){
   var namespaceFilters = Paloma._filters[before_or_after][namespace], 
@@ -82,11 +82,34 @@ Paloma._performFilters = function(filters, params){
 
 
 // FilterScope Class
-Paloma.FilterScope = function(name){ this.name = name; };
+Paloma.FilterScope = function(name){ 
+  this.name = name; 
+  this.skipFilters = [];
+  this.skipFilterType = undefined;
+  this.skipType = 'all';
+  
+  Paloma._scopes[name] = this;
+};
 
 Paloma.FilterScope.prototype.as = function(filterName){
   return (new Paloma.Filter(this.name, filterName));
 };
+
+// skip_*_filter methods
+(function(){
+  var types = ['before', 'after', 'around'];
+  for (var i = 0, n = types.length; i < n; i++){
+    var type = types[i];
+    Paloma.FilterScope.prototype['skip_' + type + '_filter'] = function(){
+      this.skipFilterType = type;
+      this.skipFilters = Array.prototype.slice.call(arguments);
+      return this;
+    };
+  }
+})();
+
+Paloma.FilterScope.prototype.only = function(){ this.skipType = 'only'; };
+Paloma.FilterScope.prototype.except = function(){ this.skipType = 'except'; };
 
 
 
