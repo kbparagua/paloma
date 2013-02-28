@@ -61,7 +61,7 @@ Paloma._getOrderedFilters = function(before_or_after, namespace, controller, act
 
   if (controllerFilters !== undefined){
     controllerFilters = controllerFilters.concat(Paloma._filters['around'][controller] || []);
-    
+
     // Select applicable filters for the passed action
     for (var i = 0, n = controllerFilters.length; i < n; i++){
       var filter = controllerFilters[i];
@@ -87,7 +87,7 @@ Paloma.FilterScope = function(name){
   this.skipFilters = [];
   this.skipFilterType = undefined;
   this.skipType = 'all';
-  
+
   Paloma._scopes[name] = this;
 };
 
