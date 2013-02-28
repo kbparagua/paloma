@@ -48,9 +48,7 @@ Paloma._filters = {'before' : {}, 'after' : {}, 'around' : {}};
 Paloma._getOrderedFilters = function(before_or_after, namespace, controller, action){
   var namespaceFilters = Paloma._filters[before_or_after][namespace], 
     controllerFilters = Paloma._filters[before_or_after][controller],
-    orderedFilters = [];
-
-    console.log(controllerFilters);
+    filters = [];
 
   // Prepend namespace filters on controller filters.
   // Namespace filters must be executed first before controller filters.
@@ -67,8 +65,7 @@ Paloma._getOrderedFilters = function(before_or_after, namespace, controller, act
     // Select applicable filters for the passed action
     for (var i = 0, n = controllerFilters.length; i < n; i++){
       var filter = controllerFilters[i];
-      // REFACTOR! _isApplicable is design badly, make it an instance method!
-      if (Paloma.Filter._isApplicable(filter, action)){ filters.push(filter); }
+      if (filter._isApplicable(action)){ filters.push(filter); }
     }
   }
 
@@ -106,11 +103,27 @@ Paloma.Filter = function(scope, name){
 };
 
 
-// Mutators
+// This will be the last method to be invoked when declaring a filter.
+// This will set what method/function will be executed when the filter is called.
 Paloma.Filter.prototype.perform = function(method){ 
   this.method = method;
-  this._addToFilters();
+
+  // This is the only time the filter is registered.
+  Paloma._filters[this.type][this.scope] = Paloma._filters[this.type][this.scope] || [];
+  Paloma._filters[this.type][this.scope].push(this);
+
   return this;
+};
+
+
+// Returns a boolean value indicating wether this filter is applicable
+// on the passed action.
+Paloma.Filter.prototype._isApplicable = function(action){
+  var allActions = this.actions == 'all',
+    isQualified = this.exception == false && this.actions.indexOf(action) != -1,
+    isNotExcepted = this.exception == true && this.actions.indexOf(action) == -1;
+  
+  return (allActions || isQualified || isNotExcepted);
 };
 
 
@@ -139,23 +152,6 @@ Paloma.Filter.prototype.perform = function(method){
     Paloma.Filter.prototype['except_' + type] = new Except(type);
   }
 })();
-
-
-
-// Filter Helpers
-Paloma.Filter._isApplicable = function(filter, action){  
-  var allActions = filter.actions == 'all',
-    isQualified = filter.exception == false && filter.actions.indexOf(action) != -1,
-    isNotExcepted = filter.exception == true && filter.actions.indexOf(action) == -1;
-  
-  return (allActions || isQualified || isNotExcepted);
-};
-
-
-Paloma.Filter.prototype._addToFilters = function(){
-  Paloma._filters[this.type][this.scope] = Paloma._filters[this.type][this.scope] || {};
-  Paloma._filters[this.type][this.scope][this.name] = this;
-};
 
 
 Paloma.Filter.prototype._setProperties = function(type, actions){
