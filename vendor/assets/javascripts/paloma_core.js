@@ -29,23 +29,15 @@ Paloma.execute = function(controller, action, params){
   
   
   // Start executions
-  if (params['callback_namespace'] != ''){
-    Paloma._performFilters('before', params['callback_namespace'], action, params);
-    Paloma._performFilters('around', params['callback_namespace'], action, params);
-  }
-  
-  Paloma._performFilters('before', controller, action, params);
-  Paloma._performFilters('around', controller, action, params);
-  
+  var beforeFilters = Paloma._getOrderedFilters('before', 
+    params['callback_namespace'], controller, action);
+
+  var afterFilters = Paloma._getOrderedFilters('after',
+    params['callback_namespace'], controller, action);
+
+  Paloma._performFilters(beforeFilters);
   if (callbackFound) { callback(params); }
-  
-  Paloma._performFilters('after', controller, action, params);
-  Paloma._performFilters('around', controller, action, params);
-  
-  if (params['callback_namespace'] != ''){
-    Paloma._performFilters('after', params['callback_namespace'], action, params);
-    Paloma._performFilters('around', params['callback_namespace'], action, params);
-  }
+  Paloma._performFilters(afterFilters);
 };
 
 
@@ -53,16 +45,43 @@ Paloma.execute = function(controller, action, params){
 Paloma._filters = {'before' : {}, 'after' : {}, 'around' : {}};
 
 
-Paloma._performFilters = function(type, namespace_or_controller_path, action, params){
-  console.log("Trying to perform [" + type + "] filters for " + namespace_or_controller_path)
-  var filters = Paloma._filters[type][namespace_or_controller_path];
-  if (filters === undefined){ return null; }    
+Paloma._getOrderedFilters = function(before_or_after, namespace, controller, action){
+  var namespaceFilters = Paloma._filters[before_or_after][namespace], 
+    controllerFilters = Paloma._filters[before_or_after][controller],
+    orderedFilters = [];
 
-  console.log(filters);
-  for (var filterName in filters){
-    var filter = filters[filterName];
-    if (Paloma.Filter._isApplicable(filter, action)){ filter.method(params); }
-  } 
+    console.log(controllerFilters);
+
+  // Prepend namespace filters on controller filters.
+  // Namespace filters must be executed first before controller filters.
+  if (namespaceFilters !== undefined){
+    // Around filters has lower precedence than before and after filters
+    namspaceFilters = namespaceFilters.concat(Paloma._filters['around'][namespace] || []);
+    namespaceFilters = namespaceFilters.concat(controllerFilters || []);
+    controllerFilters = namespaceFilters;
+  }
+
+  if (controllerFilters !== undefined){
+    controllerFilters = controllerFilters.concat(Paloma._filters['around'][namespace] || []);
+    
+    // Select applicable filters for the passed action
+    for (var i = 0, n = controllerFilters.length; i < n; i++){
+      var filter = controllerFilters[i];
+      // REFACTOR! _isApplicable is design badly, make it an instance method!
+      if (Paloma.Filter._isApplicable(filter, action)){ filters.push(filter); }
+    }
+  }
+
+  return filters.length == 0 ? undefined : filters;
+};
+
+
+Paloma._performFilters = function(filters, params){
+  if (filters !== undefined){
+    for (var i = 0, n = filters.length; i < n; i++){
+      filters[i].method(params);
+    }
+  }  
 };
 
 
