@@ -151,7 +151,7 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
   include_examples 'filters', false # non-namespaced filters
   include_examples 'filters', true  # namespaced filters
 
-  include_examples 'skip filters', 'before'
-  include_examples 'skip filters', 'after'
-  include_examples 'skip filters', 'around'
+  #include_examples 'skip filters', 'before'
+  #include_examples 'skip filters', 'after'
+  #include_examples 'skip filters', 'around'
 end

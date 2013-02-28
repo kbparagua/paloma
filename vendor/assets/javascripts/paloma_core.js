@@ -54,13 +54,13 @@ Paloma._getOrderedFilters = function(before_or_after, namespace, controller, act
   // Namespace filters must be executed first before controller filters.
   if (namespaceFilters !== undefined){
     // Around filters has lower precedence than before and after filters
-    namspaceFilters = namespaceFilters.concat(Paloma._filters['around'][namespace] || []);
+    namespaceFilters = namespaceFilters.concat(Paloma._filters['around'][namespace] || []);
     namespaceFilters = namespaceFilters.concat(controllerFilters || []);
     controllerFilters = namespaceFilters;
   }
 
   if (controllerFilters !== undefined){
-    controllerFilters = controllerFilters.concat(Paloma._filters['around'][namespace] || []);
+    controllerFilters = controllerFilters.concat(Paloma._filters['around'][controller] || []);
     
     // Select applicable filters for the passed action
     for (var i = 0, n = controllerFilters.length; i < n; i++){
@@ -69,16 +69,14 @@ Paloma._getOrderedFilters = function(before_or_after, namespace, controller, act
     }
   }
 
-  return filters.length == 0 ? undefined : filters;
+  return filters;
 };
 
 
 Paloma._performFilters = function(filters, params){
-  if (filters !== undefined){
-    for (var i = 0, n = filters.length; i < n; i++){
-      filters[i].method(params);
-    }
-  }  
+  for (var i = 0, n = filters.length; i < n; i++){
+    filters[i].method(params);
+  }
 };
 
 
