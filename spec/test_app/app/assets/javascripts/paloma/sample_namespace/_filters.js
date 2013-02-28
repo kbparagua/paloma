@@ -4,6 +4,28 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
 
 (function(){ var filter = new Paloma.FilterScope('sample_namespace');
   
+  // To-Be-Skipped Filters
+  var types = ['Before', 'After', 'Around'];
+  for (var i = 0, n = types.length; i < n; i++){
+    var skipTypes = ['All', 'Only', 'Except'];
+    for (var j = 0, len = skipTypes.length; j < len; j++){
+      var name = skipTypes[j] + ' - Skip This ' + types[i] +' Filter';
+
+      filter.as(name).
+      before_all().perform(function(params){
+        filtersExecuted.before.push(name);
+      });  
+    }
+  }
+  
+
+
+  filter.as('Skip This After Filter').
+  after_all().perform(function(params){
+    filtersExecuted.before.push('Skip This Filter Please');
+  });
+
+
   // Before
   filter.as('Namespaced Standard Before').
   before('basic_action', 'another_basic_action').

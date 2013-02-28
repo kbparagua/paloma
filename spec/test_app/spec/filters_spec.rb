@@ -108,5 +108,5 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
   
   # Testing starts here
   include_examples 'filters', false # non-namespaced filters
-  # include_examples 'filters', true  # namespaced filters   
+  include_examples 'filters', true  # namespaced filters   
 end
