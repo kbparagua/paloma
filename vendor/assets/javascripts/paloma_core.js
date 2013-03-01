@@ -1,16 +1,146 @@
+(function(){
 window.Paloma = {callbacks:{}};
+Paloma.filterScopes = {};
+
+var FILTER_TYPES = {},
+  FILTER_TYPES.BEFORE = 0,
+  FILTER_TYPES.AFTER = 1,
+  FILTER_TYPES.AROUND = 2,
+  FILTER_TYPE_NAMES = ['BEFORE', 'AFTER', 'AROUND'],
+  INCLUSION_TYPES = {},
+  INCLUSION_TYPES.ALL = 3,
+  INCLUSION_TYPES.ONLY = 4,
+  INCLUSION_TYPES.EXCEPT = 5,
+  INCLUSION_TYPE_NAMES = ['ALL', 'ONLY', 'EXCEPT'];
+
+
+Paloma.FilterScope = function(name){ 
+  this.name = name;
+  
+  this.filters = {};
+  this.filters[FILTER_TYPES.BEFORE] = [];
+  this.filters[FILTER_TYPES.AFTER] = [];
+  this.filters[FILTER_TYPES.AROUND] = [];
+
+  this.skipFilters = [];
+  this.skipFilterType = undefined;
+  this.skipType = INCLUSION_TYPES.ALL;
+
+  Paloma.filterScopes[name] = this;
+};
+
+
+// Creates a new Filter instance registered under this FilterScope.
+Paloma.FilterScope.prototype.as = function(filterName){
+  return (new Paloma.Filter(this, filterName));
+};
+
+
+// skip_*_filter methods
+(function(){
+  for (var i = 0, n = FILTER_TYPE_NAMES.length; i < n; i++){
+    var type = types[i],
+      method = 'skip_' + type.toLowerCase() + '_filter';
+
+    Paloma.FilterScope.prototype[method] = function(){
+      this.skipFilterType = FILTER_TYPES[type];
+      this.skipFilters = Array.prototype.slice.call(arguments);
+      return this;
+    };
+  }
+})();
+
+Paloma.FilterScope.prototype.only = function(){ 
+  this.skipType = INCLUSION_TYPES.ONLY; 
+};
+
+Paloma.FilterScope.prototype.except = function(){ 
+  this.skipType = INCLUSION_TYPES.EXCEPT; 
+};
+
+
+
+// Filter class
+Paloma.Filter = function(scope, name){
+  this.scope = scope;
+  this.name = name;
+
+  this.type = undefined;
+  this.inclusionType = INCLUSION_TYPES.ONLY;
+
+  this.actions = [];
+  this.method = undefined;
+};
+
+
+// Create Methods:
+//  - before, after, around, *_all, except_*
+var Basic = function(type){ 
+  return function(){ 
+    return this.setProperties(type, INCLUSION_TYPES.ONLY, arguments); 
+  };
+};
+
+var All = function(type){
+  return function(){ 
+    return this.setProperties(type, INCLUSION_TYPES.ALL, []);
+  };
+};
+
+var Except = function(type){
+  return function(){
+    return this.setProperties(type, INCLUSION_TYPES.EXCEPT, arguments);
+  };
+};
+
+for (var i = 0, n = FILTER_TYPES.length; i < n; i++){
+  var type = types[i].toLowerCase();
+  Paloma.Filter.prototype[type] = new Basic(type);
+  Paloma.Filter.prototype[type + '_all'] = new All(type);
+  Paloma.Filter.prototype['except_' + type] = new Except(type);
+}
+// End of creating methods.
+
+
+// This will be the last method to be invoked when declaring a filter.
+// This will set what method/function will be executed when the filter is called.
+Paloma.Filter.prototype.perform = function(method){ 
+  this.method = method;
+
+  // This is the only time the filter is registered to its owner scope.  
+  this.scope.filters[this.type].push(this);
+  return this;
+};
+
+
+Paloma.Filter.prototype.isApplicable = function(action){
+  var isAllActions = this.type == FILTER_TYPES.ALL, 
+    isQualified = this.type == FILTER_TYPES.ONLY && this.actions.indexOf(action) != -1,
+    isNotExcepted = this.type == FILTER_TYPES.EXCEPT && this.actions.indexOf(action) == -1;
+  
+  return (isAllActions || isQualified || isNotExcepted);
+};
+
+
+Paloma.Filter.prototype.setProperties = function(type, inclusion, actions){
+  this.type = type;
+  this.inclusionType = inclusion;
+  this.actions = Array.prototype.slice.call(actions);
+  return this;
+};
+
+
+
 
 // Execute callback that corresponds to the controller and action passed.
 Paloma.execute = function(controller, action, params){
-  
   var callbackFound = true;
   
   var callback = Paloma.callbacks[controller];
-  if (callback === undefined || callback === null){ callbackFound = false; }
-    
+  callbackFound = callback != undefined);
+  
   callback = callback[action];
-  if (callback === undefined || callback === null){ callbackFound = false; }
-
+  callbackFound = callback != undefined;
   
   // Parse parameters
   params = params || {};
@@ -27,26 +157,28 @@ Paloma.execute = function(controller, action, params){
   params['callback_controller_path'] = controller;
   params['callback_action'] = action;
   
-  
-  // Start executions
-  var beforeFilters = Paloma._getOrderedFilters('before', 
-    params['callback_namespace'], controller, action);
 
-  var afterFilters = Paloma._getOrderedFilters('after',
-    params['callback_namespace'], controller, action);
+  var beforeFilters = getOrderedFilters(
+    FILTER_TYPES.BEFORE, 
+    params['callback_namespace'], 
+    controller, 
+    action);
 
-  Paloma._performFilters(beforeFilters);
-  if (callbackFound) { callback(params); }
-  Paloma._performFilters(afterFilters);
+  var afterFilters = getOrderedFilters(
+    FITLER_TYPES.AFTER,
+    params['callback_namespace'],
+    controller,
+    action);
+
+  // Start filter and callback executions
+  performFilters(beforeFilters);
+  if (callbackFound){ callback(params); }
+  performFilters(afterFilters);
 };
 
 
-
-Paloma._filters = {'before' : {}, 'after' : {}, 'around' : {}};
-Paloma._scopes = {};
-
-Paloma._getOrderedFilters = function(before_or_after, namespace, controller, action){
-  var namespaceFilters = Paloma._filters[before_or_after][namespace], 
+var getOrderedFilters = function(before_or_after, namespace, controller, action){
+  var namespaceFilters = Paloma.filterScopes[namespace],
     controllerFilters = Paloma._filters[before_or_after][controller],
     filters = [];
 
@@ -73,114 +205,11 @@ Paloma._getOrderedFilters = function(before_or_after, namespace, controller, act
 };
 
 
-Paloma._performFilters = function(filters, params){
+var performFilters = function(filters, params){
   for (var i = 0, n = filters.length; i < n; i++){
     filters[i].method(params);
   }
 };
 
 
-
-// FilterScope Class
-Paloma.FilterScope = function(name){ 
-  this.name = name; 
-  this.skipFilters = [];
-  this.skipFilterType = undefined;
-  this.skipType = 'all';
-
-  Paloma._scopes[name] = this;
-};
-
-Paloma.FilterScope.prototype.as = function(filterName){
-  return (new Paloma.Filter(this.name, filterName));
-};
-
-// skip_*_filter methods
-(function(){
-  var types = ['before', 'after', 'around'];
-  for (var i = 0, n = types.length; i < n; i++){
-    var type = types[i];
-    Paloma.FilterScope.prototype['skip_' + type + '_filter'] = function(){
-      this.skipFilterType = type;
-      this.skipFilters = Array.prototype.slice.call(arguments);
-      return this;
-    };
-  }
 })();
-
-Paloma.FilterScope.prototype.only = function(){ this.skipType = 'only'; };
-Paloma.FilterScope.prototype.except = function(){ this.skipType = 'except'; };
-
-
-
-// Filter class
-Paloma.Filter = function(scope, name){
-  this.scope = scope;
-  this.name = name;
-  this.type = undefined;
-  this.actions = undefined;
-  this.method = undefined;
-  this.exception = false;  
-};
-
-
-// This will be the last method to be invoked when declaring a filter.
-// This will set what method/function will be executed when the filter is called.
-Paloma.Filter.prototype.perform = function(method){ 
-  this.method = method;
-
-  // This is the only time the filter is registered.
-  Paloma._filters[this.type][this.scope] = Paloma._filters[this.type][this.scope] || [];
-  Paloma._filters[this.type][this.scope].push(this);
-
-  return this;
-};
-
-
-// Returns a boolean value indicating wether this filter is applicable
-// on the passed action.
-Paloma.Filter.prototype._isApplicable = function(action){
-  var allActions = this.actions == 'all',
-    isQualified = this.exception == false && this.actions.indexOf(action) != -1,
-    isNotExcepted = this.exception == true && this.actions.indexOf(action) == -1;
-  
-  return (allActions || isQualified || isNotExcepted);
-};
-
-
-// Generate filter methods
-(function(){
-  var Basic = function(type){
-    return function(){ return this._setProperties(type, arguments); };
-  };
-
-  var All = function(type){
-    return function(){ return this._setProperties(type, 'all'); };
-  };
-  
-  var Except = function(type){
-    return function(){
-      this.exception = true;
-      return this._setProperties(type, arguments);
-    };
-  };
-
-  var types = ['before', 'after', 'around'];
-  for (var i = 0, n = types.length; i < n; i++){
-    var type = types[i];
-    Paloma.Filter.prototype[type] = new Basic(type);
-    Paloma.Filter.prototype[type + '_all'] = new All(type);
-    Paloma.Filter.prototype['except_' + type] = new Except(type);
-  }
-})();
-
-
-Paloma.Filter.prototype._setProperties = function(type, actions){
-  // if all
-  if (typeof actions === 'string'){ this.actions = actions; }
-  // if arguments, convert to array
-  else { this.actions = Array.prototype.slice.call(actions); }
-  
-  this.type = type;
-  return this;
-};
