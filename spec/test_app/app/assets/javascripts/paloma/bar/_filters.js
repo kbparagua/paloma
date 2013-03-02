@@ -10,7 +10,7 @@ window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
   perform(function(params)
   {
     filtersExecuted.before.push('Standard Before');
-  }); 
+  });
   
   
   filter.as('Before All').

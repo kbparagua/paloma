@@ -3,15 +3,18 @@ window.Paloma = {callbacks:{}};
 Paloma.filterScopes = {};
 
 var FILTER_TYPES = {},
-  FILTER_TYPES.BEFORE = 0,
-  FILTER_TYPES.AFTER = 1,
-  FILTER_TYPES.AROUND = 2,
   FILTER_TYPE_NAMES = ['BEFORE', 'AFTER', 'AROUND'],
   INCLUSION_TYPES = {},
-  INCLUSION_TYPES.ALL = 3,
-  INCLUSION_TYPES.ONLY = 4,
-  INCLUSION_TYPES.EXCEPT = 5,
   INCLUSION_TYPE_NAMES = ['ALL', 'ONLY', 'EXCEPT'];
+
+FILTER_TYPES.BEFORE = 0;
+FILTER_TYPES.AFTER = 1;
+FILTER_TYPES.AROUND = 2;
+
+INCLUSION_TYPES.ALL = 3;
+INCLUSION_TYPES.ONLY = 4;
+INCLUSION_TYPES.EXCEPT = 5;
+  
 
 
 Paloma.FilterScope = function(name){ 
@@ -39,7 +42,7 @@ Paloma.FilterScope.prototype.as = function(filterName){
 // skip_*_filter methods
 (function(){
   for (var i = 0, n = FILTER_TYPE_NAMES.length; i < n; i++){
-    var type = types[i],
+    var type = FILTER_TYPE_NAMES[i],
       method = 'skip_' + type.toLowerCase() + '_filter';
 
     Paloma.FilterScope.prototype[method] = function(){
@@ -75,6 +78,7 @@ Paloma.Filter = function(scope, name){
 
 // Create Methods:
 //  - before, after, around, *_all, except_*
+(function(){
 var Basic = function(type){ 
   return function(){ 
     return this.setProperties(type, INCLUSION_TYPES.ONLY, arguments); 
@@ -93,18 +97,21 @@ var Except = function(type){
   };
 };
 
-for (var i = 0, n = FILTER_TYPES.length; i < n; i++){
-  var type = types[i].toLowerCase();
-  Paloma.Filter.prototype[type] = new Basic(type);
-  Paloma.Filter.prototype[type + '_all'] = new All(type);
-  Paloma.Filter.prototype['except_' + type] = new Except(type);
+for (var i = 0, n = FILTER_TYPE_NAMES.length; i < n; i++){
+  var name = FILTER_TYPE_NAMES[i].toLowerCase(),
+    type = FILTER_TYPES[name.toUpperCase()];
+
+  Paloma.Filter.prototype[name] = new Basic(type);
+  Paloma.Filter.prototype[name + '_all'] = new All(type);
+  Paloma.Filter.prototype['except_' + name] = new Except(type);
 }
+})();
 // End of creating methods.
 
 
 // This will be the last method to be invoked when declaring a filter.
 // This will set what method/function will be executed when the filter is called.
-Paloma.Filter.prototype.perform = function(method){ 
+Paloma.Filter.prototype.perform = function(method){
   this.method = method;
 
   // This is the only time the filter is registered to its owner scope.  
@@ -114,10 +121,14 @@ Paloma.Filter.prototype.perform = function(method){
 
 
 Paloma.Filter.prototype.isApplicable = function(action){
-  var isAllActions = this.type == FILTER_TYPES.ALL, 
-    isQualified = this.type == FILTER_TYPES.ONLY && this.actions.indexOf(action) != -1,
-    isNotExcepted = this.type == FILTER_TYPES.EXCEPT && this.actions.indexOf(action) == -1;
+  var isAllActions = this.inclusionType == INCLUSION_TYPES.ALL, 
+    isQualified = this.inclusionType == INCLUSION_TYPES.ONLY && this.actions.indexOf(action) != -1,
+    isNotExcepted = this.inclusionType == INCLUSION_TYPES.EXCEPT && this.actions.indexOf(action) == -1;
   
+  console.log('isAllActions = ' + isAllActions);
+  console.log('isQualified = ' + isQualified);
+  console.log('isNotExcepted = ' + isNotExcepted);
+
   return (isAllActions || isQualified || isNotExcepted);
 };
 
@@ -137,7 +148,7 @@ Paloma.execute = function(controller, action, params){
   var callbackFound = true;
   
   var callback = Paloma.callbacks[controller];
-  callbackFound = callback != undefined);
+  callbackFound = callback != undefined;
   
   callback = callback[action];
   callbackFound = callback != undefined;
@@ -165,10 +176,13 @@ Paloma.execute = function(controller, action, params){
     action);
 
   var afterFilters = getOrderedFilters(
-    FITLER_TYPES.AFTER,
+    FILTER_TYPES.AFTER,
     params['callback_namespace'],
     controller,
     action);
+
+  console.log('before filters: ' + beforeFilters);
+  console.log('after filters: ' + afterFilters);
 
   // Start filter and callback executions
   performFilters(beforeFilters);
@@ -177,31 +191,30 @@ Paloma.execute = function(controller, action, params){
 };
 
 
-var getOrderedFilters = function(before_or_after, namespace, controller, action){
-  var namespaceFilters = Paloma.filterScopes[namespace],
-    controllerFilters = Paloma._filters[before_or_after][controller],
-    filters = [];
+var getOrderedFilters = function(beforeOrAfter, namespace, controller, action){
+  var filters = [],
+    applicableFilters = [],
+    scopes = [Paloma.filterScopes[namespace], Paloma.filterScopes[controller]];
+  
+  for (var i = 0, n = scopes.length; i < n; i++){
+    var scope = scopes[i];
+    if (scope == undefined){ continue; }
 
-  // Prepend namespace filters on controller filters.
-  // Namespace filters must be executed first before controller filters.
-  if (namespaceFilters !== undefined){
-    // Around filters has lower precedence than before and after filters
-    namespaceFilters = namespaceFilters.concat(Paloma._filters['around'][namespace] || []);
-    namespaceFilters = namespaceFilters.concat(controllerFilters || []);
-    controllerFilters = namespaceFilters;
+    var mainFilters = scope.filters[beforeOrAfter],
+      aroundFilters = scope.filters[FILTER_TYPES.AROUND];
+    
+    // Around Filters have lower precedence than before or after filters.
+    if (mainFilters != undefined){ filters = filters.concat(mainFilters); }
+    if (aroundFilters != undefined){ filters = filters.concat(aroundFilters); }
+  }
+  
+  // Select only applicable filters for the passed action.
+  for (var i = 0, n = filters.length; i < n; i++){
+    var filter = filters[i];
+    if (filter.isApplicable(action)){ applicableFilters.push(filter); }
   }
 
-  if (controllerFilters !== undefined){
-    controllerFilters = controllerFilters.concat(Paloma._filters['around'][controller] || []);
-
-    // Select applicable filters for the passed action
-    for (var i = 0, n = controllerFilters.length; i < n; i++){
-      var filter = controllerFilters[i];
-      if (filter._isApplicable(action)){ filters.push(filter); }
-    }
-  }
-
-  return filters;
+  return applicableFilters;
 };
 
 
