@@ -1,6 +1,6 @@
 Paloma
 ======
-Paloma provides a sexy and more logical way of organize javascript files using Rails' asset pipeline. 
+Paloma provides a sexy and more logical way of organizing javascript files using Rails' asset pipeline. 
 It adds the capability to execute page-specific javascript code after rendering the controller's response.
 
 Advantages
