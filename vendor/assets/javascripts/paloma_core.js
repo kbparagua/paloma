@@ -21,13 +21,13 @@ Paloma.FilterScope = function(name){
   this.name = name;
   
   this.filters = {};
-  this.filters[FILTER_TYPES.BEFORE] = [];
-  this.filters[FILTER_TYPES.AFTER] = [];
-  this.filters[FILTER_TYPES.AROUND] = [];
+  this.skippers = {};
 
-  this.skipFilters = [];
-  this.skipFilterType = undefined;
-  this.skipType = INCLUSION_TYPES.ALL;
+  for (var i = 0, n = FILTER_TYPE_NAMES.length; i < n; i++){
+    var type = FILTER_TYPE_NAMES[i].toUpperCase();
+    this.filters[ FILTER_TYPES[type] ] = [];
+    this.skippers[ FILTER_TYPES[type] ] = [];
+  }
 
   Paloma.filterScopes[name] = this;
 };
@@ -39,26 +39,60 @@ Paloma.FilterScope.prototype.as = function(filterName){
 };
 
 
-// skip_*_filter methods
+// skip_*_filter/s methods
 (function(){
   for (var i = 0, n = FILTER_TYPE_NAMES.length; i < n; i++){
     var type = FILTER_TYPE_NAMES[i],
-      method = 'skip_' + type.toLowerCase() + '_filter';
+      singular = 'skip_' + type.toLowerCase() + '_filter',
+      plural = singular + 's',
+      method = function(skipperType){ 
+        return function(){
+          return (new Paloma.Skipper(this, FILTER_TYPES[skipperType], arguments));
+        };
+      };
 
-    Paloma.FilterScope.prototype[method] = function(){
-      this.skipFilterType = FILTER_TYPES[type];
-      this.skipFilters = Array.prototype.slice.call(arguments);
-      return this;
-    };
+    Paloma.FilterScope.prototype[singular] = new method(type);
+    Paloma.FilterScope.prototype[plural] = Paloma.FilterScope.prototype[singular];
   }
 })();
 
-Paloma.FilterScope.prototype.only = function(){ 
-  this.skipType = INCLUSION_TYPES.ONLY; 
+
+
+
+// Skipper class
+Paloma.Skipper = function(scope, type, filters){
+  this.scope = scope;
+  this.type = type;
+  this.filters = Array.prototype.slice.call(filters);
+  this.inclusionType = INCLUSION_TYPES.ALL;
+  this.actions = [];
+
+  // Register this skipper on its scope.
+  this.scope.skippers[this.type].push(this);
 };
 
-Paloma.FilterScope.prototype.except = function(){ 
-  this.skipType = INCLUSION_TYPES.EXCEPT; 
+
+Paloma.Skipper.prototype.skip = function(filter, action){
+  if (this.filters.indexOf(filter.name) == -1){ return false; }
+
+  var actionIsListed = this.actions.indexOf(action) != -1, 
+    isAllActions = this.inclusionType == INCLUSION_TYPES.ALL,
+    isQualified = this.inclusionType == INCLUSION_TYPES.ONLY && actionIsListed,
+    isNotExcepted = this.inclusionType == INCLUSION_TYPES.EXCEPT && !actionIsListed;
+
+  return (isAllActions || isQualified || isNotExcepted); 
+};
+
+
+Paloma.Skipper.prototype.only = function(){
+  this.inclusionType = INCLUSION_TYPES.ONLY;
+  this.actions = Array.prototype.slice.call(arguments);
+};
+
+
+Paloma.Skipper.prototype.except = function(){ 
+  this.inclusionType = INCLUSION_TYPES.EXCEPT;
+  this.actions = Array.prototype.slice.call(arguments);
 };
 
 
@@ -121,9 +155,10 @@ Paloma.Filter.prototype.perform = function(method){
 
 
 Paloma.Filter.prototype.isApplicable = function(action){
-  var isAllActions = this.inclusionType == INCLUSION_TYPES.ALL, 
-    isQualified = this.inclusionType == INCLUSION_TYPES.ONLY && this.actions.indexOf(action) != -1,
-    isNotExcepted = this.inclusionType == INCLUSION_TYPES.EXCEPT && this.actions.indexOf(action) == -1;
+  var actionIsListed = this.actions.indexOf(action) != -1, 
+    isAllActions = this.inclusionType == INCLUSION_TYPES.ALL,
+    isQualified = this.inclusionType == INCLUSION_TYPES.ONLY && actionIsListed,
+    isNotExcepted = this.inclusionType == INCLUSION_TYPES.EXCEPT && !actionIsListed;
 
   return (isAllActions || isQualified || isNotExcepted);
 };
@@ -187,6 +222,7 @@ Paloma.execute = function(controller, action, params){
 var getOrderedFilters = function(beforeOrAfter, namespace, controller, action){
   var filters = [],
     applicableFilters = [],
+    skippers = [],
     scopes = [
       Paloma.filterScopes['/'], 
       Paloma.filterScopes[namespace], 
@@ -202,12 +238,24 @@ var getOrderedFilters = function(beforeOrAfter, namespace, controller, action){
     // Around Filters have lower precedence than before or after filters.
     if (mainFilters != undefined){ filters = filters.concat(mainFilters); }
     if (aroundFilters != undefined){ filters = filters.concat(aroundFilters); }
+    
+    skippers = skippers.concat(
+        scope.skippers[beforeOrAfter], 
+        scope.skippers[FILTER_TYPES.AROUND]);
   }
-  
+
+
   // Select only applicable filters for the passed action.
   for (var i = 0, n = filters.length; i < n; i++){
-    var filter = filters[i];
-    if (filter.isApplicable(action)){ applicableFilters.push(filter); }
+    var filter = filters[i],
+      isApplicable = filter.isApplicable(action),
+      isNotSkipped = true;
+
+    for (var k = 0, len = skippers.length; k < len; k++){
+      if ( skippers[k].skip(filter, action) ){ isNotSkipped = false; break;}
+    }
+
+    if (isApplicable && isNotSkipped){ applicableFilters.push(filter); } 
   }
 
   return applicableFilters;
