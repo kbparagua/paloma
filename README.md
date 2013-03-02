@@ -299,7 +299,7 @@ You can achieve this by using the `Paloma.locals` object or its alias `_L`.
 ```javascript
 Paloma.callbacks['users']['new'] = function(params){
   _L.otherController.helperMethod();  // accessing local helperMethod() of the otherController
-  _L.otherController.helperVariable;
+  _L['otherController'].helperVariable;
 }
 ```
 
