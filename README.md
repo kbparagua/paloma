@@ -245,19 +245,19 @@ Locals are variables or methods which can be made locally available within a con
 
 The motivation of Locals is to organize helper methods and helper variables within a namespace or controller.
 
-1. Application-wide Locals
+1. **Application-wide Locals**
 
     Defined on `paloma/_locals.js`.
     This contains methods and variables that are intended to be available globally.
 
 
-2. Namespace-wide Locals
+2. **Namespace-wide Locals**
 
     Defiend on `paloma/namespace/_locals.js`.
     This contains methods and variables that are intended to be available on the specific namespace only.
 
 
-3. Controller-wide Locals
+3. **Controller-wide Locals**
 
     Defined on `paloma/controller/_locals.js` or `paloma/namespace/controller/_locals.js`.
     This contains methods and variables that are intended to be available on the specific controller only.
@@ -265,31 +265,33 @@ The motivation of Locals is to organize helper methods and helper variables with
 
 Creating A Local
 -
-Locals can be created using the `locals` object.
+Locals can be created using the `locals` object inside `_filters.js` file.
 
 **Example:**
-    ```js
-    locals.helperMethod = function(){
-      return "Hello World";
-    };
-    
-    locals.helperVariable = "WOW!";
-    ```
+
+```javascript
+locals.helperMethod = function(){
+  return "Hello World";
+};
+
+locals.helperVariable = "WOW!";
+```
 
 Using Locals
 -
 Locals can be accessed in your filter and callback files using the `_l` object.
 
 **Example**
-    ```js
-    Paloma.callbacks['users']['new'] = function(params){
-        alert("Hello Sexy User");
-        
-        _l.helperMethod();
 
-        console.log(_l.helperVariable);
-    };
-    ```
+```javascript
+Paloma.callbacks['users']['new'] = function(params){
+    alert("Hello Sexy User");
+    
+    _l.helperMethod();
+
+    console.log(_l.helperVariable);
+};
+```
 
 Callback Chains
 -
