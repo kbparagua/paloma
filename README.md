@@ -309,34 +309,35 @@ Paloma.callbacks['users']['new'] = function(params){
 You can also override locals inherited from parents.
 
 **Example**
-* `paloma/_locals.js` contains:
-    ```javascript
-    locals.globalMethod = function(){ console.log("I'm from Global"); }
-    ```
 
-* `paloma/namespace/_locals.js` contains:
-    ```javascript
-    locals.namespaceMethod = function(){ console.log("I'm from Namespace"); }
-    locals.anotherNamespaceMethod = function(){ console.log("I'm also from Namespace"); }
-    ```
+`paloma/_locals.js` contains:
+```javascript
+locals.globalMethod = function(){ console.log("I'm from Global"); }
+```
 
-* `paloma/namespace/controller/_locals.js` contains:
-    ```javascript
-    locals.controllerMethod = function(){ console.log("I'm from Controller"); }
-    locals.anotherNamespacedMethod = function(){ console.log("Override!"); }; // Overrides namespace local
-    ```
+`paloma/namespace/_locals.js` contains:
+```javascript
+locals.namespaceMethod = function(){ console.log("I'm from Namespace"); }
+locals.anotherNamespaceMethod = function(){ console.log("I'm also from Namespace"); }
+```
+
+`paloma/namespace/controller/_locals.js` contains:
+```javascript
+locals.controllerMethod = function(){ console.log("I'm from Controller"); }
+locals.anotherNamespacedMethod = function(){ console.log("Override!"); }; // Overrides namespace local
+```
 
 Since `controller` is under the global `_local.js` and namespace `_local.js` it automatically inherits all their locals.
 So you can do something like this inside the controller callback files (or filter files):
 
-    ```javascript
-    Paloma.callbacks['namespace/controller']['action'] = function(params){
-        _l.controllerMethod();          // outputs "I'm from Controller"
-        _l.namespacedMethod();          // outputs "I'm from Namespace"
-        _l.globalMethod();              // outputs "I'm from Global"
-        _l.anotherNamespacedMethod();   // outputs "Override!"
-    };
-    ```
+```javascript
+Paloma.callbacks['namespace/controller']['action'] = function(params){
+    _l.controllerMethod();          // outputs "I'm from Controller"
+    _l.namespacedMethod();          // outputs "I'm from Namespace"
+    _l.globalMethod();              // outputs "I'm from Global"
+    _l.anotherNamespacedMethod();   // outputs "Override!"
+};
+```
 
 Callback Chains
 -
