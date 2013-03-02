@@ -187,7 +187,10 @@ Paloma.execute = function(controller, action, params){
 var getOrderedFilters = function(beforeOrAfter, namespace, controller, action){
   var filters = [],
     applicableFilters = [],
-    scopes = [Paloma.filterScopes[namespace], Paloma.filterScopes[controller]];
+    scopes = [
+      Paloma.filterScopes['/'], 
+      Paloma.filterScopes[namespace], 
+      Paloma.filterScopes[controller]];
   
   for (var i = 0, n = scopes.length; i < n; i++){
     var scope = scopes[i];

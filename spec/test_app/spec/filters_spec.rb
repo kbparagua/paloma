@@ -2,14 +2,17 @@ require 'spec_helper'
 
 describe 'Paloma.FilterScope', :type => :feature, :js => true do  
   
-  shared_context 'paths' do
+  shared_context 'paths-' do
     let(:basic_action) { basic_action_bar_path }
     let(:another_basic_action) { another_basic_action_bar_path }
     let(:yet_another_basic_action) { yet_another_basic_action_bar_path}
   end
   
+  shared_context 'paths-Application' do
+    include_context 'paths-'
+  end
   
-  shared_context 'paths-namespaced' do
+  shared_context 'paths-Namespaced' do
     let(:basic_action) { basic_action_sample_namespace_baz_path }
     let(:another_basic_action) { another_basic_action_sample_namespace_baz_path }
     let(:yet_another_basic_action) { yet_another_basic_action_sample_namespace_baz_path }  
@@ -21,14 +24,15 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
     type = options[:type]
     name = options[:name]
     method = options[:method] || "##{type}"
-    filter = (options[:namespaced] ? 'Namespaced ' : '') + "Standard #{name}"
+    scope = parse_scope options[:scope]
+    filter =  "#{scope}Standard #{name}"
   
     describe method do
       it "executes filter #{type} callbacks for the passed actions" do
         visit basic_action
         page.evaluate_script("filtersExecuted.#{type}").should include filter
       end
-    
+
       it "does not execute filter #{type} callbacks for other actions" do
         visit yet_another_basic_action
         page.evaluate_script("filtersExecuted.#{type}").should_not include filter
@@ -41,7 +45,8 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
     type = options[:type]
     name = options[:name]
     method = options[:method] || "##{type}_all"
-    filter = (options[:namespaced] ? 'Namespaced ' : '') + "#{name} All"
+    scope = parse_scope options[:scope]
+    filter = "#{scope}#{name} All"
 
     describe method do
       it "executes filter #{type} callbacks on all actions" do
@@ -56,7 +61,8 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
     type = options[:type]
     name = options[:name]
     method = options[:method] || "#except_#{type}"
-    filter = (options[:namespaced] ? 'Namespaced ' : '') + "Except #{name}"
+    scope = parse_scope options[:scope]
+    filter = "#{scope}Except #{name}"
     
     describe method do
       it "executes filter #{type} callback on all actions except for passed actions" do
@@ -75,7 +81,7 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
   shared_examples 'filter subtypes' do |options|
     params = {:type => options[:type], 
       :name => options[:type].titleize, 
-      :namespaced => options[:namespaced]}
+      :scope => options[:scope]}
     
     include_examples 'standard', params
     include_examples 'all', params
@@ -83,26 +89,49 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
   end
   
   
-  shared_examples 'filters' do |namespaced|
-    include_context ('paths' + (namespaced ? '-namespaced' : '')) 
-  
-    # Before and After Filters
-    include_examples 'filter subtypes', {:type => 'before', :namespaced => namespaced}
-    include_examples 'filter subtypes', {:type => 'after', :namespaced => namespaced}
+  shared_examples 'filters' do |scope|
+    context "when inside the scope of #{scope}" do
+      include_context "paths-#{scope}"
     
-    # Around Filters
-    include_examples 'standard', {:name => 'Around', :type => 'before', :method => '#around', 
-      :namespaced => namespaced} 
-    include_examples 'standard', {:name => 'Around', :type => 'after', :method => '#around', 
-      :namespaced => namespaced}
-    include_examples 'all', {:name => 'Around', :type => 'before', :method => '#around_all',
-      :namespaced => namespaced}
-    include_examples 'all', {:name => 'Around', :type => 'after', :method => '#around_all',
-      :namespaced => namespaced}
-    include_examples 'except', {:name => 'Around', :type => 'before', :method => '#except_around',
-      :namespaced => namespaced}
-    include_examples 'except', {:name => 'Around', :type => 'after', :method => '#except_around',
-      :namespaced => namespaced}
+      def self.parse_scope scope
+        scope.blank? ? scope : "#{scope} "
+      end
+
+      # Before and After Filters
+      include_examples 'filter subtypes', {:type => 'before', :scope => scope}
+      include_examples 'filter subtypes', {:type => 'after', :scope => scope}
+      
+      # Around Filters
+      include_examples 'standard', {:name => 'Around', 
+        :type => 'before', 
+        :method => '#around', 
+        :scope => scope} 
+      
+      include_examples 'standard', {:name => 'Around',
+        :type => 'after', 
+        :method => '#around', 
+        :scope => scope}
+      
+      include_examples 'all', {:name => 'Around', 
+        :type => 'before', 
+        :method => '#around_all', 
+        :scope => scope}
+      
+      include_examples 'all', {:name => 'Around',
+        :type => 'after', 
+        :method => '#around_all',
+        :scope => scope}
+      
+      include_examples 'except', {:name => 'Around', 
+        :type => 'before', 
+        :method => '#except_around', 
+        :scope => scope}
+      
+      include_examples 'except', {:name => 'Around',
+        :type => 'after', 
+        :method => '#except_around', 
+        :scope => scope}
+    end
   end
 
 
@@ -148,8 +177,9 @@ describe 'Paloma.FilterScope', :type => :feature, :js => true do
 
 
   # Testing starts here
-  include_examples 'filters', false # non-namespaced filters
-  include_examples 'filters', true  # namespaced filters
+  include_examples 'filters', ''            # non-namespaced filters
+  include_examples 'filters', 'Namespaced'   # namespaced filters
+  include_examples 'filters', 'Application' # application-wide filters
 
   #include_examples 'skip filters', 'before'
   #include_examples 'skip filters', 'after'
