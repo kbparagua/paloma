@@ -1,6 +1,8 @@
 (function(){
-var _x = Paloma.variableContainer;
-
+var _x = Paloma.variableContainer,
+  _H = Paloma.helpers,
+  _h = _H['foo'];
+  
 
 Paloma.callbacks['foo']['basic_action'] = function(params)
 {

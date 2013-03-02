@@ -2,6 +2,7 @@
 window.Paloma = {
   callbacks : {},
   filterScopes : {},
+  helpers : {},
   variableContainer : {}
 };
 
