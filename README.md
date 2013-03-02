@@ -157,9 +157,8 @@ existing on `paloma` folder. It will be created automatically.
 
 Advanced Callbacks
 -
-By default Paloma will execute the callback that matches the response's current controller and action if it finds one.
-For instance if the current response is from the `new` action of the `Users` controller, then Paloma will execute the callback
-`['users']['new']`.
+By default Paloma will execute the callback that matches the current controller and action if it finds one.
+For instance, if the current response is from the `new` action of the `Users` controller, then Paloma will try to execute `callbacks['users']['new']` if it exists.
 
 You can manipulate callback behavior by using the `js` command before the `render` or `redirect_to` command in your controllers.
 
@@ -174,7 +173,7 @@ You can manipulate callback behavior by using the `js` command before the `rende
     end
     ```
     
-    `[controllers]/destroy` callback will not be executed.
+    `callbacks["controller"]["destroy"]` will not be executed.
 
 2. Using other action's callback from the same controller.
 
@@ -185,7 +184,7 @@ You can manipulate callback behavior by using the `js` command before the `rende
     end
     ```
 
-    This will execute `[controllers]/new` callback instead of `[controllers]/edit`.
+    This will execute `callback["controllers"]["new"]` instead of `callback["controllers"]["edit"]`.
     
 3. Using other action's callback from other controller.
 
@@ -196,7 +195,7 @@ You can manipulate callback behavior by using the `js` command before the `rende
     end
     ```
 
-    This will execute `clients/index` callback instead of `[controllers]/index`.
+    This will execute `callbacks["clients"]["index"]` instead of `callbacks["controllers"]["index"]`.
 
 
 4. Using other action's callback from a namespaced controller.
@@ -212,7 +211,7 @@ You can manipulate callback behavior by using the `js` command before the `rende
     end
     ```
 
-    This will execute `admin/users/destroy` callback instead of `users/destroy`.
+    This will execute `callbacks["admin/users"]["destroy"]` instead of `callbacks["users"]["destroy"]`.
 
 
 Passing Parameters
@@ -234,63 +233,64 @@ end
 
 `/paloma/users/destroy.js`
 ```javascript
-Paloma.callbacks['users/destroy'] = function(params){
+Paloma.callbacks['users']['destroy'] = function(params){
     var id = params['user_id'];
     alert('User ' + id + ' deleted.');
 };
 ```
 
-Callback Helpers
+Locals
 -
-Callback helpers are inside Paloma objects in order to prevent conflicts from different functions and variables.
+Locals are variables or methods which can be made locally available within a controller or a namespace. Locals can also be made available throughout the whole Paloma files (globally).
 
-1. Global
+The motivation of Locals is to organize helper methods and helper variables within a namespace or controller.
 
-    Helper functions and variables can be defined in `paloma/paloma.js` inside the `Paloma.g` object.
+1. Application-wide Locals
+
+    Defined on `paloma/_locals.js`.
+    This contains methods and variables that are intended to be available globally.
+
+
+2. Namespace-wide Locals
+
+    Defiend on `paloma/namespace/_locals.js`.
+    This contains methods and variables that are intended to be available on the specific namespace only.
+
+
+3. Controller-wide Locals
+
+    Defined on `paloma/controller/_locals.js` or `paloma/namespace/controller/_locals.js`.
+    This contains methods and variables that are intended to be available on the specific controller only.
     
-    **Example:**
-    ```javascript
-    Paloma.g = {
-        helper: function(){
-            // do something sexy
-        },
+
+Creating A Local
+-
+Locals can be created using the `locals` object.
+
+**Example:**
+    ```js
+    locals.helperMethod = function(){
+      return "Hello World";
+    };
+    
+    locals.helperVariable = "WOW!";
+    ```
+
+Using Locals
+-
+Locals can be accessed in your filter and callback files using the `_l` object.
+
+**Example**
+    ```js
+    Paloma.callbacks['users']['new'] = function(params){
+        alert("Hello Sexy User");
         
-        helper_variable: 1000
+        _l.helperMethod();
+
+        console.log(_l.helperVariable);
     };
     ```
 
-3. Namespace's Scope
-
-    Helper functions and variables that is shared inside a namespace can be defined in `paloma/[namespace]/_local.js` inside
-    the `Paloma.[namespace]` object.
-    
-    **Example:**
-    ```javascript
-    Paloma.admin = {
-        namespaced_helper: function(){
-            // do something sexy
-        },
-        
-        helper_variable: 1
-    };
-    ```
-
-2. Controller's Scope
-
-    Helper functions that you will only use for a certain controller can be defined in `paloma/[controllers]/_local.js` inside
-    the `Paloma.[controllers]` object.
-    
-    **Example:**
-    ```javascript
-    Paloma.users = {
-        local_helper: function(){
-            // do something sexy
-        },
-        
-        helper_variable: 1
-    };
-    ```
-    
 Callback Chains
 -
 Callback chains are created after a redirect action. The chain will continue to increase its length until a render action is detected.
