@@ -2,7 +2,7 @@
 window.Paloma = {
   callbacks : {},
   filterScopes : {},
-  helpers : {},
+  locals : {},
   variableContainer : {}
 };
 
@@ -20,6 +20,19 @@ INCLUSION_TYPES.ALL = 3;
 INCLUSION_TYPES.ONLY = 4;
 INCLUSION_TYPES.EXCEPT = 5;
   
+
+Paloma.inheritLocals = function(options){
+  var from = Paloma.locals[options['from']],
+    to = Paloma.locals[options['to']];
+
+  for (var local in from){
+    // Overriding is allowed.
+    if ( to.hasOwnProperty(local) ){ continue; }
+    
+    to[local] = from[local];
+  }
+};
+
 
 
 Paloma.FilterScope = function(name){ 
