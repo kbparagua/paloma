@@ -124,10 +124,6 @@ Paloma.Filter.prototype.isApplicable = function(action){
   var isAllActions = this.inclusionType == INCLUSION_TYPES.ALL, 
     isQualified = this.inclusionType == INCLUSION_TYPES.ONLY && this.actions.indexOf(action) != -1,
     isNotExcepted = this.inclusionType == INCLUSION_TYPES.EXCEPT && this.actions.indexOf(action) == -1;
-  
-  console.log('isAllActions = ' + isAllActions);
-  console.log('isQualified = ' + isQualified);
-  console.log('isNotExcepted = ' + isNotExcepted);
 
   return (isAllActions || isQualified || isNotExcepted);
 };
@@ -180,9 +176,6 @@ Paloma.execute = function(controller, action, params){
     params['callback_namespace'],
     controller,
     action);
-
-  console.log('before filters: ' + beforeFilters);
-  console.log('after filters: ' + afterFilters);
 
   // Start filter and callback executions
   performFilters(beforeFilters);
