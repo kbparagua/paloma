@@ -1,6 +1,6 @@
 Paloma
 ======
-Paloma provides a sexy way to organize javascript files using Rails' asset pipeline. 
+Paloma provides a sexy and more logical way of organize javascript files using Rails' asset pipeline. 
 It adds the capability to execute page-specific javascript code after rendering the controller's response.
 
 Advantages
@@ -15,7 +15,7 @@ Quick Example
 The javascript callback file `app/assets/javascripts/paloma/users/new.js`:
 
 ```javascript
-Paloma.callbacks['users/new'] = function(params){
+Paloma.callbacks['users']['new'] = function(params){
     // This will only run after executing users/new action
     alert('Hello New Sexy User');
 };
@@ -152,9 +152,9 @@ Advanced Callbacks
 -
 By default Paloma will execute the callback that matches the response's current controller and action if it finds one.
 For instance if the current response is from the `new` action of the `Users` controller, then Paloma will execute the callback
-named `users/new`.
+`['users']['new']`.
 
-You can manipulate callback behavior by using the `js_callback` command before the `render` or `redirect_to` command in your controllers.
+You can manipulate callback behavior by using the `js` command before the `render` or `redirect_to` command in your controllers.
 
 1. Preventing the Callback to execute.
 
@@ -163,7 +163,7 @@ You can manipulate callback behavior by using the `js_callback` command before t
         user = User.find params[:id]
         user.destroy
         
-        js_callback false
+        js false
     end
     ```
     
@@ -174,7 +174,7 @@ You can manipulate callback behavior by using the `js_callback` command before t
     ```ruby
     def edit
         @user = User.find params[:id]
-        js_callback :new
+        js :new
     end
     ```
 
@@ -185,7 +185,7 @@ You can manipulate callback behavior by using the `js_callback` command before t
     ```ruby
     def index
         @users = User.all
-        js_callback :controller => 'clients', :action => 'index'
+        js :controller => 'clients', :action => 'index'
     end
     ```
 
@@ -200,7 +200,7 @@ You can manipulate callback behavior by using the `js_callback` command before t
             @user = User.find params[:id]
             @user.destroy
             
-            js_callback :controller => 'admin/users', :action => :destroy
+            js :controller => 'admin/users', :action => :destroy
         end
     end
     ```
@@ -210,7 +210,7 @@ You can manipulate callback behavior by using the `js_callback` command before t
 
 Passing Parameters
 -
-You can also pass parameters to the callback by passing a `:params` key to `js_callback`. The passed parameters
+You can also pass parameters to the callback by passing a `:params` key to `js`. The passed parameters
 will be available on the callback by the `params` object.
 
 **Example:**
@@ -221,7 +221,7 @@ def destroy
     user = User.find params[:id]
     user.destroy
     
-    js_callback :params => {:user_id => params[:id]}
+    js :params => {:user_id => params[:id]}
 end
 ```
 
