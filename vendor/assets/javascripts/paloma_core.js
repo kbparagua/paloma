@@ -1,6 +1,10 @@
 (function(){
-window.Paloma = {callbacks:{}};
-Paloma.filterScopes = {};
+window.Paloma = {
+  callbacks : {},
+  filterScopes : {},
+  variableContainer : {}
+};
+
 
 var FILTER_TYPES = {},
   FILTER_TYPE_NAMES = ['BEFORE', 'AFTER', 'AROUND'],
@@ -216,6 +220,10 @@ Paloma.execute = function(controller, action, params){
   performFilters(beforeFilters);
   if (callbackFound){ callback(params); }
   performFilters(afterFilters);
+
+  // variableContainer is used to share variable between filters and callbacks.
+  // It will be cleared after it is used.
+  Paloma.variableContainer = [];
 };
 
 

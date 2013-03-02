@@ -2,8 +2,11 @@
 window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
 
 
-(function(){ var filter = new Paloma.FilterScope('sample_namespace/baz');
+(function(){ 
+  var filter = new Paloma.FilterScope('sample_namespace/baz');
+  var _x = Paloma.variableContainer;
 
+  
   // Before
   filter.as('Standard Before').
   before('basic_action', 'another_basic_action').

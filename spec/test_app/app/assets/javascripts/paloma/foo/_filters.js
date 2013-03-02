@@ -1,26 +1,24 @@
-(function(){ var filter = new Paloma.FilterScope('foo');
-  
-  filter.as('A').
-  before('callback_from_another_action', 'basic_action').
-  perform(function(params)
-  {
-    window.filterChain = 'A';  
-  }); 
-  
-  
-  filter.as('B').
-  before_all().perform(function(params)
-  {
-    window.filterChain = filterChain + '/B';
+(function(){
+  var filter = new Paloma.FilterScope('foo');
+  var _x = Paloma.variableContainer;
+
+ 
+  filter.as('Before Foo').
+  before_all().perform(function(params){
+    _x.xVisibility = ['Before Foo'];
   });
-  
-  
-  filter.as('C').
-  except_before('callback_from_another_action').
-  perform(function(params)
-  {
-    window.filterChain = filterChain + '/C';
+ 
+
+  filter.as('After Foo').
+  after_all().perform(function(params){
+    _x.xVisibility.push('After Foo');
   });
-  
-  
+
+
+  filter.as('Around Foo').
+  around_all().perform(function(params){
+    _x.xVisibility.push('Around Foo');
+    window.xVisibilityFinal = _x.xVisibility;
+  });
+
 })();

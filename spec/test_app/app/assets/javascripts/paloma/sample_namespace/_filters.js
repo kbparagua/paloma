@@ -2,7 +2,9 @@
 window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
 
 
-(function(){ var filter = new Paloma.FilterScope('sample_namespace');
+(function(){ 
+  var filter = new Paloma.FilterScope('sample_namespace');
+  var _x = Paloma.variableContainer;
 
   // Before
   filter.as('Namespaced Standard Before').

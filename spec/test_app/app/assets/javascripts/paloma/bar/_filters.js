@@ -2,8 +2,10 @@
 window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
 
 
-(function(){ var filter = new Paloma.FilterScope('bar');
-  
+(function(){ 
+  var filter = new Paloma.FilterScope('bar');
+  var _x = Paloma.variableContainer;
+
 
   filter.skip_before_filter('Standard Skip Before Filter');
   filter.skip_before_filter('Only Skip Before Filter').only('basic_action');

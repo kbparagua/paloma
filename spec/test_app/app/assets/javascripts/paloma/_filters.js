@@ -2,8 +2,11 @@
 window.filtersExecuted = window.filtersExecuted || {before : [], after : []};
 
 
-(function(){ var filter = new Paloma.FilterScope('/');
-  
+(function(){ 
+  var filter = new Paloma.FilterScope('/');
+  var _x = Paloma.variableContainer;
+
+
   // To-Be-Skipped Before Filters
   filter.as('Standard Skip Before Filter').before_all().perform(function(params){
     filtersExecuted.before.push('Standard Skip Before Filter');
