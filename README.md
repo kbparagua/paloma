@@ -300,6 +300,29 @@ The order of execution is based on the order of declaration.
 After before filters, around filters are executed then the callback is finally executed.
 After filters are called after the callback is executed, then it will execute the around filters again.
 
+### Shared Variable Between Filter and Callback
+
+Automatically, filters has an access to the `params` object passed via the `js` ruby method. 
+But you can also make a variable visible both on a filter and a callback using the `_x` object.
+
+**Example:**
+
+on `_filters.js`:
+    
+    ```javascript
+    filter.as('filter name').before('new').perform(function(params){
+        _x.sharedVariable = "Sexy Paloma";
+    });
+    ```
+    
+on `new.js`:
+
+    ```javascript
+    Paloma.callbacks['controller']['new'] = function(params){
+        alert(_x.sharedVariable);   // outputs "Sexy Paloma";
+    });
+    ```
+
 ##Locals
 
 Locals are variables or methods which can be made locally available within a controller or a namespace. Locals can also be made available throughout the whole Paloma files (globally).
