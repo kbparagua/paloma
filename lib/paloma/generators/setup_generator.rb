@@ -2,7 +2,6 @@ module Paloma
   #
   # rails g paloma:setup
   #   - Generates the following:
-  #     - 'paloma' folder under app/assets/javascripts/
   #     - index.js and paloma.js under the 'paloma' folder
   #
   # Generated Files:
@@ -18,11 +17,20 @@ module Paloma
     source_root Paloma.templates
     
     def setup_paloma
+      locals_js = "#{Paloma.destination}/_locals.js"
+      filters_js = "#{Paloma.destination}/_filters.js"
       index_js = "#{Paloma.destination}/index.js"
-      paloma_js = "#{Paloma.destination}/paloma.js"
-      
+   
+      copy_file '/application/_locals.js', locals_js unless File.exists?(locals_js)   
       copy_file 'index.js', index_js unless File.exists?(index_js)
-      copy_file 'paloma.js', paloma_js unless File.exists?(paloma_js)
+      
+      unless File.exists?(filters_js)
+        content = File.read("#{Paloma.templates}/_filters.js")
+        content.gsub!(':scope', '/')
+
+        File.open(filters_js, 'w'){ |f| f.write(content) }
+        puts "create #{filters_js}"
+      end
     end
   end
 end
