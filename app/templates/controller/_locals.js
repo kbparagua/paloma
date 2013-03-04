@@ -15,5 +15,5 @@
 
   // Remove this line if you don't want to inherit locals defined
   // on parent's _locals.js
-  Paloma.inheritLocals({from : ':namespace', to : ':controller'});
+  Paloma.inheritLocals({from : ':parent', to : ':controller'});
 })();

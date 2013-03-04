@@ -29,8 +29,8 @@ module Paloma
     def create_callback_file
       initialize_arguments file_path
       
-      generate_namespace_folder if @namespace_folder.present?
-      generate_controller_folder if @controller_folder.present?
+      generate_namespace_folder if @namespace.present?
+      generate_controller_folder if @controller.present?
       generate_action_files(actions) if actions.present?
     end
     
@@ -42,18 +42,13 @@ module Paloma
     def initialize_arguments args
       # split controller from actions
       arg = args.split(' ')
+      @controller_path = arg[0]
       
-      # Split namespace from controller
-      controller = arg[0].split('/')
-      @namespace_name = (controller.length > 1) ? controller[0] : '' 
-      @namespace_folder = @namespace_name.present? ? 
-        "#{Paloma.destination}/#{@namespace_name}" : 
-        nil
-            
-      @controller_name = @namespace_name.present? ? controller[1] : controller[0]
-      @controller_folder = @namespace_folder.present? ?  
-        "#{@namespace_folder}/#{@controller_name}" :
-        "#{Paloma.destination}/#{@controller_name}"
+      full_controller_path = @controller_path.split '/'
+      @controller = full_controller_path.pop
+      @namespace = full_controller_path.join '/'
+      @namespace_folder = "#{Paloma.destination}/#{@namespace}" if @namespace 
+      @controller_folder = "#{Paloma.destination}/#{@controller_path}"
     end
     
     
@@ -62,16 +57,18 @@ module Paloma
       
       Dir.mkdir(@namespace_folder)
       
-      generate_from_template :template => '_namespace_local.js',
-        :filename => "#{@namespace_folder}/_local.js",
-        :replace => {'namespace' => @namespace_name}
+      generate_from_template :template => '/namespace/_locals.js',
+        :filename => "#{@namespace_folder}/_locals.js",
+        :replace => {':namespace' => @namespace_name}
         
-      generate_from_template :template => '_namespace_callbacks.js',
-        :filename => "#{@namespace_folder}/_callbacks.js",
-        :replace => {'controller' => @controller_name}
+      generate_from_template :template => '/namespace/_manifest.js',
+        :filename => "#{@namespace_folder}/_manifest.js",
+        :replace => {':controller' => @controller}
       
-      # Require _callbacks.js to Paloma's main index file
-      File.open(Paloma.index_js, 'a+'){ |f| f << "\n//= require ./#{@namespace_name}/_callbacks.js" }
+      # Require _manifest.js to Paloma's main index file
+      File.open(Paloma.index_js, 'a+'){ |f| 
+        f << "\n//= require ./#{@namespace}/_manifest.js" 
+      }
     end
     
     
@@ -80,24 +77,24 @@ module Paloma
       
       Dir.mkdir(@controller_folder)
       
-      generate_from_template :template => '_local.js', 
-        :filename => "#{@controller_folder}/_local.js",
+      generate_from_template :template => '_locals.js', 
+        :filename => "#{@controller_folder}/_locals.js",
         :replace => {
-          'controller' => @controller_name,
-          'namespace/' => (@namespace_name.present? ? "#{@namespace_name}/" : ''),
-          'namespace.' => (@namespace_name.present? ? "#{@namespace_name}." : '')}
-   
-      generate_from_template :template => '_callbacks.js', 
-        :filename => "#{@controller_folder}/_callbacks.js"
+          ':controller_path' => @controller_path,
+          ':controller' => @controller,
+          ':parent' => @namespace.present? @namespace : '/'}
+
+      generate_from_template :template => '/controller/_manifest.js', 
+        :filename => "#{@controller_folder}/_manifest.js"
       
-      if @namespace_name.present?
-        # Require _callback.js to namespace's _callback.js file
-        File.open("#{@namespace_folder}/_callbacks.js", 'a+'){ |f| 
-          f << "\n//= require ./#{@controller_name}/_callbacks.js"}
+      if @namespace.present?
+        # Require _manifest.js to namespace's _manifest.js file
+        File.open("#{@namespace_folder}/_manifest.js", 'a+'){ |f| 
+          f << "\n//= require ./#{@controller}/_manifest.js"}
       else
-        # Require _callback.js to Paloma's main index file
+        # Require _manifest.js to Paloma's main index file
         File.open(Paloma.index_js, 'a+'){ |f| 
-          f << "\n//= require ./#{@controller_name}/_callbacks.js" }
+          f << "\n//= require ./#{@controller}/_manifest.js" }
       end
     end
     
@@ -107,13 +104,9 @@ module Paloma
         action_js = "#{@controller_folder}/#{action}.js"
         next if action.nil? || File.exists?(action_js)
         
-        controller_path = @namespace_name.present? ? 
-          "#{@namespace_name}/#{@controller_name}" : 
-          @controller_name
-        
-        content = File.read("#{Paloma.templates}/action.js").
-          gsub('controller', controller_path).
-          gsub('action', action)
+        content = File.read("#{Paloma.templates}/controller/action.js").
+          gsub(':controller_path', @controller_path).
+          gsub(':action', action)
           
         File.open(action_js, 'w'){ |f| f.write(content) }
         puts "create #{action_js}"  
