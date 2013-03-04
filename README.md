@@ -239,6 +239,67 @@ Paloma.callbacks['users']['destroy'] = function(params){
 };
 ```
 
+## Filters
+
+This is almost similar to Rails controller filters. These are functions executed either `before`, `after`, 
+or even `around` (before and after) a Paloma callback is executed.
+
+Filters are defined on `_filters.js` files in Paloma's root folder, namespace folder, or controller folder.
+
+### Syntax
+
+```javascript
+filter.as('filter name').before_all().perform(function(params){
+    alert("I'm a before filter!");
+});
+
+filter.as('another filter').after_all().perform(function(params{
+   alert("I'm an after filter"); 
+});
+```
+
+### Specify Actions To Filter
+
+1. For all actions.
+    
+    ```javascript
+    filter.as('name').before_all()
+    filter.as('name').after_all()
+    filter.as('name').around_all()
+    ```
+
+2. Only for specific action/s.
+    
+    ```javascript
+    filter.as('name').before('new', 'edit', 'update')
+    filter.as('name').after('destroy')
+    filter.as('name').around('show')
+    ```
+
+3. Except for specific action/s.
+    
+    ```javascript
+    filter.as('name').except_before('new')
+    filter.as('name').except_after('destroy', 'edit')
+    filter.as('name').except_around('show')
+    ```
+
+### Filter Inheritance
+
+All `_filters.js` inherit filters defined on the global `_filters.js` file. 
+Controller's `_filters.js` will also inherit filters defined on its namespace `_filters.js` if it exists.
+
+
+### Execution Time
+
+Global filters (on `/paloma/_filters.js`) are executed first, then Namespace filters if any, 
+then Controller filters.
+
+Before filters, as you've guessed, are executed before the callback is called. 
+The order of execution is based on the order of declaration.
+After before filters, around filters are executed then the callback is finally executed.
+After filters are called after the callback is executed, then it will execute the around filters again.
+
 ##Locals
 
 Locals are variables or methods which can be made locally available within a controller or a namespace. Locals can also be made available throughout the whole Paloma files (globally).
