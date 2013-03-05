@@ -11,5 +11,7 @@ def mimic_setup
   # Mimic SetupGenerator results before running the AddGenerator
   FileUtils.cd TEMP
   FileUtils.mkpath Paloma.destination
-  File.open("#{Paloma.destination}/index.js", 'w') { |f| f.write('//= require ./paloma.js')}
+  File.open("#{Paloma.destination}/index.js", 'w') { 
+    |f| f.write('//= require ./paloma_core.js')
+  }
 end

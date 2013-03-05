@@ -77,12 +77,12 @@ module Paloma
       
       Dir.mkdir(@controller_folder)
       
-      generate_from_template :template => '_locals.js', 
+      generate_from_template :template => '/controller/_locals.js', 
         :filename => "#{@controller_folder}/_locals.js",
         :replace => {
           ':controller_path' => @controller_path,
           ':controller' => @controller,
-          ':parent' => @namespace.present? @namespace : '/'}
+          ':parent' => (@namespace.present? ? @namespace : '/')}
 
       generate_from_template :template => '/controller/_manifest.js', 
         :filename => "#{@controller_folder}/_manifest.js"

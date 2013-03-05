@@ -15,8 +15,15 @@ feature Paloma::SetupGenerator do
   specify do
     destination_root.should have_structure {
       directory Paloma.destination do
-        file 'paloma.js'
         file 'index.js'
+        
+        file '_locals.js' do
+          contains "var locals = Paloma.locals['/'] = {};"
+        end
+        
+        file '_filters.js' do
+          contains "var filter = new Paloma.FilterScope('/');"
+        end
       end
     }
   end
