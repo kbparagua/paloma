@@ -11,30 +11,33 @@ feature Paloma::SetupGenerator do
     prepare_destination
     run_generator
   end
-  
+
+
   specify do
     destination_root.should have_structure {
       directory Paloma.destination do
         file 'index.js'
         
-        file '_locals.js' do
-          contains "var locals = Paloma.locals['/'] = {};"
-        end
+        #file '_locals.js' do
+        #  contains "var locals = Paloma.locals['/'] = {};"
+        #end
         
-        file '_filters.js' do
-          contains "var filter = new Paloma.FilterScope('/');"
-        end
+        #file '_filters.js' do
+        #  contains "var filter = new Paloma.FilterScope('/');"
+        #end
       end
     }
   end
 end
 
-
+=begin
 # rails g paloma:add sexy_controller
-feature Paloma::AddGenerator, 'creating controller folder only' do
+describe Paloma::AddGenerator do
+
   include GeneratorSpec::TestCase
   destination TEMP
   arguments ['sexy_controller']
+
   
   before do
     prepare_destination
@@ -421,3 +424,4 @@ feature Paloma::AddGenerator, 'create multiple actions in an existing namespaced
     }
   end
 end
+=end

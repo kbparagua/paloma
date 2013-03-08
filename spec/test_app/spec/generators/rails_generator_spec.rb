@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'generator_helper'
 
-
+=begin
 feature ::Rails::Generators::ControllerGenerator, 'generating a rails controller without action' do
   include GeneratorSpec::TestCase
   destination TEMP
@@ -69,3 +69,4 @@ feature ::Rails::Generators::ControllerGenerator, 'generating a rails controller
     }
   end
 end
+=end
