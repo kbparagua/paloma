@@ -239,6 +239,25 @@ Paloma.callbacks['users']['destroy'] = function(params){
 };
 ```
 
+
+Default Parameters
+-
+`params['controller']` - controller name without its namespace.
+
+`params['namespace']` - controller's namespace name.
+
+`params['action']` - controller's action that triggers the filter or callback.
+
+`params['controller_path']` - controller name with its namespace.
+
+`params['callback_controller']` - callback's controller name without its namespace.
+
+`params['callback_namespace']` - callback's namespace name.
+
+`params['callback_action']` - callback's action name.
+
+`params['callback_controller_path']` - callback's controller with its namespace.
+
 ## Filters
 
 This is almost similar to Rails controller filters. These are functions executed either `before`, `after`, 
