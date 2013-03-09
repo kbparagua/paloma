@@ -1,7 +1,7 @@
 (function(){ 
   // Initializes the main container for all filters and skippers for this
   // specific scope.
-  var filter = new Paloma.FilterScope('/');
+  var filter = new Paloma.FilterScope('existing_namespace/new_controller');
   
   // The _x object is also available on callbacks.
   // You can make a variable visible on callbacks by using _x here.

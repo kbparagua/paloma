@@ -59,8 +59,12 @@ module Paloma
       
       generate_from_template :template => '/namespace/_locals.js',
         :filename => "#{@namespace_folder}/_locals.js",
-        :replace => {':namespace' => @namespace_name}
+        :replace => {':namespace' => @namespace}
         
+      generate_from_template :template => '_filters.js',
+        :filename => "#{@namespace_folder}/_filters.js",
+        :replace => {':scope' => @namespace}
+
       generate_from_template :template => '/namespace/_manifest.js',
         :filename => "#{@namespace_folder}/_manifest.js",
         :replace => {':controller' => @controller}
@@ -81,8 +85,11 @@ module Paloma
         :filename => "#{@controller_folder}/_locals.js",
         :replace => {
           ':controller_path' => @controller_path,
-          ':controller' => @controller,
           ':parent' => (@namespace.present? ? @namespace : '/')}
+
+      generate_from_template :template => '_filters.js',
+        :filename => "#{@controller_folder}/_filters.js",
+        :replace => {':scope' => @controller_path}
 
       generate_from_template :template => '/controller/_manifest.js', 
         :filename => "#{@controller_folder}/_manifest.js"
