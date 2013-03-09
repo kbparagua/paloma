@@ -14,10 +14,10 @@
   //
   // Example:
   // _l.localMethod(); 
-  var _l = _L['existing_namespace/new_controller'];
+  var _l = _L['my_controller'];
 
 
-  Paloma.callbacks['existing_namespace/new_controller']['action1'] = function(params){
+  Paloma.callbacks['my_controller']['new'] = function(params){
     // Do something here.
   };
 })();

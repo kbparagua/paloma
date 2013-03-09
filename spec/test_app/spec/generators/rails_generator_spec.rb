@@ -1,10 +1,9 @@
 require 'spec_helper'
 require 'generator_helper'
 
-=begin
+
 feature ::Rails::Generators::ControllerGenerator, 'generating a rails controller without action' do
-  include GeneratorSpec::TestCase
-  destination TEMP
+  init
   arguments ['my_controller']
   
   before do
@@ -17,14 +16,7 @@ feature ::Rails::Generators::ControllerGenerator, 'generating a rails controller
     destination_root.should have_structure {
       directory Paloma.destination do
         directory 'my_controller' do
-          file '_local.js' do
-            contains 'Paloma.my_controller = {'
-          end
-          
-          file '_callbacks.js' do
-            contains '//= require ./_local.js'
-            contains '//= require_tree .'
-          end
+          controller_structure 'my_controller'
         end
       end
     }
@@ -33,8 +25,7 @@ end
 
 
 feature ::Rails::Generators::ControllerGenerator, 'generating a rails controller with actions' do
-  include GeneratorSpec::TestCase
-  destination TEMP
+  init
   arguments ['my_controller', 'new', 'edit']
   
   before do
@@ -53,20 +44,11 @@ feature ::Rails::Generators::ControllerGenerator, 'generating a rails controller
     destination_root.should have_structure {
       directory Paloma.destination do
         directory 'my_controller' do
-          file '_local.js' do
-            contains 'Paloma.my_controller = {'
-          end
-          
-          file '_callbacks.js' do
-            contains '//= require ./_local.js'
-            contains '//= require_tree .'
-          end
-          
-          file 'new.js'
-          file 'edit.js'
+          controller_structure 'my_controller'
+          action_js 'my_controller', 'new'
+          action_js 'my_controller', 'edit'
         end
       end
     }
   end
 end
-=end
