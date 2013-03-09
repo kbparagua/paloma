@@ -342,6 +342,17 @@ Paloma.callbacks['controller']['new'] = function(params){
 });
 ```
 
+### Skipping Filters
+
+You can skip filters using the `skip_*_filter` or `skip_*_filters` command.
+You can also specify which action or actions the filter skip is applicable using `only` or `except` command.
+
+```javascript
+filter.skip_before_filter('filter A');  // skip 'filter A' for all actions
+filter.skip_after_filters('filter A', 'filter B').only('new', 'edit');  // skip 'filter A' and 'filter B' for 'new' and 'edit' actions.
+filter.skip_around_filter('filter A').except('destroy');    // skip 'filter A' for all actions except for 'destroy'.
+```
+
 ##Locals
 
 Locals are variables or methods which can be made locally available within a controller or a namespace. Locals can also be made available throughout the whole Paloma files (globally).
