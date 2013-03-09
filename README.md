@@ -309,19 +309,19 @@ But you can also make a variable visible both on a filter and a callback using t
 
 on `_filters.js`:
     
-    ```javascript
-    filter.as('filter name').before('new').perform(function(params){
-        _x.sharedVariable = "Sexy Paloma";
-    });
-    ```
+```javascript
+filter.as('filter name').before('new').perform(function(params){
+    _x.sharedVariable = "Sexy Paloma";
+});
+```
     
 on `new.js`:
 
-    ```javascript
-    Paloma.callbacks['controller']['new'] = function(params){
-        alert(_x.sharedVariable);   // outputs "Sexy Paloma";
-    });
-    ```
+```javascript
+Paloma.callbacks['controller']['new'] = function(params){
+    alert(_x.sharedVariable);   // outputs "Sexy Paloma";
+});
+```
 
 ##Locals
 
