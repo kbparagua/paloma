@@ -2,6 +2,5 @@ Gemfile.lock
 *.gem
 /tmp/*
 /spec/tmp/
-/spec/sample_app/tmp/
-/spec/sample_app/log/
-/spec/sample_app/paloma_test
+/spec/test_app/tmp
+/spec/test_app/spec/tmp/*
