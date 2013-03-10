@@ -272,7 +272,7 @@ filter.as('filter name').before_all().perform(function(params){
     alert("I'm a before filter!");
 });
 
-filter.as('another filter').after_all().perform(function(params{
+filter.as('another filter').after_all().perform(function(params){
    alert("I'm an after filter"); 
 });
 ```
