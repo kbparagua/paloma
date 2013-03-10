@@ -231,9 +231,9 @@ Paloma.execute = function(controller, action, params){
     action);
 
   // Start filter and callback executions
-  performFilters(beforeFilters);
+  performFilters(beforeFilters, params);
   if (callbackFound){ callback(params); }
-  performFilters(afterFilters);
+  performFilters(afterFilters, params);
 
   // variableContainer is used to share variable between filters and callbacks.
   // It will be cleared after it is used.

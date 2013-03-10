@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 2.0.1
+-
+* Bug Fix: `params` is not passed when calling filters.
+
 Version 2.0.0
 -
 * Change `js_callback` to `js` only.
