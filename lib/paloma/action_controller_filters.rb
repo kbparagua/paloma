@@ -18,6 +18,8 @@ module Paloma
 
         
     def update_callback
+      return clear_callbacks if @__callback__.nil?
+
       add_to_callbacks @__callback__, @__js_params__
 
       paloma_txt = view_context.render(

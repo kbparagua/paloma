@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 1.2.6
+-
+* Paloma hook script is not appended on the response when `false` is passed to `js_callback`
+
 Version 1.2.0
 -
 * AddGenerator with multiple actions: `rails g paloma:add namespace/controller action1 action2 action3`
