@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 2.0.2
+-
+* 'js(false)' will prevent Paloma from appending _callback_hook on the response.
+
 Version 2.0.1
 -
 * Bug Fix: `params` is not passed when calling filters.
