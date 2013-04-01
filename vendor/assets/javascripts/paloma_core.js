@@ -199,9 +199,11 @@ Paloma.execute = function(controller, action, params){
   var callback = Paloma.callbacks[controller];
   callbackFound = callback != undefined;
   
-  callback = callback[action];
-  callbackFound = callback != undefined;
-  
+  if (callbackFound){
+    callback = callback[action];
+    callbackFound = callback != undefined;
+  }
+
   // Parse parameters
   params = params || {};
   

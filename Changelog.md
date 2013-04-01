@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 2.0.3
+-
+* Bug Fix: prevent javascript error when callback doesn't exist.
+
 Version 2.0.2
 -
 * 'js(false)' will prevent Paloma from appending _callback_hook on the response.
