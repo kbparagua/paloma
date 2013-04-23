@@ -23,7 +23,7 @@
         callbacks.push({
           controller: '<%= callback[:controller] %>', 
           action:     '<%= callback[:action] %>', 
-          params:     eval($('<div/>').html("(<%= callback[:params].to_json %>)").text())
+          params:     <%= callback[:params].to_json.html_safe %>
         }); 
       <% end %>
       
