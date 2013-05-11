@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 2.0.4
+-
+* Bug Fix: Issue #4 - Passing json string on params.
+
 Version 2.0.3
 -
 * Bug Fix: prevent javascript error when callback doesn't exist.
