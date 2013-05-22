@@ -1,6 +1,10 @@
 Changelog
 =
 
+Version 2.0.5
+-
+* Bug Fix: Stupid typo on `_callback_hook.html.erb`.
+
 Version 2.0.4
 -
 * Bug Fix: Issue #4 - Passing json string on params.
