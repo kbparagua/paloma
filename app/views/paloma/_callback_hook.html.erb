@@ -11,13 +11,13 @@
       }
 
       // Remove any callback details if any
-      $('.paloma-callback-details[data-id!=' + id + ']').remove();
+      $('.paloma-callback-details[data-id!=' + <%= id %> + ']').remove();
 
       var run = function(){
         var callbacks = <%= callbacks.to_json.html_safe %>;
 
         for (var i = 0, len = callbacks.length; i < len; i++){
-          Paloma.execute(callback[i]);
+          Paloma.execute(callbacks[i]);
         }
       };
 

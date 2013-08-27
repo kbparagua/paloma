@@ -1,4 +1,4 @@
-(function(){
+/*(function(){
 window.Paloma = {
   callbacks : {},
   filterScopes : {},
@@ -293,4 +293,4 @@ var performFilters = function(filters, params){
 };
 
 
-})();
+})();*/

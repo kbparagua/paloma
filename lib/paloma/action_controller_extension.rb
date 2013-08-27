@@ -130,9 +130,9 @@ module Paloma
     end
 
 
-    def parse_action action
+    def parse_action action = nil
       action ||= self.action_name
-      action.split('_').map(&:titleize).join
+      action.camelize(:lower)
     end
 
   end
