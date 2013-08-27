@@ -1,40 +1,28 @@
-<% callback_details_id = "#{Time.now.to_i}#{(rand * 1000).ceil}" %>
+<% id = "#{Time.now.to_i}#{(rand * 1000).ceil}" %>
 
-<div class="callback-details" id="callback-details-<%= callback_details_id %>">
+<div class="paloma-callback-details" data-id="<%= id %>">
   <script type="text/javascript">
     (function(){
-      
+
       // Do not continue if Paloma.js is not found.
       if (window['Paloma'] === undefined && window['console'] !== undefined){
         console.warn("Paloma.js not found. Require it in your application.js.");
         return true;
       }
-      
-      
-      var id = "callback-details-<%= callback_details_id %>",
-        callbacks = [];
-        
-      // Remove any callback details if any 
-      $('.callback-details[id!=' + id + ']').remove(); 
-      
-      
-      // Convert callbacks to javascript variable      
-      <% callbacks.each do |callback| %>
-        callbacks.push({
-          controller: '<%= callback[:controller] %>', 
-          action:     '<%= callback[:action] %>', 
-          params:     <%= callback[:params].to_json.html_safe %>
-        }); 
-      <% end %>
-      
-      
-      // Run Callbacks
-      $(document).ready(function(){
+
+      // Remove any callback details if any
+      $('.paloma-callback-details[data-id!=' + id + ']').remove();
+
+      var run = function(){
+        var callbacks = <%= callbacks.to_json.html_safe %>;
+
         for (var i = 0, len = callbacks.length; i < len; i++){
-          var callback = callbacks[i];
-          Paloma.execute(callback.controller, callback.action, callback.params);
+          Paloma.execute(callback[i]);
         }
-      });
+      };
+
+
+      $(document).ready(function(){ run(); });
     })();
   </script>
 </div>
