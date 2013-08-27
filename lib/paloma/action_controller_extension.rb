@@ -8,8 +8,29 @@ module Paloma
 
 
   module ActionControllerExtension
+
+    def self.included base
+      base.module_eval do
+        prepend_view_path "#{Paloma.root}/app/views/"
+
+        # Enable paloma on all controller action by default
+        before_filter :js
+
+        after_filter :update_callback, :if => :html_response_from_render?
+      end
+    end
+
+
+
+
+
+  protected
+
+
+
+    # Save
     def redirect_js_hook options = {}, response_status_and_flash = {}
-      add_to_callbacks @__paloma_callback__
+      push_current_callback
       original_redirect_to options, response_status_and_flash
     end
     alias_method :redirect_to, :redirect_js_hook
@@ -18,35 +39,96 @@ module Paloma
     #
     # js false
     # js :new, :params => {}
-    # js :controller => '', :action => '', :params => {}
+    # js :resource => '', :action => '', :params => {}
     # js :params => {}
     #
     def js options = {}, extras = {}
-      callback = {:controller => controller_path, :action => action_name}
-      params = {}
+      # default resource
+      resource_name = controller_path.split('/').map(&:titleize).join('.')
+      callback = {:resource => resource_name, :action => action_name, :params => {}}
 
       if options.is_a? Hash
-        params = options[:params]
-        callback = options[:controller].present? && options[:action].present? ?
-          {:controller => options[:controller], :action => options[:action]} :
-          callback
+        callback = options if options[:resource].present? && options[:action].present?
 
       elsif options.is_a? Symbol
-        params = extras[:params]
         callback[:action] = options
 
       elsif options.is_a? FalseClass
         callback = nil
       end
 
-      params ||= {}
+      # Include caller details
+      if callback.present?
+        controller_detail = controller_path.split('/')
+        callback[:params][:caller] = {:controller => controller_detail.pop,
+                                      :namespace => controller_detail.pop,
+                                      :action => action_name,
+                                      :controllerPath => controller_path}
+      end
 
-      # Include request details
-      params[:controller_path] = controller_path
-      params[:action] = action_name
-
-      @__paloma_callback__ = callback.present? ? callback.merge({:params => params}) : nil
+      self.current_callback = callback
     end
+
+
+    def html_response_from_render?
+      [nil, 'text/html'].include?(response.content_type) && self.status != 302
+    end
+
+
+    def update_callback
+      return clear_callbacks if self.current_callback.nil?
+
+      push_current_callback
+
+      paloma_txt = view_context.render(
+                      :partial => "paloma/callback_hook",
+                      :locals => {:callbacks => self.callbacks})
+
+
+      before_body_end_index = response_body[0].rindex('</body>')
+
+      if before_body_end_index.present?
+        before_body_end_content = response_body[0][0, before_body_end_index].html_safe
+        after_body_end_content = response_body[0][before_body_end_index..-1].html_safe
+
+        response_body[0] = before_body_end_content + paloma_txt + after_body_end_content
+
+        response.body = response_body[0]
+      else
+        # If body tag is not present, append paloma_txt in the response body
+        response_body[0] += paloma_txt
+        response.body = response_body[0]
+      end
+
+      clear_callbacks
+    end
+
+
+    def push_current_callback
+      session[:callbacks] ||= []
+      session[:callbacks].push(self.current_callback) if self.current_callback.present?
+    end
+
+
+    def callbacks
+      session[:callbacks]
+    end
+
+
+    def clear_callbacks
+      session[:callbacks] = []
+    end
+
+
+    def current_callback= callback
+      @__paloma_callback__ = callback
+    end
+
+
+    def current_callback
+      @__paloma_callback__
+    end
+
   end
 
 
