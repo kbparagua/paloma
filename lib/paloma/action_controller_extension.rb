@@ -39,31 +39,31 @@ module Paloma
     #
     # js false
     # js :new, :params => {}
-    # js :resource => '', :action => '', :params => {}
+    # js :resource => 'Namespace.Resource', :action => 'testAction', :params => {}
     # js :params => {}
     #
     def js options = {}, extras = {}
       # default resource
       resource_name = controller_path.split('/').map(&:titleize).join('.')
-      callback = {:resource => resource_name, :action => action_name, :params => {}}
+      callback = {:resource => resource_name, :action => self.parse_action, :params => {}}
 
       if options.is_a? Hash
         callback = options if options[:resource].present? && options[:action].present?
 
       elsif options.is_a? Symbol
-        callback[:action] = options
+        callback[:action] = self.parse_action(options)
 
       elsif options.is_a? FalseClass
         callback = nil
       end
 
-      # Include caller details
+      # Include rails request details
       if callback.present?
         controller_detail = controller_path.split('/')
-        callback[:params][:caller] = {:controller => controller_detail.pop,
+        callback[:params][:rails] = {:controller => controller_detail.pop,
                                       :namespace => controller_detail.pop,
-                                      :action => action_name,
-                                      :controllerPath => controller_path}
+                                      :action => self.action_name,
+                                      :controllerPath => self.controller_path}
       end
 
       self.current_callback = callback
@@ -127,6 +127,12 @@ module Paloma
 
     def current_callback
       @__paloma_callback__
+    end
+
+
+    def parse_action action
+      action ||= self.action_name
+      action.split('_').map(&:titleize).join
     end
 
   end
