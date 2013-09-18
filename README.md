@@ -162,18 +162,18 @@ For instance, if the current response is from the `new` action of the `Users` co
 
 You can manipulate callback behavior by using the `js` command before the `render` or `redirect_to` command in your controllers.
 
-1. Preventing the Callback to execute.
+1. Preventing the Callback to execute by avoiding Paloma to add js code in the view.
 
     ```ruby
     def destroy
         user = User.find params[:id]
         user.destroy
         
-        js false
+        js false # No paloma js code in the view
     end
     ```
     
-    `callbacks["controller"]["destroy"]` will not be executed.
+    `callbacks["controller"]["destroy"]` will not be added in the view, therefore not executed. This is useful for AJAX response, or any non HTML response.
 
 2. Using other action's callback from the same controller.
 
