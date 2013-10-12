@@ -4,6 +4,7 @@ require 'spec_helper'
 feature 'executing Paloma controller', :js => true do
 
   describe 'after rendering' do
+
     it 'executes the corresponding Paloma controller action' do
       visit foo_path(1)
       called = page.evaluate_script 'window.called'
@@ -35,9 +36,17 @@ feature 'executing Paloma controller', :js => true do
         expect(parameter).to eq 'Parameter From Paloma'
       end
     end
+
+
+    context 'from namespaced controller' do
+      it 'executes the corresponding Paloma controller action' do
+        visit admin_bar_path(1)
+        called = page.evaluate_script 'window.called.pop()'
+
+        expect(called).to eq 'Admin/Bar#show'
+      end
+    end
+
   end
-
-
-
 
 end
