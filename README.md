@@ -90,13 +90,13 @@ You can also redirect an action if you want it to be handled by a different meth
 
 ```javascript
 // Instead of executing Paloma's `Users#new` it will execute
-// `Registrations#signup`.
+// `Registrations#signUp`.
 Paloma.router.redirect('Users#new', {to: 'Registrations#signUp');
 ```
 
 ## Controller
 
-Controller handles responses from Rails. A specific instance of a controller is called by Paloma for every Rails controller/action that is executed.
+Controller handles responses from Rails. A new controller instance is created by Paloma for every Rails controller/action that is executed.
 
 ### Creating Controller
 
