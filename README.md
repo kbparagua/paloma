@@ -33,7 +33,7 @@ The Rails controller `app/controllers/users_controller.rb`:
 ```ruby
 def UsersController < ApplicationController
     def new
-        @user = User.new
+      @user = User.new
     end
 end
 ```
@@ -74,7 +74,7 @@ By default all Rails controller/action will be mapped with a Paloma controller/a
 Example:
 * Response from `UsersController#new` will be mapped to `Users` Paloma controller and execute its `new` method.
 
-### Mapping to other Controller
+### Changing Controller
 
 If you want to use a different Paloma Controller for a specific Rails controller, you can do the following:
 
@@ -94,7 +94,37 @@ You can also redirect an action if you want it to be handled by a different meth
 Paloma.router.redirect('Users#new', {to: 'Registrations#signUp');
 ```
 
-# Controller
+## Controller
+
+Controller handles responses from Rails. A specific instance of a controller is called by Paloma for every Rails controller/action that is executed.
+
+### Creating Controller
+
+A Controller is created or accessed (if already existing) using:
+
+```javascript
+Paloma.controller('ControllerName');
+``` 
+
+It returns the constructor of your controller. It is just a normal constructor so you can do your OOP stuff.
+
+
+### Creating actions
+
+Add instance methods to you Controller constructor to handle actions.
+
+```javascript
+var ArticlesController = Paloma.controller('ArticlesController');
+
+ArticlesController.prototype.new = function(){
+  // Handle new articles
+};
+
+
+ArticlesController.prototype.edit = function(){
+  // Handle edit articles
+};
+```
 
 # Advanced Callbacks
 -
