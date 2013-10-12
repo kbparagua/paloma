@@ -3,6 +3,9 @@
 
 
   var Router = function(config){
+    this.controllers = {};
+    this.redirects = {};
+
     this.delimiters = {};
     this.delimiters.namespace = config['namespace'];
     this.delimiters.action = config['action'];
@@ -24,6 +27,34 @@
             namespaces: namespaces,
             controller: controller,
             action: action};
+  };
+
+
+  Router.prototype.resource = function(resource, option){
+    option = option || {};
+    this.controllers[resource] = option['controller'] || resource;
+  };
+
+
+  Router.prototype.redirect = function(path, option){
+    option = option || {};
+    this.redirects[path] = this.parse(option['to'] || path);
+  };
+
+
+  Router.prototype.controllerFor = function(resource){
+    return this.controllers[resource] || resource;
+  };
+
+
+  Router.prototype.redirectFor = function(resource, action){
+    var path = resource + this.delimiters.action + action,
+        redirect = this.redirects[path];
+
+    if (!redirect){ return null; }
+
+    return {controller: redirect['controllerPath'].join(this.delimiters.namespace),
+            action: redirect['action']};
   };
 
 

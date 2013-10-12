@@ -36,10 +36,35 @@
     for (var i = 0, n = requests.length; i < n; i++){
       var request = requests[i];
 
-      var Controller = Paloma.controller(request['path']),
-          controller = new Controller(request['params']);
+      console.log('Processing request with params:');
+      console.log(request.params);
 
-      controller[request['action']]();
+      var controllerName = router.controllerFor(request.resource),
+          action = request.action,
+          redirect = router.redirectFor(request.resource, action);
+
+      if (redirect){
+        controllerName = redirect['controller'];
+        action = redirect['action'];
+      }
+
+      console.log('mapping <' + request.resource + '> to controller <' + controllerName + '>');
+      console.log('mapping action <' + request.action + '> to controller action <' + action + '>');
+
+      var Controller = Paloma.controller(controllerName);
+
+      if (!Controller){
+        return console.error('Paloma: undefined controller -> ' + controllerName);
+      }
+
+      var controller = new Controller(request.params);
+
+      if (!controller[action]){
+        return console.error('Paloma: undefined action <' + action +
+                              '> for <' + controllerName + '> controller');
+      }
+
+      controller[action]();
     }
   };
 })(window.Paloma);

@@ -15,6 +15,10 @@
 //= require paloma
 //= require_tree .
 
+var router = Paloma.router;
+
+router.resource('RailsUser', {controller: 'User'});
+router.redirect('RailsUser#revise', {to: 'User#edit'});
 
 
 var User = Paloma.controller('User');
@@ -29,8 +33,11 @@ User.prototype.update = function(){
 };
 
 
-Paloma.engine.requests.push({path: 'User', action: 'edit', params: {id: 23}});
-Paloma.engine.requests.push({path: 'User', action: 'edit', params: {id: 99}});
-Paloma.engine.requests.push({path: 'User', action: 'update', params: {name: 'Shibalboy'}});
+Paloma.engine.requests.push({resource: 'RailsUser', action: 'revise', params: {id: 23}});
+Paloma.engine.requests.push({resource: 'RailsUser', action: 'revise', params: {id: 99}});
+
+Paloma.engine.requests.push({resource: 'User', action: 'update', params: {name: 'Shibalboy'}});
+
+Paloma.engine.requests.push({resource: 'Article', action: 'new'});
 
 Paloma.engine.start();

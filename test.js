@@ -7,6 +7,9 @@
 //  Rails controller will be mapped to a corresponding Paloma controller with the same name.
 //
 //
+Paloma.router.resource('User');
+Paloma.router.redirect();
+
 Paloma.Routes.resource('Users', {controller: 'Authors'});
 Paloma.Routes.redirect('Users#edit', {to: 'Authors#revise'});
 
