@@ -1,26 +1,22 @@
-Paloma
-======
-Paloma provides a sexy and logical way of organizing Rails javascript files.
-Its core feature is a powerful yet simple way to execute page-specific javascript code. 
+# Paloma
 
-But there are more sexy features Paloma has to offer!
 
-Advantages
--
-* Javascript files are organized per controller just like app/views folder of Rails.
-* Javascript file per controller's action.
-* Choose what specific javascript codes to run per page.
+## What's New?
+Paloma (version 3) is almost a complete rewrite of the old versions.
+
+It is now simpler and it also gives more flexibility to the developers. Simplicity and flexibility are achieved by replacing the old callback thingy paradigm by a combination of `Router` and `Controller` components.
+
+All the generator shits are also gone. So developers need not to follow specific folder structure or file name. And since there's no generated files or whatsoever, you can now code in vanilla javascript or **coffescript**! Yay!
+
+
+## Advantages
+* 
+* Choose what specific javascript code to run per page.
 * Easily make ruby variables available on your javascript files.
 
-Quick Example
--
-The javascript callback file `/assets/javascripts/paloma/users/new.js`:
+## Quick Example
 
 ```javascript
-Paloma.callbacks['users']['new'] = function(params){
-    // This will only run after executing users/new action
-    alert('Hello New Sexy User');
-};
 ```
  
 The Rails controller `app/controllers/users_controller.rb`:
