@@ -60,13 +60,13 @@
       var Controller = Paloma._controllerFactory.get(controllerName);
 
       if (!Controller){
-        return console.error('Paloma: undefined controller -> ' + controllerName);
+        return console.warn('Paloma: undefined controller -> ' + controllerName);
       }
 
       var controller = new Controller(request.params);
 
       if (!controller[action]){
-        return console.error('Paloma: undefined action <' + action +
+        return console.warn('Paloma: undefined action <' + action +
                               '> for <' + controllerName + '> controller');
       }
 
