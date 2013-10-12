@@ -1,14 +1,14 @@
 (function(Paloma){
 
-  var router = Paloma.RouteHelper;
 
-  var ControllerFactory = function(){
+  var ControllerFactory = function(router){
     this.instances = {};
+    this.router = router;
   };
 
 
   ControllerFactory.prototype.make = function(name){
-    var config = router.parse(name),
+    var config = this.router.parse(name),
         scope = this.instances;
 
     // Create namespaces.
@@ -23,7 +23,7 @@
 
 
   ControllerFactory.prototype.get = function(name){
-    var config = router.parse(name),
+    var config = this.router.parse(name),
         scope = this.instances;
 
     for (var i = 0, n = config['controllerPath'].length; i < n; i++){

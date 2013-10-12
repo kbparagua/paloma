@@ -14,3 +14,23 @@
 //= require jquery_ujs
 //= require paloma
 //= require_tree .
+
+
+
+var User = Paloma.controller('User');
+
+User.prototype.edit = function(){
+  alert('Going to edit User ' + this.params['id']);
+};
+
+
+User.prototype.update = function(){
+  alert('Going to update User with name = ' + this.params['name']);
+};
+
+
+Paloma.engine.requests.push({path: 'User', action: 'edit', params: {id: 23}});
+Paloma.engine.requests.push({path: 'User', action: 'edit', params: {id: 99}});
+Paloma.engine.requests.push({path: 'User', action: 'update', params: {name: 'Shibalboy'}});
+
+Paloma.engine.start();
