@@ -20,10 +20,10 @@ All the generator shits are also gone. So developers need not to follow specific
 Paloma controller.
 
 ```javascript
-var User = Paloma.controller('User');
+var UsersController = Paloma.controller('Users');
 
 // Executes when Rails User#new is rendered.
-User.prototype.new = function(){
+UsersController.prototype.new = function(){
    alert('Hello Sexy User!' );
 };
 ```
@@ -63,6 +63,20 @@ Require `paloma` in your `application.js`:
 ```
 //= require paloma
 ```
+
+
+# Router
+
+Router is responsible for mapping Rails controller/action to its equivalent Paloma controller/action.
+
+By default all Rails controller/action will be mapped with a Paloma controller/action with the same resource name (controller name without the `Controller` suffix).
+
+Example:
+* Response from `UsersController#new` will be mapped to `Users` Paloma controller and execute its `new` method.
+
+
+
+# Controller
 
 # Advanced Callbacks
 -
