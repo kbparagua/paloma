@@ -2,7 +2,7 @@
 
 
 ## What's New?
-Paloma (version 3) is almost a complete rewrite of the old versions.
+Paloma (version 3) is almost a complete rewrite of the old version.
 
 It is now simpler and it also gives more flexibility to the developers. Simplicity and flexibility are achieved by replacing the old callback thingy paradigm by a combination of `Router` and `Controller` components.
 
@@ -65,7 +65,7 @@ Require `paloma` in your `application.js`:
 ```
 
 
-# Router
+## Router
 
 Router is responsible for mapping Rails controller/action to its equivalent Paloma controller/action.
 
@@ -74,7 +74,25 @@ By default all Rails controller/action will be mapped with a Paloma controller/a
 Example:
 * Response from `UsersController#new` will be mapped to `Users` Paloma controller and execute its `new` method.
 
+### Mapping to other Controller
 
+If you want to use a different Paloma Controller for a specific Rails controller, you can do the following:
+
+```javascript
+// Instead of mapping Rails UsersController to Paloma Users
+// it will be mapped to AdminUsers.
+Paloma.router.resource('Users', {controller: 'AdminUsers'});
+```
+
+### Redirecting
+
+You can also redirect an action if you want it to be handled by a different method.
+
+```javascript
+// Instead of executing Paloma's `Users#new` it will execute
+// `Registrations#signup`.
+Paloma.router.redirect('Users#new', {to: 'Registrations#signUp');
+```
 
 # Controller
 
