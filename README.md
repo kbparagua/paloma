@@ -1,5 +1,8 @@
 # Paloma
 
+**This README is for Paloma 3.
+For version 2 README please go [here](https://github.com/kbparagua/paloma/blob/2.0/README.md).**
+
 
 ## What's New?
 Paloma (version 3) is almost a complete rewrite of the old version.
