@@ -22,13 +22,9 @@ module Paloma
 
 end
 
-require 'action_controller/railtie'
-require 'rails/generators'
-
 # TODO: Rails version checking
 
-require 'paloma/generators/add_generator'
-require 'paloma/generators/setup_generator'
+require 'action_controller/railtie'
+
 require 'paloma/action_controller_extension'
-require 'paloma/rails/controller_generator'
 require 'paloma/rails/engine'

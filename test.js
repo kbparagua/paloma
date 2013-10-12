@@ -7,12 +7,12 @@
 //  Rails controller will be mapped to a corresponding Paloma controller with the same name.
 //
 //
-Paloma.Route.resource('Users', {controller: 'Authors'});
-Paloma.Route.redirect('Users#edit', {to: 'Authors#revise'});
+Paloma.Routes.resource('Users', {controller: 'Authors'});
+Paloma.Routes.redirect('Users#edit', {to: 'Authors#revise'});
 
 // With namespace
-Paloma.Route.resource('Admin.Users', {controller: 'Authors'});
-Paloma.Rotue.resource('Users', {controller: 'Admin.Authors'});
+Paloma.Routes.resource('Admin.Users', {controller: 'Authors'});
+Paloma.Rotues.resource('Users', {controller: 'Admin.Authors'});
 
 
 
