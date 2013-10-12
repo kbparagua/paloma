@@ -1,6 +1,11 @@
-window.Paloma = window.Paloma || {};
+(function(Paloma){
 
-(function(P){
+  Paloma._controllerFactory = new Paloma.ControllerFactory();
+
+  Paloma.controller = function(name){
+    return Paloma._controllerFactory.get(name) ||
+            Paloma._controllerFactory.make(name);
+  };
 
 
 

@@ -1,0 +1,1 @@
+window.Paloma = window.Paloma || {};

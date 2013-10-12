@@ -17,7 +17,10 @@
         controller = actioned[0],
         action = actioned.length == 1 ? null : actioned.pop();
 
-    return {namespaces: namespaces,
+    var controllerPath = namespaces.concat([controller]);
+
+    return {controllerPath: controllerPath,
+            namespaces: namespaces,
             controller: controller,
             action: action};
   };
