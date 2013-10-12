@@ -193,6 +193,10 @@ A request for `first_action` will lead to 2 redirects until it reaches the `thir
 
 For example: `render "something.js.erb"`
 
-## Credits
 
-* [Karl Bryan Paragua](http://www.karlparagua.com)
+## Where to put code?
+
+Again, Paloma is now flexible and doesn't force developers to follow specific folder structure.
+You have the freedom to create controllers and routes anywhere in your javascript code. 
+
+Personally, I prefer having a `routes.js` file to contain all the route declaration, and a javascript file for each controller.
