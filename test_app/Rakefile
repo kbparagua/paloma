@@ -4,4 +4,8 @@
 
 require File.expand_path('../config/application', __FILE__)
 
+if ['development', 'test'].include?(Rails.env)
+  require 'rspec/core/rake_task'
+end
+
 TestApp::Application.load_tasks

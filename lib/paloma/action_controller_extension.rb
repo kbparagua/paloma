@@ -24,23 +24,20 @@ module Paloma
       # Use on controllers to pass variables to Paloma controller.
       #
       def js params = {}
-        @paloma_params = params
+        session[:paloma_requests].last[:params] = params
       end
 
 
       #
       # Executed every time a controller action is executed.
       #
-      # Keeps track of what Rails controller/action is executed
-      # and their corresponding Paloma parameters.
+      # Keeps track of what Rails controller/action is executed.
       #
       def track_paloma_request
-        puts 'Tracking Request'
         resource = controller_path.split('/').map(&:titleize).join('.')
 
         paloma_request = {:resource => resource,
-                          :action => self.action_name,
-                          :params => @paloma_params}
+                          :action => self.action_name}
 
         session[:paloma_requests] ||= []
         session[:paloma_requests].push paloma_request

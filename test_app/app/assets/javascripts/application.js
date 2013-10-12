@@ -15,38 +15,64 @@
 //= require paloma
 //= require_tree .
 
+
+// Will be manipulated by Paloma controllers.
+window.called = [];
+
+
+
+
+
+//
+//
+// Routes
+//
+//
 var router = Paloma.router;
 
-router.resource('RailsUser', {controller: 'User'});
-router.redirect('RailsUser#revise', {to: 'User#edit'});
+router.resource('Foo', {controller: 'MyFoo'});
+router.redirect('Foo#new', {to: 'AnotherFoo#build'});
 
 
-var User = Paloma.controller('User');
 
-User.prototype.edit = function(){
-  alert('Going to edit User ' + this.params['id']);
+
+//
+//
+// Controllers
+//
+//
+var Main = Paloma.controller('Main');
+
+Main.prototype.index = function(){
+  window.called.push('Main#index');
 };
 
 
-User.prototype.update = function(){
-  alert('Going to update User with name = ' + this.params['name']);
+
+var MyFoo = Paloma.controller('MyFoo');
+
+MyFoo.prototype.index = function(){
+  window.called.push('MyFoo#index');
 };
 
 
-Paloma.controller('Main').prototype.index = function(){
-  //console.log('main');
-  alert('main');
+MyFoo.prototype.show = function(){
+  window.called.push('MyFoo#show');
+  window.parameter = this.params.parameter;
 };
 
-/*
-Paloma.engine.requests.push({resource: 'RailsUser', action: 'revise', params: {id: 23}});
-Paloma.engine.requests.push({resource: 'RailsUser', action: 'revise', params: {id: 99}});
-
-Paloma.engine.requests.push({resource: 'User', action: 'update', params: {name: 'Shibalboy'}});
-
-Paloma.engine.requests.push({resource: 'Article', action: 'new'});
 
 
-Paloma.engine.start();
+var AnotherFoo = Paloma.controller('AnotherFoo');
 
-*/
+AnotherFoo.prototype.build = function(){
+  window.called.push('AnotherFoo#build');
+};
+
+
+
+var Bar = Paloma.controller('Admin/Bar');
+
+Bar.prototype.show = function(){
+  window.called.push('Admin/Bar#show');
+};
