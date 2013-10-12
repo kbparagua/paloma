@@ -15,6 +15,8 @@
 //= require paloma
 //= require_tree .
 
+Paloma.config.ignoreMissingController = false;
+
 var router = Paloma.router;
 
 router.resource('RailsUser', {controller: 'User'});
@@ -33,6 +35,12 @@ User.prototype.update = function(){
 };
 
 
+Paloma.controller('Main').prototype.index = function(){
+  //console.log('main');
+  alert('main');
+};
+
+/*
 Paloma.engine.requests.push({resource: 'RailsUser', action: 'revise', params: {id: 23}});
 Paloma.engine.requests.push({resource: 'RailsUser', action: 'revise', params: {id: 99}});
 
@@ -40,4 +48,7 @@ Paloma.engine.requests.push({resource: 'User', action: 'update', params: {name: 
 
 Paloma.engine.requests.push({resource: 'Article', action: 'new'});
 
+
 Paloma.engine.start();
+
+*/

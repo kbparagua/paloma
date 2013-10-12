@@ -1,5 +1,11 @@
 (function(Paloma){
 
+  Paloma.config = {};
+
+  // Defaults
+  Paloma.config.ignoreMissingController = true;
+
+
   Paloma.router = new Paloma.Router({namespace: '/', action: '#'});
 
 
@@ -51,7 +57,7 @@
       console.log('mapping <' + request.resource + '> to controller <' + controllerName + '>');
       console.log('mapping action <' + request.action + '> to controller action <' + action + '>');
 
-      var Controller = Paloma.controller(controllerName);
+      var Controller = Paloma._controllerFactory.get(controllerName);
 
       if (!Controller){
         return console.error('Paloma: undefined controller -> ' + controllerName);

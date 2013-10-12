@@ -39,3 +39,7 @@ controller.prototype.edit = function(){
 
 
 var adminAuthorController = Paloma.Controller.register('Admin.Authors');
+
+
+
+js :x => 1, :y => 2

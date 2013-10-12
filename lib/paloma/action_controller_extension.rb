@@ -1,22 +1,16 @@
 module Paloma
 
-  # TODO explain!
-  module ::ActionController::Flash
-    alias_method :original_redirect_to, :redirect_to
-  end
-
-
 
   module ActionControllerExtension
 
     def self.included base
+      base.send :include, InstanceMethods
+
       base.module_eval do
         prepend_view_path "#{Paloma.root}/app/views/"
 
-        # Enable paloma on all controller action by default
-        before_filter :js
-
-        after_filter :update_callback, :if => :html_response_from_render?
+        before_filter :track_paloma_request
+        after_filter :append_paloma_hook, :if => :html_response_from_render?
       end
     end
 
@@ -24,117 +18,68 @@ module Paloma
 
 
 
-  protected
+    module InstanceMethods
 
-
-
-    # Save
-    def redirect_js_hook options = {}, response_status_and_flash = {}
-      push_current_callback
-      original_redirect_to options, response_status_and_flash
-    end
-    alias_method :redirect_to, :redirect_js_hook
-
-
-    #
-    # js false
-    # js :new, :params => {}
-    # js :resource => 'Namespace.Resource', :action => 'testAction', :params => {}
-    # js :params => {}
-    #
-    def js options = {}, extras = {}
-      # default resource
-      resource_name = controller_path.split('/').map(&:titleize).join('.')
-      callback = {:resource => resource_name, :action => self.parse_action, :params => {}}
-
-      if options.is_a? Hash
-        callback = options if options[:resource].present? && options[:action].present?
-
-      elsif options.is_a? Symbol
-        callback[:action] = self.parse_action(options)
-
-      elsif options.is_a? FalseClass
-        callback = nil
+      #
+      # Use on controllers to pass variables to Paloma controller.
+      #
+      def js params = {}
+        @paloma_params = params
       end
 
-      # Include rails request details
-      if callback.present?
-        controller_detail = controller_path.split('/')
-        callback[:params][:rails] = {:controller => controller_detail.pop,
-                                      :namespace => controller_detail.pop,
-                                      :action => self.action_name,
-                                      :controllerPath => self.controller_path}
+
+      #
+      # Executed every time a controller action is executed.
+      #
+      # Keeps track of what Rails controller/action is executed
+      # and their corresponding Paloma parameters.
+      #
+      def track_paloma_request
+        puts 'Tracking Request'
+        resource = controller_path.split('/').map(&:titleize).join('.')
+
+        paloma_request = {:resource => resource,
+                          :action => self.action_name,
+                          :params => @paloma_params}
+
+        session[:paloma_requests] ||= []
+        session[:paloma_requests].push paloma_request
       end
 
-      self.current_callback = callback
+
+      #
+      # Before rendering html reponses,
+      # this is exectued to append Paloma's html hook to the response.
+      #
+      # The html hook contains the javascript code that
+      # will execute the tracked Paloma requests.
+      #
+      def append_paloma_hook
+        hook = view_context.render(
+                  :partial => 'paloma/hook',
+                  :locals => {:requests => session[:paloma_requests]})
+
+        before_body_end_index = response_body[0].rindex('</body>')
+
+        # Append the hook after the body tag if it is present.
+        if before_body_end_index.present?
+          before_body = response_body[0][0, before_body_end_index].html_safe
+          after_body = response_body[0][before_body_end_index..-1].html_safe
+
+          response.body = before_body + hook + after_body
+        else
+          # If body tag is not present, append hook in the response body
+          response.body += hook
+        end
+
+        session[:paloma_requests] = nil
+      end
     end
 
 
     def html_response_from_render?
       [nil, 'text/html'].include?(response.content_type) && self.status != 302
     end
-
-
-    def update_callback
-      return clear_callbacks if self.current_callback.nil?
-
-      push_current_callback
-
-      paloma_txt = view_context.render(
-                      :partial => "paloma/callback_hook",
-                      :locals => {:callbacks => self.callbacks})
-
-
-      before_body_end_index = response_body[0].rindex('</body>')
-
-      if before_body_end_index.present?
-        before_body_end_content = response_body[0][0, before_body_end_index].html_safe
-        after_body_end_content = response_body[0][before_body_end_index..-1].html_safe
-
-        response_body[0] = before_body_end_content + paloma_txt + after_body_end_content
-
-        response.body = response_body[0]
-      else
-        # If body tag is not present, append paloma_txt in the response body
-        response_body[0] += paloma_txt
-        response.body = response_body[0]
-      end
-
-      clear_callbacks
-    end
-
-
-    def push_current_callback
-      session[:callbacks] ||= []
-      session[:callbacks].push(self.current_callback) if self.current_callback.present?
-    end
-
-
-    def callbacks
-      session[:callbacks]
-    end
-
-
-    def clear_callbacks
-      session[:callbacks] = []
-    end
-
-
-    def current_callback= callback
-      @__paloma_callback__ = callback
-    end
-
-
-    def current_callback
-      @__paloma_callback__
-    end
-
-
-    def parse_action action = nil
-      action ||= self.action_name
-      action.camelize(:lower)
-    end
-
   end
 
 
