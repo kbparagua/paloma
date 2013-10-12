@@ -38,7 +38,11 @@
 
 
   var createConstructor = function(){
-    var constructor = function(params){ this.params = params; };
+    var constructor = function(params){ this.params = params; }
+
+    $.extend(constructor, Paloma.Controller);
+    $.extend(constructor.prototype, Paloma.Controller.prototype);
+
     return constructor;
   };
 
