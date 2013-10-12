@@ -15,8 +15,6 @@
 //= require paloma
 //= require_tree .
 
-Paloma.config.ignoreMissingController = false;
-
 var router = Paloma.router;
 
 router.resource('RailsUser', {controller: 'User'});
