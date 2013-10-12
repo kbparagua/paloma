@@ -104,8 +104,6 @@ describe('Paloma.Router', function(){
       it('returns action of the redirect', function(){
         expect(result.action).toEqual('revise');
       });
-
-      router.reset();
     });
 
 
