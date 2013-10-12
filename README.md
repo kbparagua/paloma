@@ -58,7 +58,6 @@ With bundler, add this to your Gemfile:
 gem 'paloma'
 ```
 
-## Setup
 
 Require `paloma` in your `application.js`:
 ```
