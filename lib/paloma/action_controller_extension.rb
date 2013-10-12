@@ -10,7 +10,7 @@ module Paloma
         prepend_view_path "#{Paloma.root}/app/views/"
 
         before_filter :track_paloma_request
-        after_filter :append_paloma_hook, :if => :html_response_from_render?
+        after_filter :append_paloma_hook, :if => :html_is_rendered?
       end
     end
 
@@ -24,6 +24,7 @@ module Paloma
       # Use on controllers to pass variables to Paloma controller.
       #
       def js params = {}
+        return session[:paloma_requests].pop if !params
         session[:paloma_requests].last[:params] = params
       end
 
@@ -52,6 +53,8 @@ module Paloma
       # will execute the tracked Paloma requests.
       #
       def append_paloma_hook
+        return true if session[:paloma_requests].empty?
+
         hook = view_context.render(
                   :partial => 'paloma/hook',
                   :locals => {:requests => session[:paloma_requests]})
@@ -74,8 +77,9 @@ module Paloma
     end
 
 
-    def html_response_from_render?
-      [nil, 'text/html'].include?(response.content_type) && self.status != 302
+    def html_is_rendered?
+      not_redirect = self.status != 302
+      [nil, 'text/html'].include?(response.content_type) && not_redirect
     end
   end
 

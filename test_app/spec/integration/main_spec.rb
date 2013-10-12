@@ -47,6 +47,15 @@ feature 'executing Paloma controller', :js => true do
       end
     end
 
+
+    context 'when js(false) is triggered' do
+      it 'does not append paloma hook' do
+        visit edit_foo_path(1)
+
+        page.should_not have_selector '.js-paloma-hook'
+      end
+    end
+
   end
 
 end

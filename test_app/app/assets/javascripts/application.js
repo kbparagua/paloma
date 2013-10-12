@@ -62,6 +62,11 @@ MyFoo.prototype.show = function(){
 };
 
 
+MyFoo.prototype.edit = function(){
+  window.called.push('MyFoo#edit');
+};
+
+
 
 var AnotherFoo = Paloma.controller('AnotherFoo');
 
