@@ -8,15 +8,24 @@ It is now simpler and it also gives more flexibility to the developers. Simplici
 
 All the generator shits are also gone. So developers need not to follow specific folder structure or file name. And since there's no generated files or whatsoever, you can now code in vanilla javascript or **coffescript**! Yay!
 
+**Basically, Paloma now provides a Controller for your javascript!**
 
 ## Advantages
-* 
 * Choose what specific javascript code to run per page.
 * Easily make ruby variables available on your javascript files.
 
+
 ## Quick Example
 
+Paloma controller.
+
 ```javascript
+var User = Paloma.controller('User');
+
+// Executes when Rails User#new is rendered.
+User.prototype.new = function(){
+   alert('Hello Sexy User!' );
+};
 ```
  
 The Rails controller `app/controllers/users_controller.rb`:
@@ -25,8 +34,6 @@ The Rails controller `app/controllers/users_controller.rb`:
 def UsersController < ApplicationController
     def new
         @user = User.new
-        # No special function to call, the javascript callback will be executed automatically
-        # just for this specific action.
     end
 end
 ```
@@ -39,8 +46,8 @@ Minimum Requirements
 * Rails 3.1 or higher
 
 
-Install
--
+## Install
+
 Without bundler:
 ```
 sudo gem install paloma
@@ -51,107 +58,14 @@ With bundler, add this to your Gemfile:
 gem 'paloma'
 ```
 
-Setup
--
-On setup, the `paloma` folder will be generated in `app/assets/javascripts/` containing its required files. Run:
-``` 
-rails g paloma:setup
-```
+## Setup
 
 Require `paloma` in your `application.js`:
 ```
 //= require paloma
 ```
 
-Basic Directory Structure
--
-`paloma` folder contains the javascript callbacks.
-
-* paloma
-    * [controller]
-        * [action].js
-        * [other_action].js
-    * [other_controller]
-        * [action].js
-        * [other_action].js
-        * [more_action].js
-    * [namespace]
-        * [controller]
-            * [action].js
-     
-Generators
--
-
-1. Generate a controller folder containing its required files: 
-```
-rails g paloma:add [controller]
-```
-    **Example:**
-    ```
-    rails g paloma:add users
-    ```
-
-    **Generates:**
-    * /paloma
-        * /users
-
-
-2. Generate a callback file for a controller's action:
-```
-rails g paloma:add [controller] [action]
-```
-    **Example:**
-    ```
-    rails g paloma:add users new
-    ```
-
-    **Generates:**
-    * /paloma
-        * /users
-            * new.js
-
-
-3. Generate multiple callback files:
-```
-rails g paloma:add [controller] [action_1] [action_2] ... [action_n]
-```
-    **Example:**
-    ```
-    rails g paloma:add users new create edit update
-    ```
-
-    **Generates:**
-    * /paloma
-        * /users
-            * new.js
-            * create.js
-            * edit.js
-            * update.js
-
-4. Generate namespaced controller and callbacks:
-```
-rails g paloma:add [namespace]/[controller] [action_1] [action_2] ... [action_n]
-```
-
-    **Example:**
-    ```
-    rails g paloma:add admin/users new
-    ```
-
-    **Generates:**
-    * /paloma
-        * /admin
-            * /users
-                * new.js
-                
-**Notes:** 
-
-* You can directly run `rails g paloma:add [controller] [action]` or `rails g paloma:add [namespace]/[controller] [action]` even the controller folder is not yet 
-existing on `paloma` folder. It will be created automatically.
-
-* Controller folder and action javascript files will automatically be created after running `rails g controller` or `rails g scaffold`.
-
-Advanced Callbacks
+# Advanced Callbacks
 -
 By default Paloma will execute the callback that matches the current controller and action if it finds one.
 For instance, if the current response is from the `new` action of the `Users` controller, then Paloma will try to execute `callbacks['users']['new']` if it exists.
