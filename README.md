@@ -32,7 +32,7 @@ Paloma controller.
 ```javascript
 var UsersController = Paloma.controller('Users');
 
-// Executes when Rails User#new is rendered.
+// Executes when Rails User#new is executed.
 UsersController.prototype.new = function(){
    alert('Hello Sexy User!' );
 };
@@ -43,6 +43,7 @@ The Rails controller `app/controllers/users_controller.rb`:
 ```ruby
 def UsersController < ApplicationController
     def new
+      # no special methods to call
       @user = User.new
     end
 end
@@ -50,86 +51,44 @@ end
 
 That's it! Simply Sexy!
 
-Minimum Requirements
--
+## Minimum Requirements
 * jQuery 1.7 or higher
 * Rails 3.1 or higher
 
 
 ## Install
 
-Without bundler:
-```
-sudo gem install paloma
-```
-
-With bundler, add this to your Gemfile:
-```
-gem 'paloma'
-```
+* Without bundler: `sudo gem install paloma`.
+* With bundler, add this to your Gemfile: `gem 'paloma'`
+* Require `paloma` in your `application.js`: `//= require paloma`
 
 
-Require `paloma` in your `application.js`:
-```
-//= require paloma
-```
+## Controllers
+
+Controllers are just classes that handles responses from Rails Controllers. Each Rails Controller's action will be mapped to a specific Paloma Controller's action.
 
 
-## Router
+### Creating a Controller
 
-Router is responsible for mapping Rails controller/action to its equivalent Paloma controller/action.
-
-By default all Rails controller/action will be mapped with a Paloma controller/action with the same resource name (controller name without the `Controller` suffix).
-
-Example:
-* Response from `UsersController#new` will be mapped to `Users` Paloma controller and execute its `new` method.
-
-### Changing Controller
-
-If you want to use a different Paloma Controller for a specific Rails controller, you can do the following:
+A Controller constructor is created or accessed, if it already exists, using `Paloma.controller()` method.
 
 ```javascript
-// Instead of mapping Rails UsersController to Paloma Users
-// it will be mapped to AdminUsers.
-Paloma.router.resource('Users', {controller: 'AdminUsers'});
-```
-
-### Redirecting
-
-You can also redirect an action if you want it to be handled by a different method.
-
-```javascript
-// Instead of executing Paloma's `Users#new` it will execute
-// `Registrations#signUp`.
-Paloma.router.redirect('Users#new', {to: 'Registrations#signUp');
-```
-
-## Controller
-
-Controller handles responses from Rails. A new controller instance is created by Paloma for every Rails controller/action that is executed.
-
-### Creating Controller
-
-A Controller is created or accessed (if already existing) using:
-
-```javascript
-Paloma.controller('ControllerName');
+var MyController = Paloma.controller('MyController');
 ``` 
 
-It returns the constructor of your controller. It is just a normal constructor so you can do your OOP stuff.
+It will return the constructor function of your controller.
 
 
-### Creating actions
+### Handling Actions
 
-Add instance methods to you Controller constructor to handle actions.
-
+Every time a request to Paloma is made (A Rails Controller action is executed), an instance of a Paloma controller is created and a method responsible for the request will be invoked.
+ 
 ```javascript
 var ArticlesController = Paloma.controller('ArticlesController');
 
 ArticlesController.prototype.new = function(){
   // Handle new articles
 };
-
 
 ArticlesController.prototype.edit = function(){
   // Handle edit articles
@@ -138,7 +97,7 @@ ArticlesController.prototype.edit = function(){
 
 ## Passing Parameters
 
-You can also pass parameters to Paloma by calling `js` before render in your Rails controller. You can access the parameters on your Paloma controller using `this.params` object.
+You can also pass parameters to a Paloma Controller by calling `js` **before** render in your Rails controller. You can access the parameters on your Paloma Controller using `this.params` object.
 
 **Example:**
 
@@ -155,7 +114,6 @@ end
 Paloma controller.
 
 ```javascript
-
 var UsersController = Paloma.controller('Users');
 
 UsersController.prototype.destroy = function(){
@@ -163,9 +121,9 @@ UsersController.prototype.destroy = function(){
 };
 ```
 
-## Preventing Paloma
+## Preventing Paloma Execution
 
-If you want to prevent Paloma from executing in a certain Rails controller action you can do it by passing `false` to `js` command.
+If you want to Paloma not to execute in a specific Rails Controller action you need to pass `false` as the Paloma parameter.
 
 ```ruby
 def edit
@@ -176,26 +134,59 @@ end
 
 ## Execution Chains
 
-Chains are created after a redirect action. The chain will continue to increase its length until a render action is detected.
+A Paloma request is created every time a Rails Controller action is executed. All requests will be recorded until a render action is triggered, and all Paloma requests will be processed following FIFO (First In, First Out) method.
 
 **Example:**
 
 ```ruby
 def first_action
+    # Paloma request will be created
     redirect_to second_action_path
 end
 
 def second_action
+    # Paloma request will be created
     redirect_to third_action_path
 end
 
 def third_action
+    # Paloma request will be created
     render :template => 'third_action_view'
 end
 ```
 
-A request for `first_action` will lead to 2 redirects until it reaches the `third_action` and renders a result on the browser. When the `third_action` renders its response, Paloma will process all the request starting from `first_action` up to `third_action`.
+When the `third_action` renders its response, Paloma will process all the request starting from `first_action` up to `third_action`. So, Paloma Controller actions responsible for those 3 Rails actions will be executed.
 
+## Router
+
+Router is responsible for mapping Rails Controller/action to its equivalent Paloma Controller/action.
+
+By default all Rails Controller will be mapped with a Paloma Controller with the same resource name (controller name without the `Controller` suffix).
+
+Example:
+* Requests from `UsersController#new` will be mapped to Paloma Controller named `Users` with its `new` method.
+
+If you have no problem with the default behavior, you don't need to write Router stuff in your code.
+
+### Changing Controller
+
+If you want to use a different Paloma Controller for a specific Rails Controller, you can do the following:
+
+```javascript
+// Instead of mapping Rails UsersController to Paloma Users Controller
+// it will be mapped to AdminUsers.
+Paloma.router.resource('Users', {controller: 'AdminUsers'});
+```
+
+### Redirecting
+
+You can also redirect an action if you want it to be handled by a different method.
+
+```javascript
+// Instead of executing Paloma's `Users#new` it will execute
+// `Registrations#signUp`.
+Paloma.router.redirect('Users#new', {to: 'Registrations#signUp');
+```
 
 ## Gotchas
 
@@ -206,7 +197,7 @@ For example: `render "something.js.erb"`
 
 ## Where to put code?
 
-Again, Paloma is now flexible and doesn't force developers to follow specific folder structure.
-You have the freedom to create controllers and routes anywhere in your javascript code. 
+Again, Paloma is now flexible and doesn't force developers to follow specific directory structure.
+You have the freedom to create controllers and routes anywhere in your application.
 
-Personally, I prefer having a `routes.js` file to contain all the route declaration, and a javascript file for each controller.
+Personally, I prefer having a `routes.js` file to contain all the route declarations, and a javascript file for each controller.
