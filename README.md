@@ -73,7 +73,7 @@ Controllers are just classes that handle requests made by Rails Controllers. Eac
 A Controller constructor is created or accessed, if it already exists, using `Paloma.controller()` method.
 
 ```javascript
-var MyController = Paloma.controller('MyController');
+var ArticlesController = Paloma.controller('Articles');
 ``` 
 
 It will return the constructor function of your controller.
@@ -84,7 +84,7 @@ It will return the constructor function of your controller.
 Every time a request to Paloma is made (A Rails Controller action is executed), an instance of a Paloma controller is created and a method responsible for the request will be invoked.
  
 ```javascript
-var ArticlesController = Paloma.controller('ArticlesController');
+var ArticlesController = Paloma.controller('Articles');
 
 ArticlesController.prototype.new = function(){
   // Handle new articles
