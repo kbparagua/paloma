@@ -1,17 +1,19 @@
 # Paloma
 
-**This README is for Paloma 3.
+**This README is for Paloma 3 only. 
 For version 2 README please go [here](https://github.com/kbparagua/paloma/blob/2.0/README.md).**
 
 
 ## What's New?
-Paloma (version 3) is almost a complete rewrite of the old version.
+Paloma 3 is almost a complete rewrite of the old version.
 
-It is now simpler and it also gives more flexibility to the developers. Simplicity and flexibility are achieved by replacing the old callback thingy paradigm by a combination of `Router` and `Controller` components.
+It is now simpler and more flexible. The old callback thingy paradigm is replaced by a `Router` and `Controller` layer for better abstraction. Generators are also removed, so programmers need not to follow specific directory structure, unlike in the old versions.
 
-All the generator shits are also gone. So developers need not to follow specific folder structure or file name. And since there's no generated files or whatsoever, you can now code in vanilla javascript or **coffescript**! Yay!
+Previously, there are generators that create Paloma files, and these files are written in vanilla javascript. Because of that there are some users who are requesting for coffeescript setup. Now since there are no generated files programmers can write their code either by using vanilla javascript or **coffeescript**. Yay!
 
-**Basically, Paloma now provides a Controller for your javascript!**
+### Controller and Router
+The new paradigm is pattered after Rails Controller and Routes, so it is easier to grasp than the old callback paradigm. Basically, you have a Paloma Controller that is responsible for processing responses from Rails Controller. While the Router is responsible for telling what Paloma Controller handles what Rails Controller, or what Paloma Controller's action handles what Rails Controller's action. 
+
 
 ## Advantages
 * Choose what specific javascript code to run per page.
