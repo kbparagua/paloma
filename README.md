@@ -15,6 +15,11 @@ Previously, there are generators that create Paloma files, and these files are w
 The new paradigm is pattered after Rails Controller and Routes, so it is easier to grasp than the old callback paradigm. Basically, you have a Paloma Controller that is responsible for processing responses from Rails Controller. While the Router is responsible for telling what Paloma Controller handles what Rails Controller, or what Paloma Controller's action handles what Rails Controller's action. 
 
 
+### How about Model and View?
+
+It is tempting to convert Paloma 3 to a full-blown MVC or MVP (or whatever) framework. But I've decided to keep it simple and just provide a Controller component as way to catch Rails responses and give developers freedom on how to process those responses. So you can still have your own Model and View components and just use them in your Paloma Controllers.
+
+
 ## Advantages
 * Choose what specific javascript code to run per page.
 * Easily make ruby variables available on your javascript files.
