@@ -12,12 +12,12 @@ It is now simpler and more flexible. The old callback thingy paradigm is replace
 Previously, there are generators that create Paloma files, and these files are written in vanilla javascript. Because of that there are some users who are requesting for coffeescript setup. Now since there are no generated files programmers can write their code either by using vanilla javascript or **coffeescript**. Yay!
 
 ### Controller and Router
-The new paradigm is pattered after Rails Controller and Routes, so it is easier to grasp than the old callback paradigm. Basically, you have a Paloma Controller that is responsible for processing responses from Rails Controller. While the Router is responsible for telling what Paloma Controller handles what Rails Controller, or what Paloma Controller's action handles what Rails Controller's action. 
+The new paradigm is pattered after Rails Controller and Routes, so it is easier to grasp than the old callback paradigm. Basically, you have a Paloma Controller that is responsible for processing requests made from Rails Controller. While the Router is responsible for telling what Paloma Controller handles what Rails Controller, or what Paloma Controller's action handles what Rails Controller's action. 
 
 
 ### How about Model and View?
 
-It is tempting to convert Paloma 3 to a full-blown MVC or MVP (or whatever) framework. But I've decided to keep it simple and just provide a Controller component as way to catch Rails responses and give developers freedom on how to process those responses. So you can still have your own Model and View components and just use them in your Paloma Controllers.
+It is tempting to convert Paloma 3 to a full-blown MVC or MVP (or whatever) framework. But I've decided to keep it simple and just provide a Controller component as way to execute a specific javascript code per Rails Controller action and give developers freedom on how to handle each action. So you can still have your own Model and View components and just use them in your Paloma Controllers, since a controller is just a middle-man.
 
 
 ## Advantages
@@ -43,7 +43,7 @@ The Rails controller `app/controllers/users_controller.rb`:
 ```ruby
 def UsersController < ApplicationController
     def new
-      # no special methods to call
+      # a Paloma request will automatically be created.
       @user = User.new
     end
 end
@@ -65,7 +65,7 @@ That's it! Simply Sexy!
 
 ## Controllers
 
-Controllers are just classes that handles responses from Rails Controllers. Each Rails Controller's action will be mapped to a specific Paloma Controller's action.
+Controllers are just classes that handle requests made by Rails Controllers. Each Rails Controller's action will be mapped to a specific Paloma Controller's action.
 
 
 ### Creating a Controller
