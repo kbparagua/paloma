@@ -35,7 +35,7 @@ module Paloma
       # Keeps track of what Rails controller/action is executed.
       #
       def track_paloma_request
-        resource = controller_path.split('/').map(&:titleize).join('/')
+        resource = controller_path.split('/').map(&:classify).join('/')
 
         paloma_request = {:resource => resource,
                           :action => self.action_name}
@@ -80,6 +80,18 @@ module Paloma
     def html_is_rendered?
       not_redirect = self.status != 302
       [nil, 'text/html'].include?(response.content_type) && not_redirect
+    end
+
+
+    #
+    # Make sure not to execute paloma on the following response type
+    #
+    def render options = nil, extra_options = {}, &block
+      [:json, :js, :xml, :file].each do |format|
+        js false if options.has_key?(format)
+      end if options.is_a?(Hash)
+
+      super
     end
   end
 

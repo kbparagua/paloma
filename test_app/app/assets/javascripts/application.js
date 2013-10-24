@@ -81,3 +81,13 @@ var Bar = Paloma.controller('Admin/Bar');
 Bar.prototype.show = function(){
   window.called.push('Admin/Bar#show');
 };
+
+
+
+
+
+var MultipleName = Paloma.controller('MultipleName');
+
+MultipleName.prototype.index = function(){
+  window.called.push('MultipleName#index')
+};

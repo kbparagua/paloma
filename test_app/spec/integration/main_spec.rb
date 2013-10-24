@@ -56,6 +56,53 @@ feature 'executing Paloma controller', :js => true do
       end
     end
 
+
+    context 'when requests from a controller with multiple name' do
+      it 'executes the corresponding Paloma action' do
+        visit multiple_names_path
+
+        called = page.evaluate_script 'window.called.pop()'
+
+        expect(called).to eq 'MultipleName#index'
+      end
+    end
+
+
+    #
+    # [TODO]
+    # Create proper test for the following:
+    #
+
+    context 'when rendering json' do
+      it 'does not execute Paloma' do
+        visit json_response_main_path 1
+        page.should_not have_selector '.js-paloma-hook'
+      end
+    end
+
+
+    context 'when rendering js' do
+      it 'does not execute Paloma' do
+        visit js_response_main_path 1
+        page.should_not have_selector '.js-paloma-hook'
+      end
+    end
+
+
+    context 'when rendering xml' do
+      it 'does not execute Paloma' do
+        visit xml_response_main_path 1
+        page.should_not have_selector '.js-paloma-hook'
+      end
+    end
+
+
+    context 'when rendering a file' do
+      it 'does not execute Paloma' do
+        visit file_response_main_path 1
+        page.should_not have_selector '.js-paloma-hook'
+      end
+    end
   end
 
 end
