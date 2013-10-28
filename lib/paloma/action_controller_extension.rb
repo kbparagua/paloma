@@ -76,10 +76,13 @@ module Paloma
       end
     end
 
-
+    #
+    # Determine if an html view is being rendered
+    #
     def html_is_rendered?
+      remotipart_request = respond_to?('remotipart_submitted?') && remotipart_submitted?
       not_redirect = self.status != 302
-      [nil, 'text/html'].include?(response.content_type) && not_redirect
+      [nil, 'text/html'].include?(response.content_type) && not_redirect && !remotipart_request
     end
 
 
