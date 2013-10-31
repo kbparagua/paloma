@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'paloma'
-  s.version     = '3.0.1'
+  s.version     = '3.0.2'
   s.summary     = "Provides an easy way to execute page-specific javascript for Rails."
   s.description = "Page-specific javascript for Rails done right"
   s.authors     = ['Karl Paragua']
