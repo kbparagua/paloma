@@ -86,8 +86,8 @@ Bar.prototype.show = function(){
 
 
 
-var MultipleName = Paloma.controller('MultipleName');
+var MultipleNames = Paloma.controller('MultipleNames');
 
-MultipleName.prototype.index = function(){
-  window.called.push('MultipleName#index')
+MultipleNames.prototype.index = function(){
+  window.called.push('MultipleNames#index')
 };

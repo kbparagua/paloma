@@ -63,7 +63,7 @@ feature 'executing Paloma controller', :js => true do
 
         called = page.evaluate_script 'window.called.pop()'
 
-        expect(called).to eq 'MultipleName#index'
+        expect(called).to eq 'MultipleNames#index'
       end
     end
 

@@ -35,7 +35,7 @@ module Paloma
       # Keeps track of what Rails controller/action is executed.
       #
       def track_paloma_request
-        resource = controller_path.split('/').map(&:classify).join('/')
+        resource = controller_path.split('/').map(&:titleize).join('/').gsub(' ', '')
 
         paloma_request = {:resource => resource,
                           :action => self.action_name}
