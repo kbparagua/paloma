@@ -132,31 +132,6 @@ def edit
 end
 ```
 
-## Execution Chains
-
-A Paloma request is created every time a Rails Controller action is executed. All requests will be recorded until a render action is triggered, and all Paloma requests will be processed following FIFO (First In, First Out) method.
-
-**Example:**
-
-```ruby
-def first_action
-    # Paloma request will be created
-    redirect_to second_action_path
-end
-
-def second_action
-    # Paloma request will be created
-    redirect_to third_action_path
-end
-
-def third_action
-    # Paloma request will be created
-    render :template => 'third_action_view'
-end
-```
-
-When the `third_action` renders its response, Paloma will process all the request starting from `first_action` up to `third_action`. So, Paloma Controller actions responsible for those 3 Rails actions will be executed.
-
 ## Router
 
 Router is responsible for mapping Rails Controller/action to its equivalent Paloma Controller/action.
