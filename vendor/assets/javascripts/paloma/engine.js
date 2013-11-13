@@ -11,8 +11,8 @@
     for (var i = 0, n = this.requests.length; i < n; i++){
       var request = this.requests[i];
 
-      console.log('Processing request with params:');
-      console.log(request.params);
+      Paloma.log('Processing request with params:');
+      Paloma.log(request.params);
 
       var controllerName = this.router.controllerFor(request.resource),
           action = request.action,
@@ -23,8 +23,8 @@
         action = redirect['action'];
       }
 
-      console.log('mapping <' + request.resource + '> to controller <' + controllerName + '>');
-      console.log('mapping action <' + request.action + '> to controller action <' + action + '>');
+      Paloma.log('mapping <' + request.resource + '> to controller <' + controllerName + '>');
+      Paloma.log('mapping action <' + request.action + '> to controller action <' + action + '>');
 
       var Controller = this.factory.get(controllerName);
 

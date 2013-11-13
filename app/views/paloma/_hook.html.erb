@@ -10,6 +10,8 @@
         return true;
       }
 
+      Paloma.env = '<%= Rails.env %>';
+
       // Remove any callback details if any
       $('.js-paloma-hook[data-id!=' + <%= id %> + ']').remove();
 
