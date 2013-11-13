@@ -16,11 +16,6 @@ feature 'executing Paloma controller', :js => true do
     context 'coming from a redirect' do
       before { visit foo_index_path }
 
-      it 'executes first the Paloma action of the first Rails action' do
-        first = page.evaluate_script 'window.called[0]'
-        expect(first).to eq 'MyFoo#index'
-      end
-
       it 'executes next the Paloma action of the last Rails action' do
         last = page.evaluate_script 'window.called.pop()'
         expect(last).to eq 'Main#index'
