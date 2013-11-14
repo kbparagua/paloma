@@ -5,12 +5,34 @@ module Paloma
 
     def self.included base
       base.send :include, InstanceMethods
+      base.send :extend, ClassMethods
+
 
       base.module_eval do
         prepend_view_path "#{Paloma.root}/app/views/"
 
         before_filter :track_paloma_request
         after_filter :append_paloma_hook, :if => :html_is_rendered?
+      end
+    end
+
+
+
+
+
+    module ClassMethods
+
+      #
+      # Controller wide setting for Paloma.
+      #
+
+      def js path_or_params, params = {}
+        @__paloma_settings = {:path_or_params => path_or_params, :params => params}
+      end
+
+
+      def paloma_settings
+        @__paloma_settings
       end
     end
 
@@ -53,11 +75,10 @@ module Paloma
           @__paloma_request[:action] = path_or_params
 
         elsif path_or_params.is_a? Hash
-          @__paloma_request[:params] = path_or_params
+          self.set_paloma_params path_or_params
         end
 
-
-        @__paloma_request[:params] ||= params
+        self.set_paloma_params params
       end
 
 
@@ -70,6 +91,12 @@ module Paloma
         resource = controller_path.split('/').map(&:titleize).join('/').gsub(' ', '')
 
         @__paloma_request = {:resource => resource, :action => self.action_name}
+
+        #
+        # Apply controller wide settings if any
+        #
+        return if self.class.paloma_settings.nil?
+        self.js self.class.paloma_settings[:path_or_params], self.class.paloma_settings[:params]
       end
 
 
@@ -102,6 +129,12 @@ module Paloma
 
         @__paloma_request = nil
       end
+    end
+
+
+    def set_paloma_params params
+      @__paloma_request[:params] ||= {}
+      @__paloma_request[:params].merge! params
     end
 
 
