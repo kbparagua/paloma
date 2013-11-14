@@ -21,11 +21,43 @@ module Paloma
     module InstanceMethods
 
       #
-      # Use on controllers to pass variables to Paloma controller.
       #
-      def js params = {}
-        return @__paloma_request = nil if !params
-        @__paloma_request[:params] = params
+      # Specify the behavior of Paloma.
+      #
+      # Can call a different Controller or execute a different action, and
+      # pass parameters.
+      #
+      # Usage:
+      #
+      #   js 'Controller', {params}
+      #   js 'Controller#action', {params}
+      #   js 'Namespace/Controller', {params}
+      #   js 'Namespace/Controller#action', {params}
+      #   js '#action', {params}
+      #   js :action, {params}
+      #   js :param_1 => 1, :param_2 => 2
+      #
+      #
+      def js path_or_params, params = {}
+        return @__paloma_request = nil if !path_or_params
+
+        if path_or_params.is_a? String
+          path = path_or_params.split '#'
+          resource = path.first
+          action = path.length != 1 ? path.last : nil
+
+          @__paloma_request[:resource] = resource unless resource.blank?
+          @__paloma_request[:action] = action unless action.blank?
+
+        elsif path_or_params.is_a? Symbol
+          @__paloma_request[:action] = path_or_params
+
+        elsif path_or_params.is_a? Hash
+          @__paloma_request[:params] = path_or_params
+        end
+
+
+        @__paloma_request[:params] ||= params
       end
 
 
