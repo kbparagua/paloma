@@ -26,8 +26,8 @@ module Paloma
       # Controller wide setting for Paloma.
       #
 
-      def js path_or_params, params = {}
-        @__paloma_settings = {:path_or_params => path_or_params, :params => params}
+      def js path_or_options, params = {}
+        @__paloma_settings = {:path_or_options => path_or_options, :params => params}
       end
 
 
@@ -60,25 +60,54 @@ module Paloma
       #   js :param_1 => 1, :param_2 => 2
       #
       #
-      def js path_or_params, params = {}
-        return @__paloma_request = nil if !path_or_params
+      def js path_or_options, options = {:params => {}, :only => {}, :except => {}}
+        options ||= {}
 
-        if path_or_params.is_a? String
-          path = path_or_params.split '#'
+        # js false, options
+        stop = self.try_paloma_stop(path_or_options, options) if !path_or_options
+        return if stop
+
+
+        if path_or_options.is_a? String
+          path = path_or_options.split '#'
           resource = path.first
           action = path.length != 1 ? path.last : nil
 
           @__paloma_request[:resource] = resource unless resource.blank?
           @__paloma_request[:action] = action unless action.blank?
 
-        elsif path_or_params.is_a? Symbol
-          @__paloma_request[:action] = path_or_params
+        elsif path_or_options.is_a? Symbol
+          @__paloma_request[:action] = path_or_options
 
-        elsif path_or_params.is_a? Hash
-          self.set_paloma_params path_or_params
+        elsif path_or_options.is_a? Hash
+          self.set_paloma_params path_or_options[:params]
         end
 
-        self.set_paloma_params params
+        self.set_paloma_params options[:params] || {}
+      end
+
+
+
+      def try_paloma_stop path_or_options, options = {}
+        current_action = @__paloma_request[:action]
+        valid_action = true
+
+        if options[:only].present?
+          valid_action = options[:only].include?(current_action.to_sym) ||
+                          options[:only].include?(current_action.to_s)
+        end
+
+        if options[:except].present?
+          valid_action = !options[:except].include?(current_action.to_sym) ||
+                          !options[:except].include?(current_action.to_s)
+        end
+
+        if valid_action
+          @__paloma_request = nil
+          return true
+        end
+
+        false
       end
 
 
@@ -96,7 +125,7 @@ module Paloma
         # Apply controller wide settings if any
         #
         return if self.class.paloma_settings.nil?
-        self.js self.class.paloma_settings[:path_or_params], self.class.paloma_settings[:params]
+        self.js self.class.paloma_settings[:path_or_options], self.class.paloma_settings[:params]
       end
 
 

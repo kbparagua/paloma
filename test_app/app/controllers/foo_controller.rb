@@ -6,7 +6,7 @@ class FooController < ApplicationController
 
 
   def show
-    js :parameter => 'Parameter From Paloma'
+    js :params => {:parameter => 'Parameter From Paloma'}
     render :inline => '<h1>Foo#show</h1>', :layout => 'application'
   end
 
