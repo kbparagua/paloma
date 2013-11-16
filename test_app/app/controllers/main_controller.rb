@@ -1,6 +1,10 @@
 class MainController < ApplicationController
 
+  js false, :except => [:index]
+
+
   def index
+    js :params => {:z => 2}
     render :inline => 'Main#index', :layout => 'application'
   end
 
