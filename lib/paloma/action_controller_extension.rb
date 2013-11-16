@@ -61,53 +61,21 @@ module Paloma
       #
       #
       def js path_or_options, options = {:params => {}, :only => {}, :except => {}}
-        options ||= {}
+        return if !path_or_options && self.paloma.attempt_clear_request!(options)
 
-        # js false, options
-        stop = self.try_paloma_stop(path_or_options, options) if !path_or_options
-        return if stop
-
+        self.paloma.params.merge! options[:params] || {}
 
         if path_or_options.is_a? String
-          path = path_or_options.split '#'
-          resource = path.first
-          action = path.length != 1 ? path.last : nil
-
-          @__paloma_request[:resource] = resource unless resource.blank?
-          @__paloma_request[:action] = action unless action.blank?
+          route = ::Paloma::Utilities.interpret_route path_or_options
+          self.paloma.resource = route[:resource] unless route[:resource].blank?
+          self.paloma.action = route[:action] unless route[:action].blank?
 
         elsif path_or_options.is_a? Symbol
-          @__paloma_request[:action] = path_or_options
+          self.paloma.action = path_or_options
 
         elsif path_or_options.is_a? Hash
-          self.set_paloma_params path_or_options[:params]
+          self.paloma.params.merge! path_or_options[:params] || {}
         end
-
-        self.set_paloma_params options[:params] || {}
-      end
-
-
-
-      def try_paloma_stop path_or_options, options = {}
-        current_action = @__paloma_request[:action]
-        valid_action = true
-
-        if options[:only].present?
-          valid_action = options[:only].include?(current_action.to_sym) ||
-                          options[:only].include?(current_action.to_s)
-        end
-
-        if options[:except].present?
-          valid_action = !options[:except].include?(current_action.to_sym) ||
-                          !options[:except].include?(current_action.to_s)
-        end
-
-        if valid_action
-          @__paloma_request = nil
-          return true
-        end
-
-        false
       end
 
 
@@ -117,15 +85,8 @@ module Paloma
       # Keeps track of what Rails controller/action is executed.
       #
       def track_paloma_request
-        resource = controller_path.split('/').map(&:titleize).join('/').gsub(' ', '')
-
-        @__paloma_request = {:resource => resource, :action => self.action_name}
-
-        #
-        # Apply controller wide settings if any
-        #
-        return if self.class.paloma_settings.nil?
-        self.js self.class.paloma_settings[:path_or_options], self.class.paloma_settings[:params]
+        self.paloma.resource = ::Paloma::Utilities.get_resource controller_path
+        self.paloma.action = self.action_name
       end
 
 
@@ -137,11 +98,11 @@ module Paloma
       # will execute the tracked Paloma requests.
       #
       def append_paloma_hook
-        return true if @__paloma_request.nil?
+        return true if self.paloma.has_no_request?
 
         hook = view_context.render(
                   :partial => 'paloma/hook',
-                  :locals => {:request => @__paloma_request})
+                  :locals => {:request => self.paloma.request})
 
         before_body_end_index = response_body[0].rindex('</body>')
 
@@ -156,14 +117,8 @@ module Paloma
           response.body += hook
         end
 
-        @__paloma_request = nil
+        self.paloma.clear_request
       end
-    end
-
-
-    def set_paloma_params params
-      @__paloma_request[:params] ||= {}
-      @__paloma_request[:params].merge! params
     end
 
 
@@ -178,11 +133,19 @@ module Paloma
     #
     def render options = nil, extra_options = {}, &block
       [:json, :js, :xml, :file].each do |format|
-        js false if options.has_key?(format)
+        self.paloma.clear_request if options.has_key?(format)
       end if options.is_a?(Hash)
 
       super
     end
+
+
+  protected
+
+    def paloma
+      @paloma ||= ::Paloma::Controller.new
+    end
+
   end
 
 
