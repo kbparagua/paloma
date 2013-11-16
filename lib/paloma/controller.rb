@@ -32,8 +32,8 @@ module Paloma
       end
 
       if except.present?
-        clear = except.include?(self.action.to_s) ||
-                except.include?(self.action.to_sym)
+        clear = !(except.include?(self.action.to_s) ||
+                except.include?(self.action.to_sym))
       end
 
       return self.clear_request if clear
