@@ -6,9 +6,14 @@ module Paloma
     end
 
 
-    def self.interpret_route route_string
+    def self.interpret_route route_string = nil
+      raise 'Empty route cannot be interpreted' if route_string.blank?
+
       parts = route_string.split '#'
+
       resource = parts.first
+      resource = resource.blank? ? nil : resource
+
       action = parts.length != 1 ? parts.last : nil
 
       {:resource => resource, :action => action}
