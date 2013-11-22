@@ -29,14 +29,15 @@ module Paloma
       def js path_or_options, options = {}
         options ||= {}
 
-        self.paloma_settings.path_or_options = path_or_options
-        self.paloma_settings.params = options[:params]
-        self.paloma_settings.set_scope :only => options[:only], :except => options[:except]
-      end
+        scope = {}
+        scope[:only] = options[:only] if options[:only]
+        scope[:except] = options[:except] if options[:except]
 
-
-      def paloma_settings
-        @paloma_settings ||= Paloma::Settings.new
+        self.before_filter(
+          Proc.new {
+            self.js path_or_options, options[:params]
+          },
+          scope)
       end
     end
 
@@ -67,7 +68,7 @@ module Paloma
       def js path_or_options, params = {}
         return self.paloma.clear_request if !path_or_options
 
-        self.paloma.params.merge! options[:params] || {}
+        self.paloma.params.merge! params || {}
 
         if path_or_options.is_a? String
           route = ::Paloma::Utilities.interpret_route path_or_options
@@ -79,6 +80,7 @@ module Paloma
 
         elsif path_or_options.is_a? Hash
           self.paloma.params.merge! path_or_options[:params] || {}
+
         end
       end
 
@@ -89,17 +91,6 @@ module Paloma
       # Keeps track of what Rails controller/action is executed.
       #
       def track_paloma_request
-        #
-        # Use controller wide settings if there are.
-        #
-        if self.class.paloma_settings.has_values? &&
-          self.class.paloma_settings.in_scope?(self.action_name)
-
-          self.js(
-            self.class.paloma_settings.path_or_options,
-            self.class.paloma_settings.params)
-        end
-
         self.paloma.resource ||= ::Paloma::Utilities.get_resource controller_path
         self.paloma.action ||= self.action_name
       end
