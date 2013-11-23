@@ -29,14 +29,14 @@
       var Controller = this.factory.get(controllerName);
 
       if (!Controller){
-        console.warn('Paloma: undefined controller -> ' + controllerName);
+        Paloma.warn('Paloma: undefined controller -> ' + controllerName);
         continue;
       }
 
       var controller = new Controller(request.params);
 
       if (!controller[action]){
-        console.warn('Paloma: undefined action <' + action +
+        Paloma.warn('Paloma: undefined action <' + action +
           '> for <' + controllerName + '> controller');
         continue;
       }
