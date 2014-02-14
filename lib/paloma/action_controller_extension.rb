@@ -70,14 +70,23 @@ module Paloma
 
         self.paloma.params.merge! params || {}
 
+        #
+        # 'Controller'
+        # 'Controller#action'
+        # 'Namespace/Controller'
+        # 'Namespace/Controller#action'
+        # '#action'
+        #
         if path_or_options.is_a? String
           route = ::Paloma::Utilities.interpret_route path_or_options
           self.paloma.resource = route[:resource] unless route[:resource].blank?
           self.paloma.action = route[:action] unless route[:action].blank?
 
+        # :action
         elsif path_or_options.is_a? Symbol
           self.paloma.action = path_or_options
 
+        # :param_1 => 1, :param_2 => 2
         elsif path_or_options.is_a? Hash
           self.paloma.params.merge! path_or_options[:params] || {}
 
