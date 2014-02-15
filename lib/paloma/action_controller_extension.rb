@@ -49,7 +49,8 @@ module Paloma
 
       #
       #
-      # Specify the behavior of Paloma.
+      # Specify the behavior of Paloma. Call this manually to override the
+      # default Paloma controller/action to be executed.
       #
       # Can call a different Controller or execute a different action, and
       # pass parameters.
