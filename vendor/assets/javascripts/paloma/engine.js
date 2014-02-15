@@ -2,10 +2,13 @@
 
   var Engine = function(config){
     this.factory = config.factory;
+    this.lastRequest = null;
   };
 
 
   Engine.prototype.request = function(resource, action, params){
+    this.lastRequest = null;
+
     var Controller = this.factory.get(resource);
 
     if (!Controller){
@@ -23,6 +26,7 @@
     Paloma.log(params);
 
     controller[action]();
+    this.lastRequest = {controller: resource, action: action, params: params};
   };
 
 
