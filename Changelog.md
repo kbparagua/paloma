@@ -6,6 +6,7 @@
 * Routing from javascript is removed.
 * Routing from Rails controller is added.
 * Ability to have a controller-wide setting.
+* https://github.com/kbparagua/paloma/issues/29 - Disable `console.log` and `console.warn` for non-development environments.
 
 
 ## Version 3.0.2
