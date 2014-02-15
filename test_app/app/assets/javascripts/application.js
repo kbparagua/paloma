@@ -21,21 +21,6 @@ window.called = [];
 
 
 
-
-
-//
-//
-// Routes
-//
-//
-var router = Paloma.router;
-
-router.resource('Foo', {controller: 'MyFoo'});
-router.redirect('Foo#new', {to: 'AnotherFoo#build'});
-
-
-
-
 //
 //
 // Controllers

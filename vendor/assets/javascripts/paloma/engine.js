@@ -1,62 +1,28 @@
 (function(Paloma){
 
   var Engine = function(config){
-    this.router = config.router;
     this.factory = config.factory;
-    this.restart();
-  };
-
-
-  Engine.prototype.start = function(){
-    for (var i = 0, n = this.requests.length; i < n; i++){
-      var request = this.requests[i];
-
-      Paloma.log('Processing request with params:');
-      Paloma.log(request.params);
-
-      var controllerName = this.router.controllerFor(request.resource),
-          action = request.action,
-          redirect = this.router.redirectFor(request.resource, action);
-
-      if (redirect){
-        controllerName = redirect['controller'];
-        action = redirect['action'];
-      }
-
-      Paloma.log('mapping <' + request.resource + '> to controller <' + controllerName + '>');
-      Paloma.log('mapping action <' + request.action + '> to controller action <' + action + '>');
-
-      var Controller = this.factory.get(controllerName);
-
-      if (!Controller){
-        Paloma.warn('Paloma: undefined controller -> ' + controllerName);
-        continue;
-      }
-
-      var controller = new Controller(request.params);
-
-      if (!controller[action]){
-        Paloma.warn('Paloma: undefined action <' + action +
-          '> for <' + controllerName + '> controller');
-        continue;
-      }
-
-      controller[action]();
-    }
-
-    this.restart();
-  };
-
-
-  Engine.prototype.restart = function(){
-    this.requests = [];
   };
 
 
   Engine.prototype.request = function(resource, action, params){
-    this.requests.push({resource: resource,
-                        action: action,
-                        params: params});
+    var Controller = this.factory.get(resource);
+
+    if (!Controller){
+      return Paloma.warn('Paloma: undefined controller -> ' + resource);
+    }
+
+    var controller = new Controller(params);
+
+    if (!controller[action]){
+      return Paloma.warn('Paloma: undefined action <' + action +
+        '> for <' + resource + '> controller');
+    }
+
+    Paloma.log('Paloma: Execute ' + resource + '#' + action + ' with');
+    Paloma.log(params);
+
+    controller[action]();
   };
 
 

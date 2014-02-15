@@ -17,12 +17,12 @@
 
       var request = <%= request.to_json.html_safe %>;
 
-      Paloma.engine.request(
-        request['resource'],
-        request['action'],
-        request['params']);
-
-      $(document).ready(function(){ Paloma.engine.start(); });
+      $(document).ready(function(){
+        Paloma.engine.request(
+          request['resource'],
+          request['action'],
+          request['params']);
+      });
 
     })();
   </script>
