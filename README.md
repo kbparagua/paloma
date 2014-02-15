@@ -1,3 +1,5 @@
+## This is already deprecated. Please use higher versions!
+
 # Paloma
 
 **This README is for Paloma 3 only. 
