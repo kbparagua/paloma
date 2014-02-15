@@ -57,28 +57,4 @@ feature 'executing Paloma controller', :js => true do
   end
 
 
-
-
-
-  #
-  #
-  # Controller-wide settings
-  #
-  #
-
-  context 'global controller' do
-    before do
-      BarsController.send :js, 'Baz'
-    end
-
-    it 'executes the specified controller' do
-      visit bars_path
-
-      expect(request).to eq({
-        'controller' => 'Baz',
-        'action' => 'index',
-        'params' => {}})
-    end
-  end
-
 end
