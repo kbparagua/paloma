@@ -89,7 +89,7 @@ module Paloma
 
         # :param_1 => 1, :param_2 => 2
         elsif path_or_options.is_a? Hash
-          self.paloma.params.merge! path_or_options[:params] || {}
+          self.paloma.params.merge! path_or_options || {}
 
         end
       end

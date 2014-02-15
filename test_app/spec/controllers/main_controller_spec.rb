@@ -4,9 +4,10 @@ require 'spec_helper'
 describe MainController do
 
   context 'default behavior' do
-    it 'test' do
+    it 'executes the same controller/action pair' do
       get :index
-      raise MainController.instance
+      x = page.evaluate_script 'Paloma.engine.lastRequest'
+      raise x.inspect
     end
   end
 

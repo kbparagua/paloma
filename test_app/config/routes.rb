@@ -5,7 +5,9 @@ TestApp::Application.routes.draw do
   root :to => 'main#index'
 
   resources :main, :controller => 'Main' do
-    member do
+    collection do
+      get :prevent
+      get :basic_params
       get :json_response
       get :js_response
       get :xml_response

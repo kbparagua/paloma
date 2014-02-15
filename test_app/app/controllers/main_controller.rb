@@ -1,13 +1,51 @@
 class MainController < ApplicationController
 
-  js :params => {:y => 300}, :only => :index
-
-
+  # Default behavior
   def index
-    js 'MainShit', :params => {:z => 2}
     render :inline => 'Main#index', :layout => 'application'
   end
 
+
+  # Override controller
+  def show
+    js 'OtherMain'
+    render :inline => 'Main#show', :layout => 'application'
+  end
+
+
+  # Override action
+  def new
+    js :otherAction
+    render :inline => 'Main#new', :layout => 'application'
+  end
+
+
+  # Override controller/action
+  def edit
+    js 'OtherMain#otherAction'
+    render :inline => 'Main#edit', :layout => 'application'
+  end
+
+
+  # Stop paloma from execution
+  def prevent
+    js false
+    render :inline => 'Main#prevent', :layout => 'application'
+  end
+
+
+  def basic_params
+    js :x => 1, :y => 2
+    render :inline => 'Main#basic_params', :layout => 'application'
+  end
+
+
+
+
+
+  #
+  # Non-HTML response
+  #
 
   def json_response
     render :json => {:x => 1}

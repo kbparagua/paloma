@@ -16,21 +16,23 @@
 //= require_tree .
 
 
-// Will be manipulated by Paloma controllers.
-window.called = [];
-
-
 
 //
 //
 // Controllers
 //
 //
-var Main = Paloma.controller('Main');
 
-Main.prototype.index = function(){
-  window.called.push('Main#index');
-};
+var Main = Paloma.controller('Main');
+Main.prototype.index = function(){};
+Main.prototype.otherAction = function(){};
+Main.prototype.prevent = function(){};
+Main.prototype.basic_params = function(){};
+
+
+var OtherMain = Paloma.controller('OtherMain');
+OtherMain.prototype.show = function(){};
+OtherMain.prototype.otherAction = function(){};
 
 
 
