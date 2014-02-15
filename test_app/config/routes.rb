@@ -15,12 +15,8 @@ TestApp::Application.routes.draw do
     end
   end
 
-  resources :foo, :controller => 'Foo'
 
   namespace :admin do
-    resources :bar, :controller => 'Bar'
+    resources :foos
   end
-
-
-  resources :multiple_names
 end

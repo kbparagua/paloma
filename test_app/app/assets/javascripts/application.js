@@ -36,45 +36,11 @@ OtherMain.prototype.otherAction = function(){};
 
 
 
-var MyFoo = Paloma.controller('MyFoo');
-
-MyFoo.prototype.index = function(){
-  window.called.push('MyFoo#index');
-};
+var Foos = Paloma.controller('Admin/Foos');
+Foos.prototype.index = function(){};
+Foos.prototype.otherAction = function(){};
 
 
-MyFoo.prototype.show = function(){
-  window.called.push('MyFoo#show');
-  window.parameter = this.params.parameter;
-};
-
-
-MyFoo.prototype.edit = function(){
-  window.called.push('MyFoo#edit');
-};
-
-
-
-var AnotherFoo = Paloma.controller('AnotherFoo');
-
-AnotherFoo.prototype.build = function(){
-  window.called.push('AnotherFoo#build');
-};
-
-
-
-var Bar = Paloma.controller('Admin/Bar');
-
-Bar.prototype.show = function(){
-  window.called.push('Admin/Bar#show');
-};
-
-
-
-
-
-var MultipleNames = Paloma.controller('MultipleNames');
-
-MultipleNames.prototype.index = function(){
-  window.called.push('MultipleNames#index')
-};
+var NotFoos = Paloma.controller('NotAdmin/Foos');
+NotFoos.prototype.show = function(){};
+NotFoos.prototype.otherAction = function(){};

@@ -8,21 +8,21 @@ class MainController < ApplicationController
 
   # Override controller
   def show
-    js 'OtherMain'
+    js 'OtherMain', :x => 1
     render :inline => 'Main#show', :layout => 'application'
   end
 
 
   # Override action
   def new
-    js :otherAction
+    js :otherAction, :x => 1
     render :inline => 'Main#new', :layout => 'application'
   end
 
 
   # Override controller/action
   def edit
-    js 'OtherMain#otherAction'
+    js 'OtherMain#otherAction', :x => 1
     render :inline => 'Main#edit', :layout => 'application'
   end
 
