@@ -1,18 +1,24 @@
 # Paloma
 
-**This README is for Paloma 3 only. 
-For version 2 README please go [here](https://github.com/kbparagua/paloma/blob/2.0/README.md).**
+**This README is for Paloma 4 only.**
+
+**For version 3 README please go [here](https://github.com/kbparagua/paloma/blob/3.0/README.md).**
+
+**For version 2 README please go [here](https://github.com/kbparagua/paloma/blob/2.0/README.md).**
 
 
-## What's New?
-Paloma 3 is almost a complete rewrite of the old version.
+## Paloma 4, why so sudden?
+The last major version (v3) of Paloma introduced a major paradigm shift, and it took me a while to realize that some of the major changes introduced are not really that good and needed to be removed.
 
-It is now simpler and more flexible. The old callback thingy paradigm is replaced by a `Router` and `Controller` layer for better abstraction. Generators are also removed, so programmers need not to follow specific directory structure, unlike in the old versions.
+
+## What's new?
+*(compared to version 2)*
+It is now simpler and more flexible. The old callback thingy paradigm is replaced by a `Controller` layer for better abstraction. Generators are also removed, so programmers need not to follow specific directory structure, unlike in the old versions.
 
 Previously, there are generators that create Paloma files, and these files are written in vanilla javascript. Because of that there are some users who are requesting for coffeescript setup. Now since there are no generated files programmers can write their code either by using vanilla javascript or **coffeescript**. Yay!
 
-### Controller and Router
-The new paradigm is patterned after Rails Controller and Routes, so it is easier to grasp than the old callback paradigm. Basically, you have a Paloma Controller that is responsible for processing requests made from Rails Controller. While the Router is responsible for telling what Paloma Controller handles what Rails Controller, or what Paloma Controller's action handles what Rails Controller's action. 
+### Controller
+The new paradigm is patterned after Rails Controller, so it is easier to grasp than the old callback paradigm. Basically, you have a Paloma Controller counterpart for every Rails Controller.
 
 
 ### How about Model and View?
@@ -70,13 +76,15 @@ Controllers are just classes that handle requests made by Rails Controllers. Eac
 
 ### Creating a Controller
 
-A Controller constructor is created or accessed, if it already exists, using `Paloma.controller()` method.
+A Controller constructor is created or accessed (if it already exists), using `Paloma.controller()` method.
 
 ```javascript
 var ArticlesController = Paloma.controller('Articles');
 ``` 
 
 It will return the constructor function of your controller.
+
+Note: Using `Paloma.controller` method, you can access the same controller constructor across different files.
 
 
 ### Handling Actions
@@ -132,36 +140,6 @@ def edit
 end
 ```
 
-## Router
-
-Router is responsible for mapping Rails Controller/action to its equivalent Paloma Controller/action.
-
-By default all Rails Controller will be mapped with a Paloma Controller with the same resource name (controller name without the `Controller` suffix).
-
-Example:
-* Requests from `UsersController#new` will be mapped to Paloma Controller named `Users` with its `new` method.
-
-If you have no problem with the default behavior, you don't need to write Router stuff in your code.
-
-### Changing Controller
-
-If you want to use a different Paloma Controller for a specific Rails Controller, you can do the following:
-
-```javascript
-// Instead of mapping Rails UsersController to Paloma Users Controller
-// it will be mapped to AdminUsers.
-Paloma.router.resource('Users', {controller: 'AdminUsers'});
-```
-
-### Redirecting
-
-You can also redirect an action if you want it to be handled by a different method.
-
-```javascript
-// Instead of executing Paloma's `Users#new` it will execute
-// `Registrations#signUp`.
-Paloma.router.redirect('Users#new', {to: 'Registrations#signUp');
-```
 
 ## Gotchas
 
@@ -175,4 +153,4 @@ For example: `render "something.js.erb"`
 Again, Paloma is now flexible and doesn't force developers to follow specific directory structure.
 You have the freedom to create controllers and routes anywhere in your application.
 
-Personally, I prefer having a `routes.js` file to contain all the route declarations, and a javascript file for each controller.
+Personally, I prefer having a javascript file for each controller.
