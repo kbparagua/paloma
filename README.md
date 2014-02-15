@@ -89,7 +89,7 @@ Note: Using `Paloma.controller` method, you can access the same controller const
 
 ### Handling Actions
 
-Every time a request to Paloma is made (A Rails Controller action is executed), an instance of a Paloma controller is created and a method responsible for the request will be invoked.
+Every time a request to Paloma is made (A Rails Controller action is executed), an instance of a Paloma controller is created and the method responsible for the request will be invoked.
  
 ```javascript
 var ArticlesController = Paloma.controller('Articles');
@@ -127,6 +127,50 @@ var UsersController = Paloma.controller('Users');
 UsersController.prototype.destroy = function(){
   alert('User ' + this.params['id'] + ' is deleted.');
 };
+```
+
+
+## Advanced Usage
+
+You can manipulate what controller/action should Paloma execute using the `js` method.
+
+1. Changing controller
+
+```ruby
+class UsersController < ApplicationController
+   def new
+      @user = User.new
+      js 'Accounts' # will use Accounts controller instead of Users controller
+   end
+end
+```
+
+
+2. Changing action
+
+You can use the symbol syntax:
+```ruby
+def new
+   @user = User.new
+   js :register # will execute register method instead of new
+end
+```
+
+Or the string syntax:
+```ruby
+def new
+   @user = User.new
+   js '#register'
+end
+```
+
+3. Changing controller and action
+
+```ruby
+def new
+  @user = User.new
+  js 'Accounts#register' # will execute Accounts#register instead of Users#new
+end
 ```
 
 ## Preventing Paloma Execution
