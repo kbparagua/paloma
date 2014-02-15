@@ -103,38 +103,13 @@ ArticlesController.prototype.edit = function(){
 };
 ```
 
-## Passing Parameters
-
-You can also pass parameters to a Paloma Controller by calling `js` **before** render in your Rails controller. You can access the parameters on your Paloma Controller using `this.params` object.
-
-**Example:**
-
-`users_controller.rb`
-```ruby
-def destroy
-    user = User.find params[:id]
-    user.destroy
-    
-    js :id => user.id
-end
-```
-
-Paloma controller.
-
-```javascript
-var UsersController = Paloma.controller('Users');
-
-UsersController.prototype.destroy = function(){
-  alert('User ' + this.params['id'] + ' is deleted.');
-};
-```
-
 
 ## Advanced Usage
 
-You can manipulate what controller/action should Paloma execute using the `js` method.
+You can manipulate what controller/action should Paloma execute by calling `js` method **before** rendering.
 
 1. Changing controller
+
    ```ruby
    class UsersController < ApplicationController
       def new
@@ -145,6 +120,7 @@ You can manipulate what controller/action should Paloma execute using the `js` m
    ```
 
 2. Changing action
+
    You can use the symbol syntax:
    ```ruby
    def new
@@ -161,7 +137,8 @@ You can manipulate what controller/action should Paloma execute using the `js` m
    end
    ```
 
-3. Changing controller and action
+3. Changing controller and action.
+
    ```ruby
    def new
      @user = User.new
@@ -169,7 +146,8 @@ You can manipulate what controller/action should Paloma execute using the `js` m
    end
    ```
 
-4. Changing controller with namespace
+4. Changing controller with namespace.
+
    Paloma supports namespaces using '/' as delimiter.
 
    ```ruby
@@ -186,6 +164,46 @@ You can manipulate what controller/action should Paloma execute using the `js` m
    end
    ```
    
+
+## Passing Parameters
+
+You can access the parameters on your Paloma Controller using `this.params` object.
+
+
+1. Parameters only.
+ 
+   `users_controller.rb`
+   ```ruby
+   def destroy
+       user = User.find params[:id]
+       user.destroy
+       
+       js :id => user.id
+   end
+   ```
+
+   Paloma controller.
+
+   ```javascript
+   var UsersController = Paloma.controller('Users');
+   
+   UsersController.prototype.destroy = function(){
+     alert('User ' + this.params['id'] + ' is deleted.');
+   };
+   ```
+
+2. Path with parameters.
+
+   ```ruby
+   def destroy
+      user = User.find params[:id]
+      user.destroy
+      
+      js 'Accounts#delete', :id => user.id
+   end
+   ```
+   
+   
 ## Preventing Paloma Execution
 
 If you want to Paloma not to execute in a specific Rails Controller action you need to pass `false` as the Paloma parameter.
@@ -198,6 +216,66 @@ end
 ```
 
 
+## Controller-wide setup
+
+You can call `js` outside Rails controller actions for global or controller-wide settings.
+
+
+**Example:**
+
+```ruby
+class UsersController < ApplicationController
+   js 'Accounts' # use Accounts controller instead of Users for all actions.
+
+
+   def new
+      @user = User.new
+   end
+   
+   def show
+      @user = User.find params[:id]
+   end
+end
+```
+
+Like `before_filter` you can also pass `only` and `except` options.
+
+
+```ruby
+class UsersController < ApplicationController
+
+   js 'Admin/Accounts', :except => :destroy # Use Admin/Accounts except for destroy method
+
+end
+```
+
+
+**IMPORTANT NOTE:**
+If you are going to pass parameters for Controller-wide settings, put them inside a `:params` hash.
+
+```ruby
+class UsersController < ApplicationController
+  js 'Accounts', :params => {:x => 1, :y => 2, :z => 3}, :only => :show
+end
+```
+
+### Overriding Controller-wide setup
+
+If you want to override the controller-wide setup, just call `js` again inside a controller action. From there you can override the controller/action or pass additional parameters.
+
+```ruby
+class UsersController < ApplicationController
+
+   js 'Accounts', :params => {:x => 1}
+   
+   
+   def new
+      @user = User.new
+      js :register, :y => 2 # will execute Accounts#register with params {:x => 1, :y => 2}
+   end
+end
+```
+
 ## Gotchas
 
 * Paloma  will not execute if the response is `js`, `json`, `xml` or any other format except `html`.
@@ -208,6 +286,6 @@ For example: `render "something.js.erb"`
 ## Where to put code?
 
 Again, Paloma is now flexible and doesn't force developers to follow specific directory structure.
-You have the freedom to create controllers and routes anywhere in your application.
+You have the freedom to create controllers anywhere in your application.
 
 Personally, I prefer having a javascript file for each controller.
