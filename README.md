@@ -135,44 +135,57 @@ UsersController.prototype.destroy = function(){
 You can manipulate what controller/action should Paloma execute using the `js` method.
 
 1. Changing controller
-
-```ruby
-class UsersController < ApplicationController
-   def new
-      @user = User.new
-      js 'Accounts' # will use Accounts controller instead of Users controller
+   ```ruby
+   class UsersController < ApplicationController
+      def new
+         @user = User.new
+         js 'Accounts' # will use Accounts controller instead of Users controller
+      end
    end
-end
-```
-
+   ```
 
 2. Changing action
-
-You can use the symbol syntax:
-```ruby
-def new
-   @user = User.new
-   js :register # will execute register method instead of new
-end
-```
-
-Or the string syntax:
-```ruby
-def new
-   @user = User.new
-   js '#register'
-end
-```
+   You can use the symbol syntax:
+   ```ruby
+   def new
+      @user = User.new
+      js :register # will execute register method instead of new
+   end
+   ```
+   
+   Or the string syntax:
+   ```ruby
+   def new
+      @user = User.new
+      js '#register'
+   end
+   ```
 
 3. Changing controller and action
+   ```ruby
+   def new
+     @user = User.new
+     js 'Accounts#register' # will execute Accounts#register instead of Users#new
+   end
+   ```
 
-```ruby
-def new
-  @user = User.new
-  js 'Accounts#register' # will execute Accounts#register instead of Users#new
-end
-```
+4. Changing controller with namespace
+   Paloma supports namespaces using '/' as delimiter.
 
+   ```ruby
+   def new
+      @user = User.new
+      js `Admin/Accounts` # will use Admin/Accounts controller instead of Users controller
+   end
+   ```
+   
+   ```ruby
+   def new
+      @user = User.new
+      js 'Admin/Accounts#register' # will execute Admin/Accounts#register instead of Users#new
+   end
+   ```
+   
 ## Preventing Paloma Execution
 
 If you want to Paloma not to execute in a specific Rails Controller action you need to pass `false` as the Paloma parameter.
