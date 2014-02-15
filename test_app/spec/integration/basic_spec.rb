@@ -18,7 +18,6 @@ feature 'executing Paloma controller', :js => true do
   context 'default behavior' do
     it 'executes the same controller/action' do
       visit main_index_path
-      request = page.evaluate_script 'Paloma.engine.lastRequest'
 
       expect(request).to eq({
         'controller' => 'Main',
@@ -31,7 +30,6 @@ feature 'executing Paloma controller', :js => true do
   context 'override default controller' do
     it 'executes the specified controller' do
       visit main_path(1)
-      request = page.evaluate_script 'Paloma.engine.lastRequest'
 
       expect(request).to eq({
         'controller' => 'OtherMain',
@@ -44,7 +42,6 @@ feature 'executing Paloma controller', :js => true do
   context 'override default action' do
     it 'executes the specified action' do
       visit new_main_path
-      request = page.evaluate_script 'Paloma.engine.lastRequest'
 
       expect(request).to eq({
         'controller' => 'Main',
@@ -57,7 +54,6 @@ feature 'executing Paloma controller', :js => true do
   context 'override default controller/action' do
     it 'executes the specified controller/action' do
       visit edit_main_path(1)
-      request = page.evaluate_script 'Paloma.engine.lastRequest'
 
       expect(request).to eq({
         'controller' => 'OtherMain',
@@ -70,9 +66,8 @@ feature 'executing Paloma controller', :js => true do
   context 'parameter passed' do
     it 'passes the parameter' do
       visit basic_params_main_index_path
-      params = page.evaluate_script 'Paloma.engine.lastRequest.params'
 
-      expect(params).to eq({'x' => 1, 'y' => 2})
+      expect(request['params']).to eq({'x' => 1, 'y' => 2})
     end
   end
 
@@ -99,7 +94,6 @@ feature 'executing Paloma controller', :js => true do
     include_examples 'no paloma'
 
     it 'prevents execution of Paloma controller' do
-      request = page.evaluate_script 'Paloma.engine.lastRequest'
       expect(request).to be_nil
     end
   end

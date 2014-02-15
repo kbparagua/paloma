@@ -44,3 +44,8 @@ Foos.prototype.otherAction = function(){};
 var NotFoos = Paloma.controller('NotAdmin/Foos');
 NotFoos.prototype.show = function(){};
 NotFoos.prototype.otherAction = function(){};
+
+
+
+var Baz = Paloma.controller('Baz');
+Baz.prototype.index = function(){};

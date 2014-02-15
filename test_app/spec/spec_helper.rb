@@ -30,3 +30,8 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
 end
+
+
+def request
+  page.evaluate_script 'Paloma.engine.lastRequest'
+end
