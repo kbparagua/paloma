@@ -106,37 +106,4 @@ describe Paloma::Controller do
     end
   end
 
-
-
-  describe '#attempt_clear_request!(:only => {}, :except => {})' do
-    context 'when no options is passed' do
-      before { @return = controller.attempt_clear_request! }
-      it_behaves_like 'request is cleared'
-    end
-
-
-    context 'when action is listed in :only' do
-      before { @return = controller.attempt_clear_request! :only => [:new] }
-      it_behaves_like 'request is cleared'
-    end
-
-
-    context 'when action is not listed in :only' do
-      before { @return = controller.attempt_clear_request! :only => [:show, :edit] }
-      it_behaves_like 'request is not cleared'
-    end
-
-
-    context 'when action is listed in :except' do
-      before { @return = controller.attempt_clear_request! :except => [:new] }
-      it_behaves_like 'request is not cleared'
-    end
-
-
-    context 'when action is not listed in :except' do
-      before { @return = controller.attempt_clear_request! :except => [:destroy, :create] }
-      it_behaves_like 'request is cleared'
-    end
-  end
-
 end
