@@ -280,8 +280,19 @@ end
 
 * Paloma  will not execute if the response is `js`, `json`, `xml` or any other format except `html`.
 
-For example: `render "something.js.erb"`
+   Example:
+   `render "something.js.erb"`
 
+* It will cause conflicts if you have a controller and a module that has the same name.
+
+   Example:
+   ```js
+   var AdminController = Paloma.controller('Admin');
+   
+   // This will override the AdminController and replace it
+   // with a module named 'Admin'.
+   var UsersController = Paloma.controller('Admin/Users');
+   ```
 
 ## Where to put code?
 
