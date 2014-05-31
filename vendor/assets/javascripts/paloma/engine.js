@@ -2,31 +2,41 @@
 
   var Engine = function(config){
     this.factory = config.factory;
-    this.lastRequest = null;
+    this._request = null;
   };
 
-
-  Engine.prototype.request = function(resource, action, params){
-    this.lastRequest = null;
-
-    var Controller = this.factory.get(resource);
+  Engine.prototype.start = function(){
+    var resource = this._request['controller'],
+        Controller = this.factory.get(resource);
 
     if (!Controller){
       return Paloma.warn('Paloma: undefined controller -> ' + resource);
     }
 
-    var controller = new Controller(params);
+    var controller = new Controller( this._request['params'] ),
+        action = this._request['action'],
+        params = this._request['params'];
 
     if (!controller[action]){
       return Paloma.warn('Paloma: undefined action <' + action +
         '> for <' + resource + '> controller');
     }
 
+
     Paloma.log('Paloma: Execute ' + resource + '#' + action + ' with');
     Paloma.log(params);
 
-    controller[action]();
-    this.lastRequest = {controller: resource, action: action, params: params};
+    controller[ this._request['action'] ]();
+  };
+
+
+  Engine.prototype.setRequest = function(resource, action, params){
+    this._request = {controller: resource, action: action, params: params};
+  };
+
+
+  Engine.prototype.getRequest = function(key){
+    return (!key ? this._request : this._request[key]);
   };
 
 

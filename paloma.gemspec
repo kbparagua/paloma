@@ -17,4 +17,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails', ['~> 2.0']
   s.add_development_dependency 'capybara', ['~> 1.0']
   s.add_development_dependency 'jasmine-rails', ['~> 0.4.5']
+  s.add_development_dependency 'turbolinks', ['~> 2.2.2']
+  s.add_development_dependency 'execjs', ['~> 2.1.0']
 end

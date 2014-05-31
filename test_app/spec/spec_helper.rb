@@ -33,5 +33,5 @@ end
 
 
 def request
-  page.evaluate_script 'Paloma.engine.lastRequest'
+  page.evaluate_script 'Paloma.engine.getRequest()'
 end
