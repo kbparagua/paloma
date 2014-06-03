@@ -16,4 +16,15 @@
 
   Paloma.engine = new Paloma.Engine({factory: Paloma._controllerFactory});
 
+
+  Paloma.executeHook = function(){
+    var $hook = $('.js-paloma-hook:first script:first');
+
+    if ($hook.length == 0){ return; }
+
+    var hook = $hook.html();
+    eval(hook);
+  };
+
+
 })(window.Paloma);

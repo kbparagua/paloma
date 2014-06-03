@@ -17,6 +17,10 @@
 //= require_tree .
 
 
+$(document).on('page:restore', function(){
+  Paloma.executeHook();
+});
+
 
 //
 //
