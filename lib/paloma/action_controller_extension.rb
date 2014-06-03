@@ -148,7 +148,10 @@ module Paloma
     #
     def render options = nil, extra_options = {}, &block
       [:json, :js, :xml, :file].each do |format|
-        self.paloma.clear_request if options.has_key?(format)
+        if options.has_key?(format)
+          self.paloma.clear_request
+          break
+        end
       end if options.is_a?(Hash)
 
       super
