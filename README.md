@@ -278,10 +278,14 @@ end
 
 ## Gotchas
 
-* Paloma  will not execute if the response is `js`, `json`, `xml` or any other format except `html`.
+* Paloma  will execute on all `render` calls, except for calls with the following formats: `js`, `json`, `xml`, and `file`.
 
    Example:
-   `render "something.js.erb"`
+   
+   ```ruby
+   render :json => {:x => 1}  # Paloma will not execute`
+   render :partial => '/path/to/partial'  # Paloma will execute
+   ```
 
 * It will cause conflicts if you have a controller and a module that has the same name.
 
