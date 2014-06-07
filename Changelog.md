@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 4.1.0
+* Support for Turbolinks.
+* `Paloma.executeHook()` to manually run the hook from the DOM.
+* Paloma hook will be appended using all `render` calls, except for calls that has the following keys `[:json, :js, :xml, :file]`.
+* Restore `Paloma.engine.start()` to start processing queued request.
+
+
 ## Version 4.0.0
 * https://github.com/kbparagua/paloma/issues/26 - Paloma requests are not saved on `session`.
 * https://github.com/kbparagua/paloma/issues/26 - Chaining with redirect is removed.
