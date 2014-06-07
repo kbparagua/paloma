@@ -3,7 +3,6 @@
 <div class="js-paloma-hook" data-id="<%= id %>">
   <script type="text/javascript">
     (function(){
-
       // Do not continue if Paloma not found.
       if (window['Paloma'] === undefined && window['console'] !== undefined){
         console.warn("Paloma not found. Require it in your application.js.");
@@ -17,13 +16,12 @@
 
       var request = <%= request.to_json.html_safe %>;
 
-      $(document).ready(function(){
-        Paloma.engine.request(
-          request['resource'],
-          request['action'],
-          request['params']);
-      });
+      Paloma.engine.setRequest(
+        request['resource'],
+        request['action'],
+        request['params']);
 
+      $(document).ready(function(){ Paloma.engine.start(); });
     })();
   </script>
 </div>

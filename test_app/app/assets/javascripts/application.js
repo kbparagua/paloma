@@ -12,9 +12,14 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require turbolinks
 //= require paloma
 //= require_tree .
 
+
+// $(document).on('page:restore', function(){
+//   Paloma.executeHook();
+// });
 
 
 //

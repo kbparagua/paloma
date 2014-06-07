@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>TestApp</title>
+  <title>Paloma Test App</title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
+<h1>Paloma Test App</h1>
+
+<div class='links'>
+  <ul>
+    <li><%= link_to 'Main#index', main_index_path %></li>
+    <li><%= link_to 'Main#new', new_main_path %></li>
+    <li><%= link_to 'Main#show', main_path(1) %></li>
+    <li><%= link_to 'Main#edit', edit_main_path(1) %></li>
+    <li><%= link_to 'Main#prevent', prevent_main_index_path %></li>
+    <li><%= link_to 'Main#basic_params', basic_params_main_index_path %></li>
+    <li><%= link_to 'Main#xml_response', xml_response_main_index_path %></li>
+    <li><%= link_to 'Main#file_response', file_response_main_index_path %></li>
+  </ul>
+</div>
+
+<hr/>
 
 <%= yield %>
 

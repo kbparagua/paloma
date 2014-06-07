@@ -12,7 +12,7 @@ module Paloma
         prepend_view_path "#{Paloma.root}/app/views/"
 
         before_filter :track_paloma_request
-        after_filter :append_paloma_hook, :if => :html_is_rendered?
+        after_filter :append_paloma_hook, :if => :not_redirect?
       end
     end
 
@@ -138,9 +138,8 @@ module Paloma
     end
 
 
-    def html_is_rendered?
-      not_redirect = self.status != 302
-      [nil, 'text/html'].include?(response.content_type) && not_redirect
+    def not_redirect?
+      self.status != 302
     end
 
 
@@ -149,7 +148,10 @@ module Paloma
     #
     def render options = nil, extra_options = {}, &block
       [:json, :js, :xml, :file].each do |format|
-        self.paloma.clear_request if options.has_key?(format)
+        if options.has_key?(format)
+          self.paloma.clear_request
+          break
+        end
       end if options.is_a?(Hash)
 
       super
