@@ -276,6 +276,22 @@ class UsersController < ApplicationController
 end
 ```
 
+
+## Turbolinks Support
+
+As of version `4.1.0`, Paloma is compatible with Turbolinks without additional setup.
+
+### Execute Paloma when user hits `Back` or `Forward` button.
+
+Paloma executes page-specific javascript by adding a `<script>` tag to the response body. Turbolinks, by default, executes any inline javascript in the response body when you visit a page, so the `<script>` tag appended by Paloma will automatically be executed. However, when Turbolinks restores a page from cache (*this happens when a user hits `Back` or `Forward` button in his browser*) any **inline javascript will not be executed** anymore. This is the intentional behavior of Turbolinks, and it is not a bug. If you want to execute Paloma again when Turbolinks restores a page, do something like this:
+
+```js
+$(document).on('page:restore', function(){
+  // Manually evaluates the appended script tag.
+  Paloma.executeHook();
+});
+```
+
 ## Gotchas
 
 * Paloma  will execute on all `render` calls, except for calls with the following formats: `js`, `json`, `xml`, and `file`.
