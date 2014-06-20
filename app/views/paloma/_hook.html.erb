@@ -4,8 +4,10 @@
   <script type="text/javascript">
     (function(){
       // Do not continue if Paloma not found.
-      if (window['Paloma'] === undefined && window['console'] !== undefined){
-        console.warn("Paloma not found. Require it in your application.js.");
+      if (window['Paloma'] === undefined) {
+        if (window['console'] !== undefined) {
+          console.warn("Paloma not found. Require it in your application.js.");
+        }
         return true;
       }
 
@@ -20,8 +22,6 @@
         request['resource'],
         request['action'],
         request['params']);
-
-      $(document).ready(function(){ Paloma.engine.start(); });
     })();
   </script>
 </div>
