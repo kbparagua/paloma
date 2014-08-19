@@ -115,10 +115,15 @@ module Paloma
       #
       def append_paloma_hook
         return true if self.paloma.has_no_request?
-
-        hook = view_context.render(
-                  :partial => 'paloma/hook',
-                  :locals => {:request => self.paloma.request})
+       
+        # Render the partial if it is present, otherwise do nothing. 
+        begin
+          hook = view_context.render(
+                   :partial => 'paloma/hook',
+                   :locals => {:request => self.paloma.request})
+        rescue ActionView::MissingTemplate
+          return true
+        end
 
         before_body_end_index = response_body[0].rindex('</body>')
 
