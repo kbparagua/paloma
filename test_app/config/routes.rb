@@ -12,6 +12,8 @@ TestApp::Application.routes.draw do
       get :js_response
       get :xml_response
       get :file_response
+      get :rss_format, defaults: {format: :rss}
+      get :json_format, defaults: {format: :json}
     end
   end
 
