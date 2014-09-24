@@ -15,6 +15,11 @@ feature 'executing Paloma controller', :js => true do
   #
   #
 
+  # No request should fail with 500 server error
+  after do
+    expect(page).to have_no_content("Internal Server Error")
+  end
+
   context 'default behavior' do
     it 'executes the same controller/action' do
       visit main_index_path
@@ -115,6 +120,16 @@ feature 'executing Paloma controller', :js => true do
 
   context 'file response' do
     before { visit file_response_main_index_path }
+    include_examples 'no paloma'
+  end
+
+  context 'rss format response' do
+    before { visit rss_format_main_index_path }
+    include_examples 'no paloma'
+  end
+
+  context 'json format response' do
+    before { visit json_format_main_index_path }
     include_examples 'no paloma'
   end
 

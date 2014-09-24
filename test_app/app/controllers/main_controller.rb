@@ -66,4 +66,10 @@ class MainController < ApplicationController
     render :file => "#{Rails.root}/Gemfile"
   end
 
+  def rss_format
+  end
+
+  def json_format
+  end
+
 end
