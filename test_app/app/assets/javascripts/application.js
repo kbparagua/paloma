@@ -11,14 +11,17 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery_ujs
 //= require turbolinks
 //= require paloma
 //= require_tree .
 
 
-// $(document).on('page:restore', function(){
+// Uncomment if jquery.turbolinks is not used.
+// $(document).on('page:load', function(){
 //   Paloma.executeHook();
+//   Paloma.engine.start();
 // });
 
 

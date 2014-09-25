@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
 
 gem 'selenium-webdriver'
+gem 'jquery-turbolinks'
 gemspec :path => '../'
