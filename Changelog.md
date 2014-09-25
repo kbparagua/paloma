@@ -1,5 +1,3 @@
-# Changelog
-
 ## Version 4.1.0
 * Support for Turbolinks.
 * `Paloma.executeHook()` to manually run the hook from the DOM.
