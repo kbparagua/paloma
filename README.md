@@ -292,6 +292,20 @@ $(document).on('page:restore', function(){
 });
 ```
 
+### Turbolinks without `jquery.turbolinks` gem
+
+You need to manually run Paloma every page load if you are not using `jquery.turbolinks` gem.
+
+In your `application.js`
+
+```js
+$(document).on('page:load', function(){
+   Paloma.executeHook();
+   Paloma.engine.start();
+});
+```
+
+
 ## Gotchas
 
 * Paloma  will execute on all `render` calls, except for calls with the following formats: `js`, `json`, `xml`, and `file`.
