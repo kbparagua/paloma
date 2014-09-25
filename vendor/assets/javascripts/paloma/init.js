@@ -15,3 +15,15 @@ else {
     console.log(msg);
   };
 }
+
+$(document).ready(function(){
+  // Do not continue if Paloma not found.
+  if (window['Paloma'] === undefined) {
+    if (window['console'] !== undefined) {
+      console.warn("Paloma not found. Require it in your application.js.");
+    }
+    return true;
+  }
+
+  Paloma.engine.start();
+});
