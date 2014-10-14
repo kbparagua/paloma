@@ -66,4 +66,7 @@ class MainController < ApplicationController
     render :file => "#{Rails.root}/Gemfile"
   end
 
+  def text_response
+    render :text => 'text'
+  end
 end

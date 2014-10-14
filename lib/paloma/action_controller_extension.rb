@@ -115,8 +115,8 @@ module Paloma
       #
       def append_paloma_hook
         return true if self.paloma.has_no_request?
-       
-        # Render the partial if it is present, otherwise do nothing. 
+
+        # Render the partial if it is present, otherwise do nothing.
         begin
           hook = view_context.render(
                    :partial => 'paloma/hook',
@@ -152,7 +152,7 @@ module Paloma
     # Make sure not to execute paloma on the following response type
     #
     def render options = nil, extra_options = {}, &block
-      [:json, :js, :xml, :file].each do |format|
+      [:json, :js, :xml, :file, :text].each do |format|
         if options.has_key?(format)
           self.paloma.clear_request
           break

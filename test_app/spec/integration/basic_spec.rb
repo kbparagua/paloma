@@ -118,5 +118,8 @@ feature 'executing Paloma controller', :js => true do
     include_examples 'no paloma'
   end
 
-
+  context 'text response' do
+    before { visit text_response_main_index_path }
+    include_examples 'no paloma'
+  end
 end
