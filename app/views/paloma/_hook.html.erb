@@ -2,18 +2,20 @@
 
 <div class="js-paloma-hook" data-id="<%= id %>">
   <script type="text/javascript">
-    (function(){
-      Paloma.env = '<%= Rails.env %>';
+      if (typeof Paloma !== 'undefined') {
+          (function(){
+              Paloma.env = '<%= Rails.env %>';
 
-      // Remove any callback details if any
-      $('.js-paloma-hook[data-id!=' + <%= id %> + ']').remove();
+              // Remove any callback details if any
+              $('.js-paloma-hook[data-id!=' + <%= id %> + ']').remove();
 
-      var request = <%= request.to_json.html_safe %>;
+              var request = <%= request.to_json.html_safe %>;
 
-      Paloma.engine.setRequest(
-        request['resource'],
-        request['action'],
-        request['params']);
-    })();
+              Paloma.engine.setRequest(
+                      request['resource'],
+                      request['action'],
+                      request['params']);
+          })();
+      }
   </script>
 </div>
