@@ -3,6 +3,11 @@
 <div class="js-paloma-hook" data-id="<%= id %>">
   <script type="text/javascript">
     (function(){
+      // Do not continue if Paloma not found.
+      if (window['Paloma'] === undefined) {
+        return true;
+      }
+
       Paloma.env = '<%= Rails.env %>';
 
       // Remove any callback details if any
