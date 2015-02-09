@@ -55,6 +55,17 @@ def UsersController < ApplicationController
 end
 ```
 
+In layout `app/views/layout/application.html.erb`
+
+```erb
+<html>
+  <body>
+	<!-- etc -->
+    <%= insert_paloma_hook %>
+  </body>
+</html>
+```
+
 That's it! Simply Sexy!
 
 ## Minimum Requirements
@@ -67,6 +78,7 @@ That's it! Simply Sexy!
 * Without bundler: `sudo gem install paloma`.
 * With bundler, add this to your Gemfile: `gem 'paloma'`
 * Require `paloma` in your `application.js`: `//= require paloma`
+* Insert the paloma hook in your view (in the layout is recommended so it's included everywhere): `insert_paloma_hook`
 
 
 ## Controllers
@@ -308,14 +320,9 @@ $(document).on('page:load', function(){
 
 ## Gotchas
 
-* Paloma  will execute on all `render` calls, except for calls with the following formats: `js`, `json`, `xml`, and `file`.
-
-   Example:
-   
-   ```ruby
-   render :json => {:x => 1}  # Paloma will not execute`
-   render :partial => '/path/to/partial'  # Paloma will execute
-   ```
+* Paloma  will only execute if its hook is included in the view. If your
+  page-specific code doesn't run, make sure the return value of
+  `insert_paloma_hook` is added to the page: `<%= insert_paloma_hook %>`
 
 * It will cause conflicts if you have a controller and a module that has the same name.
 
