@@ -18,7 +18,9 @@
       scope = scope[namespace];
     }
 
-    return scope[config['controller']] = createConstructor();
+    scope[config['controller']] = scope[config['controller']] || {};
+    scope[config['controller']]['controllerImpl'] = createConstructor();
+    return scope[config['controller']]['controllerImpl'];
   };
 
 
@@ -33,7 +35,7 @@
       else { return null; }
     }
 
-    return scope;
+    return scope['controllerImpl'];
   };
 
 
