@@ -115,16 +115,11 @@ module Paloma
       #
       def insert_paloma_hook
         if self.paloma.has_request?
+          hook = view_context.render(
+            :partial => 'paloma/hook',
+            :locals => {:request => self.paloma.request})
           self.paloma.clear_request
-
-          # Render the partial if it is present, otherwise do nothing. 
-          begin
-            view_context.render(
-              :partial => 'paloma/hook',
-              :locals => {:request => self.paloma.request})
-          rescue ActionView::MissingTemplate
-            # NOOP
-          end
+          hook
         end
       end
     end
