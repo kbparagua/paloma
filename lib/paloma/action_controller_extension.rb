@@ -12,7 +12,7 @@ module Paloma
         prepend_view_path "#{Paloma.root}/app/views/"
 
         before_filter :track_paloma_request
-        after_filter :append_paloma_hook, :if => :not_redirect?
+        after_filter :append_paloma_hook, :if => :appropriate_context?
       end
     end
 
@@ -142,9 +142,17 @@ module Paloma
       end
     end
 
+    def appropriate_context?
+      not_redirect? and html?
+    end
+
 
     def not_redirect?
       self.status != 302
+    end
+
+    def html?
+      content_type =~ /html/
     end
 
 
