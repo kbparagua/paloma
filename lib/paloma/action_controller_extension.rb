@@ -147,6 +147,8 @@ module Paloma
     # Make sure not to execute paloma on the following response type
     #
     def render options = nil, extra_options = {}, &block
+      rejected_formats = ["text/javascript", "application/xml", "application/json"]
+      self.paloma.clear_request if rejected_formats.include?(request.format)
       [:json, :js, :xml, :file].each do |format|
         if options.has_key?(format)
           self.paloma.clear_request
