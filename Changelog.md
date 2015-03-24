@@ -1,5 +1,8 @@
+## 4.1.2
+* https://github.com/kbparagua/paloma/issues/73 - Fix `js false` issue.
+
 ## 4.1.1
-* https://github.com/kbparagua/paloma/pull/57 - Fix Turbolinks Issues. 
+* https://github.com/kbparagua/paloma/pull/57 - Fix Turbolinks Issues.
 * https://github.com/kbparagua/paloma/pull/55 - Fix issues when Paloma hook is not found.
 
 ## 4.1.0
