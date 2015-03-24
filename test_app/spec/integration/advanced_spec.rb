@@ -13,10 +13,11 @@ feature 'executing Paloma controller', :js => true do
     it 'executes the same namespace/controller/action' do
       visit admin_foos_path
 
-      expect(request).to eq({
-        'controller' => 'Admin/Foos',
-        'action' => 'index',
-        'params' => {}})
+      expect(
+        request['controller'] == 'Admin/Foos' &&
+        request['action'] == 'index' &&
+        request['params'] == {}
+      ).to be_truthy
     end
   end
 
@@ -25,10 +26,11 @@ feature 'executing Paloma controller', :js => true do
     it 'executes the specified controller' do
       visit admin_foo_path(1)
 
-      expect(request).to eq({
-        'controller' => 'NotAdmin/Foos',
-        'action' => 'show',
-        'params' => {'x' => 99}})
+      expect(
+        request['controller'] == 'NotAdmin/Foos' &&
+        request['action'] == 'show' &&
+        request['params'] == {'x' => 99}
+      ).to be_truthy
     end
   end
 
@@ -37,10 +39,11 @@ feature 'executing Paloma controller', :js => true do
     it 'executes the specified action' do
       visit new_admin_foo_path
 
-      expect(request).to eq({
-        'controller' => 'Admin/Foos',
-        'action' => 'otherAction',
-        'params' => {'x' => 99}})
+      expect(
+        request['controller'] == 'Admin/Foos' &&
+        request['action'] == 'otherAction' &&
+        request['params'] == {'x' => 99}
+      ).to be_truthy
     end
   end
 
@@ -49,10 +52,11 @@ feature 'executing Paloma controller', :js => true do
     it 'executes the specified controller/action' do
       visit edit_admin_foo_path(1)
 
-      expect(request).to eq({
-        'controller' => 'NotAdmin/Foos',
-        'action' => 'otherAction',
-        'params' => {'x' => 99}})
+      expect(
+        request['controller'] == 'NotAdmin/Foos' &&
+        request['action'] == 'otherAction' &&
+        request['params'] == {'x' => 99}
+      ).to be_truthy
     end
   end
 
