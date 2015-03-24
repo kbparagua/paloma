@@ -15,10 +15,11 @@
 
       var request = <%= request.to_json.html_safe %>;
 
-      Paloma.engine.setRequest(
-        request['resource'],
-        request['action'],
-        request['params']);
+      Paloma.engine.setRequest({
+        id: "<%= id %>",
+        resource: request['resource'],
+        action: request['action'],
+        params: request['params']});
     })();
   </script>
 </div>

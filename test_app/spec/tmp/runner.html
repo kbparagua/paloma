@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <title>Jasmine Specs</title>
+
+    <link href="./assets/jasmine.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="jasmine_content"></div>
+    
+    <script src="./assets/jasmine.js" type="text/javascript"></script>
+<script src="./assets/jasmine-html.js" type="text/javascript"></script>
+<script src="./assets/json2.js" type="text/javascript"></script>
+<script src="./assets/jasmine-console-shims.js" type="text/javascript"></script>
+<script src="./assets/jasmine-console-reporter.js" type="text/javascript"></script>
+<script src="./assets/jasmine-boot.js" type="text/javascript"></script>
+<script src="./assets/jasmine-specs.js" type="text/javascript"></script>
+  
+<div class="js-paloma-hook" data-id="1427203087424">
+  <script type="text/javascript">
+    (function(){
+      // Do not continue if Paloma not found.
+      if (window['Paloma'] === undefined) {
+        return true;
+      }
+
+      Paloma.env = 'development';
+
+      // Remove any callback details if any
+      $('.js-paloma-hook[data-id!=' + 1427203087424 + ']').remove();
+
+      var request = {"resource":"JasmineRails/SpecRunner","action":"index","params":{}};
+
+      Paloma.engine.setRequest({
+        id: "1427203087424",
+        resource: request['resource'],
+        action: request['action'],
+        params: request['params']});
+    })();
+  </script>
+</div>
+</body>
+</html>

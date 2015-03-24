@@ -19,10 +19,11 @@ feature 'executing Paloma controller', :js => true do
     it 'executes the same controller/action' do
       visit main_index_path
 
-      expect(request).to eq({
-        'controller' => 'Main',
-        'action' => 'index',
-        'params' => {}})
+      expect(
+        request['controller'] == 'Main' &&
+        request['action'] == 'index' &&
+        request['params'] == {}
+      ).to be_truthy
     end
   end
 
@@ -31,10 +32,11 @@ feature 'executing Paloma controller', :js => true do
     it 'executes the specified controller' do
       visit main_path(1)
 
-      expect(request).to eq({
-        'controller' => 'OtherMain',
-        'action' => 'show',
-        'params' => {'x' => 1}})
+      expect(
+        request['controller'] == 'OtherMain' &&
+        request['action'] == 'show' &&
+        request['params'] == {'x' => 1}
+      ).to be_truthy
     end
   end
 
@@ -43,10 +45,11 @@ feature 'executing Paloma controller', :js => true do
     it 'executes the specified action' do
       visit new_main_path
 
-      expect(request).to eq({
-        'controller' => 'Main',
-        'action' => 'otherAction',
-        'params' => {'x' => 1}})
+      expect(
+        request['controller'] == 'Main' &&
+        request['action'] == 'otherAction' &&
+        request['params'] == {'x' => 1}
+      ).to be_truthy
     end
   end
 
@@ -55,10 +58,11 @@ feature 'executing Paloma controller', :js => true do
     it 'executes the specified controller/action' do
       visit edit_main_path(1)
 
-      expect(request).to eq({
-        'controller' => 'OtherMain',
-        'action' => 'otherAction',
-        'params' => {'x' => 1}})
+      expect(
+        request['controller'] == 'OtherMain' &&
+        request['action'] == 'otherAction' &&
+        request['params'] == {'x' => 1}
+      ).to be_truthy
     end
   end
 
@@ -83,7 +87,7 @@ feature 'executing Paloma controller', :js => true do
 
   shared_examples 'no paloma' do
     it 'does not add paloma hook' do
-      expect(page.has_selector?('.js-paloma-hook')).to be_false
+      expect(page.has_selector?('.js-paloma-hook')).to be_falsy
     end
   end
 
