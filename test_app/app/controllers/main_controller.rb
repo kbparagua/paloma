@@ -58,7 +58,7 @@ class MainController < ApplicationController
 
 
   def xml_response
-    render :xml => '<xml></xml>'
+    render :xml => '<?xml version="1.0" encoding="UTF-8"?><note>test</note>'
   end
 
 
