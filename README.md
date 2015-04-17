@@ -334,3 +334,11 @@ Again, Paloma is now flexible and doesn't force developers to follow specific di
 You have the freedom to create controllers anywhere in your application.
 
 Personally, I prefer having a javascript file for each controller.
+
+
+## Contribute
+
+1. Fork.
+2. Do awesome things.
+3. Submit Pull-Request to `master` branch.
+4. Add short summary of changes on your PR.
