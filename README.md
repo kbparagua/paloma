@@ -1,3 +1,7 @@
+**Important**
+- `master` branch contains the bleeding edge development code.
+- check `branches` or `tags` for the latest stable release or specific versions.
+
 # Paloma
 
 Page-specific javascript for Rails done right.
