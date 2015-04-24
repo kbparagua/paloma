@@ -5,7 +5,8 @@ Page-specific javascript for Rails done right.
 ## Advantages
 * Choose what specific javascript code to run per page.
 * Easily make ruby variables available on your javascript files.
-
+* Can be written using vanilla javascript, coffeescript, and anything that compiles to js.
+* Easy to understand (*because it is patterned after Rails' controller module*).
 
 ## Quick Example
 
