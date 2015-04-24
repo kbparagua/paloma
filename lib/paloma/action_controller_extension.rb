@@ -12,7 +12,7 @@ module Paloma
         prepend_view_path "#{Paloma.root}/app/views/"
 
         before_filter :track_paloma_request
-        after_filter :append_paloma_hook, :if => :not_redirect?
+        helper_method :insert_paloma_hook
       end
     end
 
@@ -107,59 +107,21 @@ module Paloma
 
 
       #
-      # Before rendering html reponses,
-      # this is exectued to append Paloma's html hook to the response.
+      # Call in your view layout to insert Paloma's html hook
+      # into the response.
       #
       # The html hook contains the javascript code that
       # will execute the tracked Paloma requests.
       #
-      def append_paloma_hook
-        return true if self.paloma.has_no_request?
-       
-        # Render the partial if it is present, otherwise do nothing. 
-        begin
+      def insert_paloma_hook
+        if self.paloma.has_request?
           hook = view_context.render(
-                   :partial => 'paloma/hook',
-                   :locals => {:request => self.paloma.request})
-        rescue ActionView::MissingTemplate
-          return true
-        end
-
-        before_body_end_index = response_body[0].rindex('</body>')
-
-        # Append the hook after the body tag if it is present.
-        if before_body_end_index.present?
-          before_body = response_body[0][0, before_body_end_index].html_safe
-          after_body = response_body[0][before_body_end_index..-1].html_safe
-
-          response.body = before_body + hook + after_body
-        else
-          # If body tag is not present, append hook in the response body
-          response.body += hook
-        end
-
-        self.paloma.clear_request
-      end
-    end
-
-
-    def not_redirect?
-      self.status != 302
-    end
-
-
-    #
-    # Make sure not to execute paloma on the following response type
-    #
-    def render options = nil, extra_options = {}, &block
-      [:json, :js, :xml, :file].each do |format|
-        if options.has_key?(format)
+            :partial => 'paloma/hook',
+            :locals => {:request => self.paloma.request})
           self.paloma.clear_request
-          break
+          hook
         end
-      end if options.is_a?(Hash)
-
-      super
+      end
     end
 
 
