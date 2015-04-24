@@ -12,6 +12,7 @@ TestApp::Application.routes.draw do
       get :js_response
       get :xml_response
       get :file_response
+      get :text_response
     end
   end
 
