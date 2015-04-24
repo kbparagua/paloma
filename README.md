@@ -1,30 +1,6 @@
 # Paloma
 
-**This README is for Paloma 4 only.**
-
-**For version 3 README please go [here](https://github.com/kbparagua/paloma/blob/3.0/README.md).**
-
-**For version 2 README please go [here](https://github.com/kbparagua/paloma/blob/2.0/README.md).**
-
-
-## Paloma 4, why so sudden?
-The last major version (v3) of Paloma introduced a major paradigm shift, and it took me a while to realize that some of the major changes introduced are not really that good and needed to be removed.
-
-
-## What's new?
-*(compared to version 2)*
-It is now simpler and more flexible. The old callback thingy paradigm is replaced by a `Controller` layer for better abstraction. Generators are also removed, so programmers need not to follow specific directory structure, unlike in the old versions.
-
-Previously, there are generators that create Paloma files, and these files are written in vanilla javascript. Because of that there are some users who are requesting for coffeescript setup. Now since there are no generated files programmers can write their code either by using vanilla javascript or **coffeescript**. Yay!
-
-### Controller
-The new paradigm is patterned after Rails Controller, so it is easier to grasp than the old callback paradigm. Basically, you have a Paloma Controller counterpart for every Rails Controller.
-
-
-### How about Model and View?
-
-It is tempting to convert Paloma 3 to a full-blown MVC or MVP (or whatever) framework. But I've decided to keep it simple and just provide a Controller component as way to execute a specific javascript code per Rails Controller action and give developers freedom on how to handle each action. So you can still have your own Model and View components and just use them in your Paloma Controllers, since a controller is just a middle-man.
-
+Page-specific javascript for Rails done right.
 
 ## Advantages
 * Choose what specific javascript code to run per page.
