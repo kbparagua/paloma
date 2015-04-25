@@ -63,7 +63,7 @@ class MainController < ApplicationController
 
 
   def file_response
-    render :file => "#{Rails.root}/Gemfile"
+    render :file => "#{Rails.root}/Gemfile", :layout => false
   end
 
 end
