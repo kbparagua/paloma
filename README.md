@@ -270,6 +270,12 @@ class UsersController < ApplicationController
 end
 ```
 
+## Hook
+
+`insert_paloma_hook` is a helper method that you can use in your views to insert Paloma's HTML hook.
+Inside this HTML hook is where the magic happens. This is the reason why Paloma can magically know what Javascript controller/action to execute. To further understand how Paloma works, you can inspect the HTML hook, by checking at the generated HTML (*inspect element*) and locate the `div` element that has the class `js-paloma-hook`.
+
+Ideally, you just need to call `insert_paloma_hook` in your layouts, since the layout will always be included in every rendered view. But if you are rendering a view without a layout, make sure to call `insert_paloma_hook` in that view.
 
 ## Turbolinks Support
 
