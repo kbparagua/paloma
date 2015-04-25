@@ -40,6 +40,11 @@ class MainController < ApplicationController
   end
 
 
+  def ajax
+    render :ajax, :layout => false
+  end
+
+
 
 
 
@@ -63,7 +68,7 @@ class MainController < ApplicationController
 
 
   def file_response
-    render :file => "#{Rails.root}/Gemfile"
+    render :file => "#{Rails.root}/Gemfile", :layout => false
   end
 
 end

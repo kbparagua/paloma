@@ -52,3 +52,16 @@ Foos.prototype.otherAction = function(){};
 var NotFoos = Paloma.controller('NotAdmin/Foos');
 NotFoos.prototype.show = function(){};
 NotFoos.prototype.otherAction = function(){};
+
+
+$(document).ready(function(){
+  $('#js-ajax-link').on('click', function(e){
+    e.preventDefault();
+
+    $.get($(this).prop('href'), function(response){
+      $('#js-ajax-response').html(response);
+      Paloma.executeHook();
+      Paloma.engine.start();
+    });
+  });
+});
