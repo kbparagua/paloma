@@ -45,10 +45,23 @@ That's it! Simply Sexy!
 
 ## Install
 
-* Without bundler: `sudo gem install paloma`.
-* With bundler, add this to your Gemfile: `gem 'paloma'`
-* Require `paloma` in your `application.js`: `//= require paloma`
+1. Without bundler: `sudo gem install paloma`.
+1. With bundler, add this to your Gemfile: `gem 'paloma'`
+1. Require `paloma` in your `application.js`: `//= require paloma`
+1. In your layouts insert Paloma hook.
 
+   `application.html.erb`
+   ```html
+   <html>
+      <head>
+      </head>
+      
+      <body>
+         <%= yield %>
+         <%= insert_paloma_hook %>
+      </body>
+   </html>
+   ```
 
 ## Controllers
 
@@ -289,14 +302,7 @@ $(document).on('page:load', function(){
 
 ## Gotchas
 
-* Paloma  will execute on all `render` calls, except for calls with the following formats: `js`, `json`, `xml`, and `file`.
-
-   Example:
-   
-   ```ruby
-   render :json => {:x => 1}  # Paloma will not execute`
-   render :partial => '/path/to/partial'  # Paloma will execute
-   ```
+* Make sure that the rendered view has the paloma hook (*use `insert_paloma_hook`*) for Paloma to execute. 
 
 * It will cause conflicts if you have a controller and a module that has the same name.
 
