@@ -125,19 +125,7 @@ module Paloma
     end
 
 
-    #
-    # Make sure not to execute paloma on the following response type
-    #
-    def render options = nil, extra_options = {}, &block
-      [:json, :js, :xml, :file].each do |format|
-        if options.has_key?(format)
-          self.paloma.clear_request
-          break
-        end
-      end if options.is_a?(Hash)
 
-      super
-    end
 
 
   protected
