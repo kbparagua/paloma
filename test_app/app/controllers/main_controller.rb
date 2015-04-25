@@ -40,6 +40,11 @@ class MainController < ApplicationController
   end
 
 
+  def ajax
+    render :ajax, :layout => false
+  end
+
+
 
 
 

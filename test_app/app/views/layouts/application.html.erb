@@ -19,10 +19,14 @@
     <li><%= link_to 'Main#basic_params', basic_params_main_index_path %></li>
     <li><%= link_to 'Main#xml_response', xml_response_main_index_path %></li>
     <li><%= link_to 'Main#file_response', file_response_main_index_path %></li>
+    <li><%= link_to 'Main#ajax', ajax_main_index_path, :id => 'js-ajax-link' %></li>
   </ul>
 </div>
 
 <hr/>
+
+<div id='js-ajax-response'>
+</div>
 
 <%= yield %>
 <%= insert_paloma_hook %>
