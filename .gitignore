@@ -1,6 +1,5 @@
 Gemfile.lock
 *.gem
 /tmp/*
-/spec/tmp/
-/spec/test_app/tmp
-/spec/test_app/spec/tmp/*
+/test_app/tmp/*
+/test_app/spec/tmp/*
