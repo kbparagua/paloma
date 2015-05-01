@@ -277,6 +277,22 @@ Inside this HTML hook is where the magic happens. This is the reason why Paloma 
 
 Ideally, you just need to call `insert_paloma_hook` in your layouts, since the layout will always be included in every rendered view. But if you are rendering a view without a layout, make sure to call `insert_paloma_hook` in that view.
 
+
+## AJAX
+
+1. Make sure that the AJAX response contains the html hook. (use `insert_paloma_hook`)
+2. Execute the hook and start Paloma's engine on complete/success.
+
+   ```js
+   $.get('http://example.com', function(response){
+      $('#result').html(response);
+      
+      // Execute Paloma hook and start the engine.
+      Paloma.executeHook();
+      Palama.engine.start();
+   });
+   ```
+
 ## Turbolinks Support
 
 As of version `4.1.0`, Paloma is compatible with Turbolinks without additional setup.
