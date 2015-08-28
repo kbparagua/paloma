@@ -2,13 +2,14 @@ class MainController < ApplicationController
 
   # Default behavior
   def index
+    js false
+    js 11231242
     render :inline => 'Main#index', :layout => 'application'
   end
 
 
   # Override controller
   def show
-    js false
     js 'OtherMain', :x => 1
     render :inline => 'Main#show', :layout => 'application'
   end

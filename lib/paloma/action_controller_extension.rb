@@ -67,6 +67,9 @@ module Paloma
       #
       #
       def js path_or_options, params = {}
+        puts '-----------------------------------------------------------------'
+        puts "js #{path_or_options.inspect}, #{params.inspect}"
+
         return self.paloma.clear_request if !path_or_options
 
         self.paloma.params.merge! params || {}
@@ -80,8 +83,8 @@ module Paloma
         #
         if path_or_options.is_a? String
           route = ::Paloma::Utilities.interpret_route path_or_options
-          self.paloma.resource = route[:resource] unless route[:resource].blank?
-          self.paloma.action = route[:action] unless route[:action].blank?
+          self.paloma.resource = route[:resource] || self.default_resource
+          self.paloma.action = route[:action] || self.default_action
 
         # :action
         elsif path_or_options.is_a? Symbol
@@ -91,7 +94,16 @@ module Paloma
         elsif path_or_options.is_a? Hash
           self.paloma.params.merge! path_or_options || {}
 
+        elsif path_or_options == true
+          self.paloma.resource = self.default_resource
+          self.paloma.action = self.default_action
+
+        else
+          raise "Paloma: Invalid argument (#{path_or_options}) for js method"
         end
+
+        puts "Paloma.request = #{self.paloma.request.inspect}"
+        puts "Paloma has request? #{self.paloma.has_request?}"
       end
 
 
@@ -101,8 +113,8 @@ module Paloma
       # Keeps track of what Rails controller/action is executed.
       #
       def track_paloma_request
-        self.paloma.resource ||= ::Paloma::Utilities.get_resource controller_path
-        self.paloma.action ||= self.action_name
+        self.paloma.resource ||= self.default_resource
+        self.paloma.action ||= self.default_action
       end
 
 
@@ -132,6 +144,16 @@ module Paloma
 
     def paloma
       @paloma ||= ::Paloma::Controller.new
+    end
+
+
+    def default_resource
+      ::Paloma::Utilities.get_resource self.controller_path
+    end
+
+
+    def default_action
+      self.action_name
     end
 
   end
