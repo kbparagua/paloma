@@ -8,6 +8,7 @@ class MainController < ApplicationController
 
   # Override controller
   def show
+    js false
     js 'OtherMain', :x => 1
     render :inline => 'Main#show', :layout => 'application'
   end

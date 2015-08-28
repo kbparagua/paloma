@@ -113,7 +113,7 @@ module Paloma
       # will execute the tracked Paloma requests.
       #
       def insert_paloma_hook
-        return true if self.paloma.has_no_request?
+        return nil if self.paloma.has_no_request?
 
         hook = view_context.render(
                  :partial => 'paloma/hook',
