@@ -67,9 +67,6 @@ module Paloma
       #
       #
       def js path_or_options, params = {}
-        puts '-----------------------------------------------------------------'
-        puts "js #{path_or_options.inspect}, #{params.inspect}"
-
         return self.paloma.clear_request if !path_or_options
 
         self.paloma.params.merge! params || {}
@@ -101,9 +98,6 @@ module Paloma
         else
           raise "Paloma: Invalid argument (#{path_or_options}) for js method"
         end
-
-        puts "Paloma.request = #{self.paloma.request.inspect}"
-        puts "Paloma has request? #{self.paloma.has_request?}"
       end
 
 
