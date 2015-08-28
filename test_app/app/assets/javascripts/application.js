@@ -36,12 +36,13 @@ Main.prototype.index = function(){};
 Main.prototype.otherAction = function(){};
 Main.prototype.prevent = function(){};
 Main.prototype.basic_params = function(){};
+Main.prototype.multiple_calls_1 = function(){};
 
 
 var OtherMain = Paloma.controller('OtherMain');
 OtherMain.prototype.show = function(){};
 OtherMain.prototype.otherAction = function(){};
-
+OtherMain.prototype.multiple_calls_2 = function(){};
 
 
 var Foos = Paloma.controller('Admin/Foos');

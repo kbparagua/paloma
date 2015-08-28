@@ -55,6 +55,20 @@ module Paloma
       # Can call a different Controller or execute a different action, and
       # pass parameters.
       #
+      # NOTE:
+      # Calling this more than once in a single action will not clear
+      # the previous config from the previous call.
+      #
+      # Example:
+      # def new
+      #   js 'MyController#new'
+      #   js :edit
+      #   js :x => 1, :y => 2
+      #
+      #   # Paloma will execute JS for
+      #   # MyController#edit and will pass the parameters :x => 1, :y => 2
+      # end
+      #
       # Usage:
       #
       #   js 'Controller', {params}
@@ -82,8 +96,8 @@ module Paloma
         #
         if path_or_options.is_a? String
           route = ::Paloma::Utilities.interpret_route path_or_options
-          self.paloma.resource = route[:resource] || self.default_resource
-          self.paloma.action = route[:action] || self.default_action
+          self.paloma.resource = route[:resource] if route[:resource].present?
+          self.paloma.action = route[:action] if route[:action].present?
 
         # :action
         elsif path_or_options.is_a? Symbol
@@ -93,13 +107,12 @@ module Paloma
         elsif path_or_options.is_a? Hash
           self.paloma.params.merge! path_or_options || {}
 
-        elsif path_or_options == true
-          self.paloma.resource = self.default_resource
-          self.paloma.action = self.default_action
-
-        else
+        elsif path_or_options != true
           raise "Paloma: Invalid argument (#{path_or_options}) for js method"
         end
+
+        self.paloma.resource ||= self.default_resource
+        self.paloma.action ||= self.default_action
       end
 
 

@@ -81,6 +81,71 @@ feature 'executing Paloma controller', :js => true do
 
   #
   #
+  # Multiple Calls
+  #
+  #
+
+  context 'false at first then pass a parameter' do
+    it 'executes default controller#action plus the parameter' do
+      visit multiple_calls_1_main_index_path
+
+      expect(
+        request['controller'] == 'Main' &&
+        request['action'] == 'multiple_calls_1' &&
+        request['params'] == {'x' => 70}
+      ).to be_truthy
+    end
+  end
+
+
+  context 'false at first then pass a controller string' do
+    it 'executes passed controller and default action' do
+      visit multiple_calls_2_main_index_path
+
+      expect(
+        request['controller'] == 'OtherMain' &&
+        request['action'] == 'multiple_calls_2'
+      ).to be_truthy
+    end
+  end
+
+
+  context 'controller at first then action' do
+    it 'executes the controller and action' do
+      visit multiple_calls_3_main_index_path
+
+      expect(
+        request['controller'] == 'OtherMain' &&
+        request['action'] == 'show'
+      ).to be_truthy
+    end
+  end
+
+
+  context 'controller#action at first then false' do
+    it 'does not execute any js' do
+      visit multiple_calls_4_main_index_path
+      expect(request).to be_nil
+    end
+  end
+
+
+  context 'false at first then true' do
+    it 'executes default controller#action' do
+      visit multiple_calls_5_main_index_path
+
+      expect(
+        request['controller'] == 'Main' &&
+        request['action'] == 'multiple_calls_5'
+      ).to be_truthy
+    end
+  end
+
+
+
+
+  #
+  #
   # Prevent Paloma
   #
   #

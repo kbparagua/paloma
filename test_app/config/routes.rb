@@ -13,6 +13,11 @@ TestApp::Application.routes.draw do
       get :xml_response
       get :file_response
       get :ajax
+      get :multiple_calls_1
+      get :multiple_calls_2
+      get :multiple_calls_3
+      get :multiple_calls_4
+      get :multiple_calls_5
     end
   end
 
