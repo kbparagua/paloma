@@ -65,6 +65,7 @@ module Paloma
       #   js :action, {params}
       #   js :param_1 => 1, :param_2 => 2
       #   js true
+      #   js false
       #
       #
       def js path_or_options, params = {}
