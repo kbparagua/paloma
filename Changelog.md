@@ -1,3 +1,6 @@
+## 4.2.0
+* https://github.com/kbparagua/paloma/pull/75 - Explicitly insert hook in view.
+
 ## 4.1.2
 * https://github.com/kbparagua/paloma/issues/73 - Fix `js false` issue.
 
