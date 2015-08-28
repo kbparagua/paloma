@@ -55,6 +55,20 @@ module Paloma
       # Can call a different Controller or execute a different action, and
       # pass parameters.
       #
+      # NOTE:
+      # Calling this more than once in a single action will not clear
+      # the previous config from the previous call.
+      #
+      # Example:
+      # def new
+      #   js 'MyController#new'
+      #   js :edit
+      #   js :x => 1, :y => 2
+      #
+      #   # Paloma will execute JS for
+      #   # MyController#edit and will pass the parameters :x => 1, :y => 2
+      # end
+      #
       # Usage:
       #
       #   js 'Controller', {params}
@@ -64,6 +78,8 @@ module Paloma
       #   js '#action', {params}
       #   js :action, {params}
       #   js :param_1 => 1, :param_2 => 2
+      #   js true
+      #   js false
       #
       #
       def js path_or_options, params = {}
@@ -80,8 +96,8 @@ module Paloma
         #
         if path_or_options.is_a? String
           route = ::Paloma::Utilities.interpret_route path_or_options
-          self.paloma.resource = route[:resource] unless route[:resource].blank?
-          self.paloma.action = route[:action] unless route[:action].blank?
+          self.paloma.resource = route[:resource] if route[:resource].present?
+          self.paloma.action = route[:action] if route[:action].present?
 
         # :action
         elsif path_or_options.is_a? Symbol
@@ -91,7 +107,12 @@ module Paloma
         elsif path_or_options.is_a? Hash
           self.paloma.params.merge! path_or_options || {}
 
+        elsif path_or_options != true
+          raise "Paloma: Invalid argument (#{path_or_options}) for js method"
         end
+
+        self.paloma.resource ||= self.default_resource
+        self.paloma.action ||= self.default_action
       end
 
 
@@ -101,8 +122,8 @@ module Paloma
       # Keeps track of what Rails controller/action is executed.
       #
       def track_paloma_request
-        self.paloma.resource ||= ::Paloma::Utilities.get_resource controller_path
-        self.paloma.action ||= self.action_name
+        self.paloma.resource ||= self.default_resource
+        self.paloma.action ||= self.default_action
       end
 
 
@@ -132,6 +153,16 @@ module Paloma
 
     def paloma
       @paloma ||= ::Paloma::Controller.new
+    end
+
+
+    def default_resource
+      ::Paloma::Utilities.get_resource self.controller_path
+    end
+
+
+    def default_action
+      self.action_name
     end
 
   end

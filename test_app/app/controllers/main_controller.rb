@@ -8,7 +8,6 @@ class MainController < ApplicationController
 
   # Override controller
   def show
-    js false
     js 'OtherMain', :x => 1
     render :inline => 'Main#show', :layout => 'application'
   end
@@ -26,6 +25,43 @@ class MainController < ApplicationController
     js 'OtherMain#otherAction', :x => 1
     render :inline => 'Main#edit', :layout => 'application'
   end
+
+
+  def multiple_calls_1
+    js false
+    js :x => 70
+    render :inline => 'Main#multiple_calls', :layout => 'application'
+  end
+
+
+  def multiple_calls_2
+    js false
+    js 'OtherMain'
+    render :inline => 'Main#multiple_calls_2', :layout => 'application'
+  end
+
+
+  def multiple_calls_3
+    js 'OtherMain'
+    js :show
+    render :inline => 'Main#multiple_calls_3', :layout => 'application'
+  end
+
+
+  def multiple_calls_4
+    js 'OtherMain#show'
+    js false
+    render :inline => 'Main#multiple_calls_4', :layout => 'application'
+  end
+
+
+  def multiple_calls_5
+    js false
+    js true
+    render :inline => 'Main#multiple_calls_5', :layout => 'application'
+  end
+
+
 
 
   # Stop paloma from execution
