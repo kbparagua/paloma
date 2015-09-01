@@ -1,3 +1,7 @@
+## 4.2.1
+* https://github.com/kbparagua/paloma/issues/79 - Rendering "true" string fixed.
+* Catch situations where `js` function is called more than once.
+
 ## 4.2.0
 * https://github.com/kbparagua/paloma/pull/75 - Explicitly insert hook in view.
 
