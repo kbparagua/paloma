@@ -289,7 +289,7 @@ Ideally, you just need to call `insert_paloma_hook` in your layouts, since the l
       
       // Execute Paloma hook and start the engine.
       Paloma.executeHook();
-      Palama.engine.start();
+      Paloma.engine.start();
    });
    ```
 
