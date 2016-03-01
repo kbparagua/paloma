@@ -56,6 +56,9 @@ NotFoos.prototype.otherAction = function(){};
 
 
 $(document).ready(function(){
+
+  Paloma.engine.start();
+
   $('#js-ajax-link').on('click', function(e){
     e.preventDefault();
 
