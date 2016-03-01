@@ -1,6 +1,6 @@
 <% id = "#{Time.now.to_i}#{(rand * 1000).ceil}" %>
 
-<div class="js-paloma-hook" data-id="<%= id %>">
+<div class="js-paloma-hook" data-palomaid="<%= id %>">
   <script type="text/javascript">
     (function(){
       // Do not continue if Paloma not found.
@@ -11,7 +11,10 @@
       Paloma.env = '<%= Rails.env %>';
 
       // Remove any callback details if any
-      $('.js-paloma-hook[data-id!=' + <%= id %> + ']').remove();
+      var hook =
+        document.querySelector("[data-palomaid='" + <%= id %> + "']")[0];
+
+      if (hook) hook.parentNode.removeChild(hook);
 
       var request = <%= request.to_json.html_safe %>;
 
