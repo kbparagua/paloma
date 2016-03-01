@@ -3,26 +3,30 @@
 <div class="js-paloma-hook" data-palomaid="<%= id %>">
   <script type="text/javascript">
     (function(){
-      // Do not continue if Paloma not found.
-      if (window['Paloma'] === undefined) {
-        return true;
-      }
 
+      if (window['Paloma'] === undefined) return true;
       Paloma.env = '<%= Rails.env %>';
 
-      // Remove any callback details if any
-      var hook =
-        document.querySelector("[data-palomaid='" + <%= id %> + "']")[0];
-
-      if (hook) hook.parentNode.removeChild(hook);
-
-      var request = <%= request.to_json.html_safe %>;
+      var id = "<%= id %>",
+          request = <%= request.to_json.html_safe %>;
 
       Paloma.engine.setRequest({
-        id: "<%= id %>",
-        resource: request['resource'],
-        action: request['action'],
-        params: request['params']});
+        id: id,
+        resource: request.resource,
+        action: request.action,
+        params: request.params
+      });
+
+      // Remove old hooks
+      var hooks = document.getElementsByClassName('js-paloma-hook');
+
+      for (var i = 0, n = hooks.length; i < n; i++){
+        var hook = hooks[i],
+            palomaid = hook.dataset.palomaid.toString();
+
+        if (palomaid != id) hook.parentNode.removeChild(hook);
+      }
+
     })();
   </script>
 </div>
