@@ -17,15 +17,8 @@
   Paloma.engine = new Paloma.Engine({factory: Paloma._controllerFactory});
 
   Paloma._executeHook = function(){
-    var hooks = document.getElementsByClassName('js-paloma-hook');
-    if (hooks.length == 0) return;
-
-    for (var i = 0, n = hooks.length; i < n; i++){
-      var hook = hooks[i],
-          script = hook.getElementsByTagName('script')[0];
-
-      if (script) eval(script.innerHTML);
-    }
+    var hook = document.querySelector('.js-paloma-hook script');
+    if (hook) eval(hook.innerHTML);
   };
 
   Paloma.start = function(){
