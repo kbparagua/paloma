@@ -1,23 +1,27 @@
-(function(Paloma){
+Paloma.Router = function(options){
+  options = options || {};
+  this.namespaceDelimiter = options.namespaceDelimiter;
 
-  var Router = function(namespaceDelimiter){
-    this.namespaceDelimiter = namespaceDelimiter;
-  };
+  if (!this.namespaceDelimiter)
+    throw "Paloma.Router: namespaceDelimiter option is required.";
+};
 
+Paloma.Router.prototype = {
 
-  Router.prototype.parse = function(path){
+  parse: function(path){
     var parts = path.split(this.namespaceDelimiter),
         controller = parts.pop(),
         namespaces = parts;
 
     var controllerPath = namespaces.concat([controller]);
 
-    return {controllerPath: controllerPath,
-            namespaces: namespaces,
-            controller: controller};
-  };
+    return {
+      controllerPath: controllerPath,
+      namespaces: namespaces,
+      controller: controller
+    };
+  }
+
+};
 
 
-  Paloma.Router = Router;
-
-})(window.Paloma);

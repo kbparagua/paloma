@@ -1,6 +1,6 @@
 (function(Paloma){
 
-  Paloma._router = new Paloma.Router('/');
+  Paloma._router = new Paloma.Router({namespaceDelimiter: '/'});
   Paloma._controllerFactory = new Paloma.ControllerFactory(Paloma._router);
 
   //
