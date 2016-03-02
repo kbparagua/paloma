@@ -30,7 +30,7 @@ The Rails controller `app/controllers/users_controller.rb`:
 ```ruby
 def UsersController < ApplicationController
     def new
-      # a Paloma request will automatically be created.
+      # nothing special
       @user = User.new
     end
 end
@@ -39,16 +39,18 @@ end
 That's it! Simply Sexy!
 
 ## Minimum Requirements
-* jQuery 1.7 or higher
 * Rails 3.1 or higher
 
 
 ## Install
 
-1. Without bundler: `sudo gem install paloma`.
-1. With bundler, add this to your Gemfile: `gem 'paloma'`
+1. Install gem.
+  - Without bundler: `sudo gem install paloma`.
+  - With bundler, add this to your Gemfile: `gem 'paloma'`
+
 1. Require `paloma` in your `application.js`: `//= require paloma`
-1. In your layouts insert Paloma hook.
+
+1. In your layouts insert Paloma's hook.
 
    `application.html.erb`
    ```html
@@ -62,6 +64,13 @@ That's it! Simply Sexy!
       </body>
    </html>
    ```
+
+1. Start Paloma. *Most of the time this will be inside `document.ready`*.
+  ```js
+  $(document).ready(function(){
+    Paloma.start();
+  });
+  ```
 
 ## Controllers
 
@@ -281,15 +290,12 @@ Ideally, you just need to call `insert_paloma_hook` in your layouts, since the l
 ## AJAX
 
 1. Make sure that the AJAX response contains the html hook. (use `insert_paloma_hook`)
-2. Execute the hook and start Paloma's engine on complete/success.
+2. Start Paloma on complete/success.
 
    ```js
    $.get('http://example.com', function(response){
       $('#result').html(response);
-      
-      // Execute Paloma hook and start the engine.
-      Paloma.executeHook();
-      Paloma.engine.start();
+      Paloma.start();
    });
    ```
 
@@ -303,8 +309,7 @@ Paloma executes page-specific javascript by adding a `<script>` tag to the respo
 
 ```js
 $(document).on('page:restore', function(){
-  // Manually evaluates the appended script tag.
-  Paloma.executeHook();
+  Paloma.start();
 });
 ```
 
@@ -316,8 +321,7 @@ In your `application.js`
 
 ```js
 $(document).on('page:load', function(){
-   Paloma.executeHook();
-   Paloma.engine.start();
+   Paloma.start();
 });
 ```
 
