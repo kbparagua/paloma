@@ -1,13 +1,11 @@
-(function(Paloma){
+Paloma.ControllerFactory = function(router){
+  this.instances = {};
+  this.router = router;
+};
 
+Paloma.ControllerFactory.prototype = {
 
-  var ControllerFactory = function(router){
-    this.instances = {};
-    this.router = router;
-  };
-
-
-  ControllerFactory.prototype.make = function(name){
+  make: function(name){
     var config = this.router.parse(name),
         scope = this.instances;
 
@@ -18,11 +16,10 @@
       scope = scope[namespace];
     }
 
-    return scope[config['controller']] = createConstructor();
-  };
+    return scope[config['controller']] = this._createConstructor();
+  },
 
-
-  ControllerFactory.prototype.get = function(name){
+  get: function(name){
     var config = this.router.parse(name),
         scope = this.instances;
 
@@ -34,19 +31,14 @@
     }
 
     return scope;
-  };
+  },
 
+  _createConstructor: function(){
+    var constructor = function(params){ Paloma.Controller.call(this, params); };
 
-  var createConstructor = function(){
-    var constructor = function(params){ this.params = params; }
+    constructor.prototype.__proto__ = Paloma.Controller.prototype;
 
     return constructor;
-  };
+  }
 
-
-
-
-
-  Paloma.ControllerFactory = ControllerFactory;
-
-})(window.Paloma);
+};

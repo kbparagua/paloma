@@ -1,7 +1,7 @@
 
 describe('Paloma.ControllerFactory', function(){
 
-  var router = new Paloma.Router({namespace: '/', action: '#'});
+  var router = new Paloma.Router({namespaceDelimiter: '/'});
 
 
   describe('#make(name)', function(){

@@ -1,6 +1,6 @@
 (function(Paloma){
 
-  Paloma._router = new Paloma.Router('/');
+  Paloma._router = new Paloma.Router({namespaceDelimiter: '/'});
   Paloma._controllerFactory = new Paloma.ControllerFactory(Paloma._router);
 
   //
@@ -29,7 +29,5 @@
   Paloma.isExecuted = function(){
     return this.engine.lastRequest().executed;
   };
-
-
 
 })(window.Paloma);

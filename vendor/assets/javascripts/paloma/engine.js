@@ -1,45 +1,11 @@
-(function(Paloma){
+Paloma.Engine = function(config){
+  this.factory = config.factory;
+  this._clearRequest();
+};
 
-  var Engine = function(config){
-    this.factory = config.factory;
-    this._clearRequest();
-  };
+Paloma.Engine.prototype = {
 
-  Engine.prototype.start = function(){
-    if ( !this._request ) return;
-    if ( this._request.id == this.lastRequest().id ) return;
-
-    this._lastRequest = this._request;
-
-    var resource = this._request.controller,
-        action = this._request.action,
-        params = this._request.params;
-
-    var Controller = this.factory.get(resource),
-        controller = null;
-
-    Paloma.log('Paloma: ' + resource + '#' + action + ' with params:');
-    Paloma.log(params);
-
-    if ( !Controller ) return true;
-    controller = new Controller(params);
-
-    if ( !controller[action] ) return true;
-    controller[action]();
-
-    this._lastRequest.executed = true;
-    this._clearRequest();
-  };
-
-
-  //
-  // options:
-  //  resource
-  //  action
-  //  params
-  //  id
-  //
-  Engine.prototype.setRequest = function(options){
+  setRequest: function(options){
     this._request = {
       id: options.id,
       controller: options.resource,
@@ -47,30 +13,58 @@
       params: options.params,
       executed: false
     };
-  };
+  },
 
-
-  Engine.prototype.getRequest = function(key){
-    return (!key ? this._request : this._request[key]);
-  };
-
-  Engine.prototype.lastRequest = function(){
-    return this._lastRequest || {executed: false};
-  };
-
-  Engine.prototype.hasRequest = function(){
+  hasRequest: function(){
     return this._request != null;
-  };
+  },
 
-  Engine.prototype._clearRequest = function(){
-    this._request = null;
-  };
+  lastRequest: function(){
+    return this._lastRequest = this._lastRequest || {executed: false};
+  },
 
-  Engine.prototype._stopWithWarning = function(warning){
-    Paloma.warn(warning);
+  start: function(){
+    if ( this._shouldStop() ) return;
+
+    this._logRequest();
+    this._lastRequest = this._request;
+
+    var controllerClass = this.factory.get( this._request.controller );
+
+    if (controllerClass){
+      var controller = new controllerClass( this._request.params );
+      this._executeActionOf(controller);
+    }
+
     this._clearRequest();
-  };
+  },
 
-  Paloma.Engine = Engine;
+  _executeActionOf: function(controller){
+    var callback = controller[ this._request.action ];
 
-})(window.Paloma);
+    if (callback){
+      callback.call(controller);
+      this._lastRequest.executed = true;
+    }
+  },
+
+  _shouldStop: function(){
+    if ( !this.hasRequest() ) return true;
+    if ( this._request.id == this.lastRequest().id ) return true;
+
+    return false;
+  },
+
+  _logRequest: function(){
+    Paloma.log(
+      'Paloma: ' + this._request.controller + '#' +
+      this._request.action + ' with params:'
+    );
+
+    Paloma.log( this._request.params );
+  },
+
+  _clearRequest: function(){
+    this._request = null;
+  }
+};
