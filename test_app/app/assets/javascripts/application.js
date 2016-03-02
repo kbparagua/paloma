@@ -19,10 +19,7 @@
 
 
 // Uncomment if jquery.turbolinks is not used.
-// $(document).on('page:load', function(){
-//   Paloma.executeHook();
-//   Paloma.engine.start();
-// });
+// $(document).on('page:load', function(){ Paloma.start(); });
 
 
 //
@@ -57,15 +54,14 @@ NotFoos.prototype.otherAction = function(){};
 
 $(document).ready(function(){
 
-  Paloma.engine.start();
+  Paloma.start();
 
   $('#js-ajax-link').on('click', function(e){
     e.preventDefault();
 
     $.get($(this).prop('href'), function(response){
       $('#js-ajax-response').html(response);
-      Paloma.executeHook();
-      Paloma.engine.start();
+      Paloma.start();
     });
   });
 });

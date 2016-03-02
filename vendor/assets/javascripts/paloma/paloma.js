@@ -16,7 +16,7 @@
 
   Paloma.engine = new Paloma.Engine({factory: Paloma._controllerFactory});
 
-  Paloma.executeHook = function(){
+  Paloma._executeHook = function(){
     var hook = document.getElementsByClassName('js-paloma-hook')[0];
     if (!hook) return;
 
@@ -25,6 +25,16 @@
 
     eval(script.innerHTML);
   };
+
+  Paloma.start = function(){
+    if ( !this.engine.hasRequest() ) this._executeHook();
+    if ( this.engine.hasRequest() ) this.engine.start();
+  };
+
+  Paloma.isExecuted = function(){
+    return this.engine.lastRequest().executed;
+  };
+
 
 
 })(window.Paloma);
