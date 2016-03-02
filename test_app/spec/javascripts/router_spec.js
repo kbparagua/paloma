@@ -1,7 +1,7 @@
 
 describe('Paloma.Router', function(){
   var delimiter = '/',
-      router = new Paloma.Router(delimiter);
+      router = new Paloma.Router({namespaceDelimiter: delimiter});
 
   describe('#parse(path)', function(){
 
