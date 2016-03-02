@@ -17,13 +17,15 @@
   Paloma.engine = new Paloma.Engine({factory: Paloma._controllerFactory});
 
   Paloma._executeHook = function(){
-    var hook = document.getElementsByClassName('js-paloma-hook')[0];
-    if (!hook) return;
+    var hooks = document.getElementsByClassName('js-paloma-hook');
+    if (hooks.length == 0) return;
 
-    var script = hook.getElementsByTagName('script')[0];
-    if (!script) return;
+    for (var i = 0, n = hooks.length; i < n; i++){
+      var hook = hooks[i],
+          script = hook.getElementsByTagName('script')[0];
 
-    eval(script.innerHTML);
+      if (script) eval(script.innerHTML);
+    }
   };
 
   Paloma.start = function(){
