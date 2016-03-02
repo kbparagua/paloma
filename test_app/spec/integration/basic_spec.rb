@@ -125,7 +125,7 @@ feature 'executing Paloma controller', :js => true do
   context 'controller#action at first then false' do
     it 'does not execute any js' do
       visit multiple_calls_4_main_index_path
-      expect(request).to be_nil
+      expect(paloma_executed?).to be_falsy
     end
   end
 
@@ -163,7 +163,7 @@ feature 'executing Paloma controller', :js => true do
     include_examples 'no paloma'
 
     it 'prevents execution of Paloma controller' do
-      expect(request).to be_nil
+      expect(paloma_executed?).to be_falsy
     end
   end
 

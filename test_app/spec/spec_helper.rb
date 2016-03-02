@@ -33,5 +33,9 @@ end
 
 
 def request
-  page.evaluate_script 'Paloma.engine.getRequest()'
+  page.evaluate_script 'Paloma.engine.lastRequest()'
+end
+
+def paloma_executed?
+  page.evaluate_script 'Paloma.isExecuted()'
 end

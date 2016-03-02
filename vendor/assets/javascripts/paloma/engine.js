@@ -2,44 +2,39 @@
 
   var Engine = function(config){
     this.factory = config.factory;
-    this._request = null;
+    this._clearRequest();
   };
 
   Engine.prototype.start = function(){
-    // Do not execute if there is no request available.
     if ( !this._request ) return;
 
-    // Do not execute if already executed.
-    //
-    // This happens when using turbolinks,
-    // if a page using js(false) is rendered
-    // after a page with executed js, then the
-    // previous js will be executed again.
-    if ( this._request.executed ) return;
+    this._lastRequest = this._request;
 
-    var resource = this._request['controller'],
+    var resource = this._request.controller,
         Controller = this.factory.get(resource);
 
-    if (!Controller){
-      return Paloma.warn('Paloma: undefined controller -> ' + resource);
-    }
+    if ( !Controller )
+      return this._stopWithWarning(
+        'Paloma: undefined controller -> ' + resource
+      );
 
-    var controller = new Controller( this._request['params'] ),
-        action = this._request['action'],
-        params = this._request['params'];
+    var controller = new Controller( this._request.params ),
+        action = this._request.action,
+        params = this._request.params;
 
-    if (!controller[action]){
-      return Paloma.warn('Paloma: undefined action <' + action +
-        '> for <' + resource + '> controller');
-    }
-
+    if ( !controller[action] )
+      return this._stopWithWarning(
+        'Paloma: undefined action <' + action + '> for <' +
+        resource + '> controller'
+      );
 
     Paloma.log('Paloma: Execute ' + resource + '#' + action + ' with');
     Paloma.log(params);
 
-    controller[ this._request['action'] ]();
+    controller[action]();
 
-    this._request.executed = true;
+    this._lastRequest.executed = true;
+    this._clearRequest();
   };
 
 
@@ -65,6 +60,22 @@
     return (!key ? this._request : this._request[key]);
   };
 
+  Engine.prototype.lastRequest = function(){
+    return this._lastRequest || {executed: false};
+  };
+
+  Engine.prototype.hasRequest = function(){
+    return this._request != null;
+  };
+
+  Engine.prototype._clearRequest = function(){
+    this._request = null;
+  };
+
+  Engine.prototype._stopWithWarning = function(warning){
+    Paloma.warn(warning);
+    this._clearRequest();
+  };
 
   Paloma.Engine = Engine;
 

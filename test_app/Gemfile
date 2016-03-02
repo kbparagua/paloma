@@ -2,4 +2,5 @@ source 'https://rubygems.org'
 
 gem 'selenium-webdriver'
 gem 'jquery-turbolinks'
+gem 'test-unit'
 gemspec :path => '../'

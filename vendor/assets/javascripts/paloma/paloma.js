@@ -16,15 +16,25 @@
 
   Paloma.engine = new Paloma.Engine({factory: Paloma._controllerFactory});
 
+  Paloma._executeHook = function(){
+    var hook = document.getElementsByClassName('js-paloma-hook')[0];
+    if (!hook) return;
 
-  Paloma.executeHook = function(){
-    var $hook = $('.js-paloma-hook:first script:first');
+    var script = hook.getElementsByTagName('script')[0];
+    if (!script) return;
 
-    if ($hook.length == 0){ return; }
-
-    var hook = $hook.html();
-    eval(hook);
+    eval(script.innerHTML);
   };
+
+  Paloma.start = function(){
+    if ( !this.engine.hasRequest() ) this._executeHook();
+    if ( this.engine.hasRequest() ) this.engine.start();
+  };
+
+  Paloma.isExecuted = function(){
+    return this.engine.lastRequest().executed;
+  };
+
 
 
 })(window.Paloma);
