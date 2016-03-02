@@ -7,6 +7,7 @@
 
   Engine.prototype.start = function(){
     if ( !this._request ) return;
+    if ( this._request.id == this.lastRequest().id ) return;
 
     this._lastRequest = this._request;
 

@@ -11,9 +11,9 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
-//= require jquery.turbolinks
+//=# require jquery.turbolinks
 //= require jquery_ujs
-//= require turbolinks
+//=# require turbolinks
 //= require paloma
 //= require_tree .
 
