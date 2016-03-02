@@ -4,7 +4,7 @@
   <script type="text/javascript">
     (function(){
 
-      if (window['Paloma'] === undefined) return true;
+      if ( !window['Paloma'] ) return true;
       Paloma.env = '<%= Rails.env %>';
 
       var id = "<%= id %>",
