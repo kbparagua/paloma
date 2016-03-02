@@ -17,15 +17,8 @@
         params: request.params
       });
 
-      // Remove old hooks
-      var hooks = document.getElementsByClassName('js-paloma-hook');
-
-      for (var i = 0, n = hooks.length; i < n; i++){
-        var hook = hooks[i],
-            palomaid = hook.dataset.palomaid.toString();
-
-        if (palomaid != id) hook.parentNode.removeChild(hook);
-      }
+      var self  = document.querySelector("[data-palomaid='" + id + "']");
+      if (self) self.parentNode.removeChild(self);
 
     })();
   </script>
