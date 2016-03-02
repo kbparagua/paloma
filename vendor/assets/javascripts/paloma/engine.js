@@ -12,26 +12,19 @@
     this._lastRequest = this._request;
 
     var resource = this._request.controller,
-        Controller = this.factory.get(resource);
-
-    if ( !Controller )
-      return this._stopWithWarning(
-        'Paloma: undefined controller -> ' + resource
-      );
-
-    var controller = new Controller( this._request.params ),
         action = this._request.action,
         params = this._request.params;
 
-    if ( !controller[action] )
-      return this._stopWithWarning(
-        'Paloma: undefined action <' + action + '> for <' +
-        resource + '> controller'
-      );
+    var Controller = this.factory.get(resource),
+        controller = null;
 
-    Paloma.log('Paloma: Execute ' + resource + '#' + action + ' with');
+    Paloma.log('Paloma: ' + resource + '#' + action + ' with params:');
     Paloma.log(params);
 
+    if ( !Controller ) return true;
+    controller = new Controller(params);
+
+    if ( !controller[action] ) return true;
     controller[action]();
 
     this._lastRequest.executed = true;
