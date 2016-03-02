@@ -1,10 +1,3 @@
-(function(Paloma){
-
-  var Controller = function(params){
-    this.params = params;
-  };
-
-
-  Paloma.Controller = Controller;
-
-})(window.Paloma);
+Paloma.Controller = function(params){
+  this.params = params;
+};
