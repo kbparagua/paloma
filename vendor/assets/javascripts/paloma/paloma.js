@@ -30,6 +30,4 @@
     return this.engine.lastRequest().executed;
   };
 
-
-
 })(window.Paloma);

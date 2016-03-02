@@ -20,7 +20,7 @@ else {
 
 
 if ( !window['Paloma'] ){
-  if (window['console'] !== undefined){
+  if ( !window['console'] ){
     console.warn("Paloma not found. Require it in your application.js.");
   }
 }
