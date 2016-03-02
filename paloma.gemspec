@@ -9,8 +9,6 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/kbparagua/paloma'
   s.license     = 'MIT'
 
-  s.add_dependency 'jquery-rails'
-
   s.add_development_dependency 'rails', ['~> 3.2.0']
   s.add_development_dependency 'rake', ['>= 0']
   s.add_development_dependency 'rspec', ['>= 0']
