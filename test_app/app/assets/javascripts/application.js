@@ -30,8 +30,13 @@
 
 var blank = function(){};
 
-Paloma.controller('Main', {
-  index: blank,
+Paloma.controller('Application', {
+  index: function(){
+    console.log('Inherited');
+  }
+});
+
+Paloma.controller('Main < Application', {
   otherAction: blank,
   prevent: blank,
   basic_params: blank,

@@ -10,11 +10,24 @@
   Paloma.controller = function(name, prototype){
     prototype = prototype || {};
 
-    Paloma._controllerFactory.get(name) ?
-      Paloma._controllerFactory.update(name, prototype) :
-      Paloma._controllerFactory.make(name, prototype);
+    var nameParts = name.split('<'),
+        controller = nameParts[0].trim(),
+        parent = nameParts[1];
 
-    return Paloma._controllerFactory.get(name);
+    var controllerClass =
+      Paloma._controllerFactory.get(controller) ?
+        Paloma._controllerFactory.update(controller, prototype) :
+        Paloma._controllerFactory.make(controller, prototype);
+
+    if (parent){
+      parent = parent.trim();
+      var parentClass = Paloma._controllerFactory.get(parent);
+      if (!parentClass) throw "Undefined Paloma controller: " + parent;
+
+      controllerClass.prototype.__proto__ = parentClass.prototype;
+    }
+
+    return controllerClass;
   };
 
 
