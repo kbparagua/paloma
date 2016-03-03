@@ -1,11 +1,8 @@
 
 describe('Paloma.ControllerFactory', function(){
 
-  var router = new Paloma.Router({namespaceDelimiter: '/'});
-
-
   describe('#make(name)', function(){
-    var factory = new Paloma.ControllerFactory(router),
+    var factory = new Paloma.ControllerFactory(),
         Controller;
 
     beforeEach(function(){
@@ -27,7 +24,7 @@ describe('Paloma.ControllerFactory', function(){
 
 
   describe('#get(name)', function(){
-    var factory = new Paloma.ControllerFactory(router),
+    var factory = new Paloma.ControllerFactory(),
         Controller = factory.make('Foo');
 
     describe('when controller exists', function(){

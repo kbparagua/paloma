@@ -1,7 +1,6 @@
 (function(Paloma){
 
-  Paloma._router = new Paloma.Router({namespaceDelimiter: '/'});
-  Paloma._controllerFactory = new Paloma.ControllerFactory(Paloma._router);
+  Paloma._controllerFactory = new Paloma.ControllerFactory();
 
   //
   // Declare Paloma controllers using this method.

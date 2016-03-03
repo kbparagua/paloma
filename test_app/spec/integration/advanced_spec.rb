@@ -10,7 +10,7 @@ feature 'executing Paloma controller', :js => true do
 
 
   context 'default behavior' do
-    it 'executes the same namespace/controller/action' do
+    it 'executes the same namespace/controller#action' do
       visit admin_foos_path
 
       expect(
