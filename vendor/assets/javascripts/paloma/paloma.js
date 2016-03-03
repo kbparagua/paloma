@@ -7,9 +7,14 @@
   // Will return a new constructor if the no controller with the passed name
   // is found, else it will just return the current constructor.
   //
-  Paloma.controller = function(name){
-    return Paloma._controllerFactory.get(name) ||
-            Paloma._controllerFactory.make(name);
+  Paloma.controller = function(name, prototype){
+    prototype = prototype || {};
+
+    Paloma._controllerFactory.get(name) ?
+      Paloma._controllerFactory.update(name, prototype) :
+      Paloma._controllerFactory.make(name, prototype);
+
+    return Paloma._controllerFactory.get(name);
   };
 
 
