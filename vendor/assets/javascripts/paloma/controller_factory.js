@@ -1,36 +1,16 @@
-Paloma.ControllerFactory = function(router){
-  this.instances = {};
-  this.router = router;
+Paloma.ControllerFactory = function(){
+  this._controllers = {};
 };
 
 Paloma.ControllerFactory.prototype = {
 
   make: function(name){
-    var config = this.router.parse(name),
-        scope = this.instances;
-
-    // Create namespaces.
-    for (var i = 0, n = config['namespaces'].length; i < n; i++){
-      var namespace = config['namespaces'][i];
-      scope[namespace] = scope[namespace] || {};
-      scope = scope[namespace];
-    }
-
-    return scope[config['controller']] = this._createConstructor();
+    this._controllers[name] = this._createConstructor();
+    return this.get(name);
   },
 
   get: function(name){
-    var config = this.router.parse(name),
-        scope = this.instances;
-
-    for (var i = 0, n = config['controllerPath'].length; i < n; i++){
-      var path = config['controllerPath'][i];
-
-      if (scope[path] != null){ scope = scope[path]; }
-      else { return null; }
-    }
-
-    return scope;
+    return this._controllers[name] || null;
   },
 
   _createConstructor: function(){
