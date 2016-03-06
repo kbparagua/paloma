@@ -20,7 +20,10 @@ Paloma.ControllerBuilder.prototype = {
   },
 
   _updateParent: function(controller, parent){
-    if (parent) controller.prototype.__proto__ = parent.prototype;
+    if (!parent) return;
+
+    var parentClass = this.get(parent);
+    if (parentClass) controller.prototype.__proto__ = parentClass.prototype;
   },
 
   _updatePrototype: function(controller, newPrototype){
