@@ -115,6 +115,52 @@ Paloma.controller('Articles', {
 });
 ```
 
+### Namespace
+
+Namespaced controller should follow this format: `namespace/controller`.
+
+Rails controller:
+```ruby
+class Admin::UsersController < ApplicationController
+  def new
+    @user = User.new
+  end
+end
+```
+
+Paloma controller:
+```js
+Paloma.controller('Admin/Users', {
+  new: function(){
+    // Handle new admin user
+  }
+});
+```
+
+### Controller Inheritance
+
+It is also possible to create a controller that is a subclass of an existing controller, using the following syntax: 
+`Controller < ParentController`
+
+```js
+Paloma.controller('Application', {
+  index: function(){
+    alert('Application: Index');
+  },
+  
+  new: function(){
+    alert('Application: New');
+  }
+});
+
+Paloma.controller('Users < Application', {
+  // Override Application's new action
+  new: function(){
+    alert('Users: New');
+  }
+});
+```
+
 ## Advanced Usage
 
 You can manipulate what controller/action should Paloma execute by calling `js` method **before** rendering.
