@@ -10,6 +10,7 @@ Page-specific javascript for Rails done right.
 * Choose what specific javascript code to run per page.
 * Easily make ruby variables available on your javascript files.
 * Can be written using vanilla javascript, coffeescript, and anything that compiles to js.
+* No external library dependency.
 * Easy to understand (*because it is patterned after Rails' controller module*).
 
 ## Quick Example
@@ -68,13 +69,14 @@ That's it! Simply Sexy!
 1. Start Paloma. *Most of the time this will be inside `document.ready`*.
   ```js
   $(document).ready(function(){
+    // Execute Paloma's callback.
     Paloma.start();
   });
   ```
 
 ## Controllers
 
-Controllers are just classes that handle requests made by Rails Controllers. Each Rails Controller's action will be mapped to a specific Paloma Controller's action.
+Controllers are classes that handle requests made by Rails Controllers. Each Rails Controller's action will be mapped to a specific Paloma Controller's action.
 
 
 ### Creating a Controller
@@ -94,18 +96,24 @@ Note: Using `Paloma.controller` method, you can access the same controller const
 
 Every time a request to Paloma is made (A Rails Controller action is executed), an instance of a Paloma controller is created and the method responsible for the request will be invoked.
  
+ Add actions directly to the constructor's prototype.
+ 
 ```javascript
+var Articles = Paloma.controller('Articles');
+
+Articles.prototype.edit = function(){
+  // Handle edit article
+};
+```
+Or use pass the prototype directly as the 2nd argument of the `controller` method.
+
+```js
 Paloma.controller('Articles', {
-  new: function(){
-    // Handle new articles
-  },
-  
   edit: function(){
-    // Handle edit articles
+    // Handle edit article
   }
 });
 ```
-
 
 ## Advanced Usage
 
