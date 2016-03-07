@@ -5,9 +5,9 @@ Paloma.ControllerBuilder = function(){
 
 Paloma.ControllerBuilder.prototype = {
 
-  build: function(nameAndParent, prototype){
-    var parts = this._extractParts(nameAndParent),
-        controller = this._getOrCreate( parts.name );
+  build: function(controllerAndParent, prototype){
+    var parts = this._extractParts(controllerAndParent),
+        controller = this._getOrCreate( parts.controller );
 
     this._updatePrototype(controller, prototype);
     this._updateParent(controller, parts.parent);
@@ -47,15 +47,15 @@ Paloma.ControllerBuilder.prototype = {
     return controller;
   },
 
-  _extractParts: function(nameAndParent){
-    var parts = nameAndParent.split( this._inheritanceSymbol );
+  _extractParts: function(controllerAndParent){
+    var parts = controllerAndParent.split( this._inheritanceSymbol );
 
-    var name = parts[0].trim(),
+    var controller = parts[0].trim(),
         parent = parts[1];
 
     if (parent) parent = parent.trim();
 
-    return {name: name, parent: parent};
+    return {controller: controller, parent: parent};
   }
 
 };
