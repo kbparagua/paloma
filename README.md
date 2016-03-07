@@ -17,12 +17,12 @@ Page-specific javascript for Rails done right.
 Paloma controller.
 
 ```javascript
-var UsersController = Paloma.controller('Users');
-
-// Executes when Rails User#new is executed.
-UsersController.prototype.new = function(){
-   alert('Hello Sexy User!' );
-};
+Paloma.controller('Users', {
+  new: function(){
+    // Executes when Rails User#new is executed.
+    alert('Hello Sexy User!');
+  }
+});
 ```
  
 The Rails controller `app/controllers/users_controller.rb`:
@@ -95,15 +95,15 @@ Note: Using `Paloma.controller` method, you can access the same controller const
 Every time a request to Paloma is made (A Rails Controller action is executed), an instance of a Paloma controller is created and the method responsible for the request will be invoked.
  
 ```javascript
-var ArticlesController = Paloma.controller('Articles');
-
-ArticlesController.prototype.new = function(){
-  // Handle new articles
-};
-
-ArticlesController.prototype.edit = function(){
-  // Handle edit articles
-};
+Paloma.controller('Articles', {
+  new: function(){
+    // Handle new articles
+  },
+  
+  edit: function(){
+    // Handle edit articles
+  }
+});
 ```
 
 
@@ -185,15 +185,15 @@ You can access the parameters on your Paloma Controller using `this.params` obje
    end
    ```
 
-   Paloma controller.
+  Paloma controller.
 
-   ```javascript
-   var UsersController = Paloma.controller('Users');
-   
-   UsersController.prototype.destroy = function(){
-     alert('User ' + this.params['id'] + ' is deleted.');
-   };
-   ```
+  ```javascript
+  Paloma.controller('Users', {
+    destroy: function(){
+      alert('User ' + this.params['id'] + ' is deleted.');
+    }
+  });
+  ```
 
 2. Path with parameters.
 
@@ -330,16 +330,6 @@ $(document).on('page:load', function(){
 
 * Make sure that the rendered view has the paloma hook (*use `insert_paloma_hook`*) for Paloma to execute. 
 
-* It will cause conflicts if you have a controller and a module that has the same name.
-
-   Example:
-   ```js
-   var AdminController = Paloma.controller('Admin');
-   
-   // This will override the AdminController and replace it
-   // with a module named 'Admin'.
-   var UsersController = Paloma.controller('Admin/Users');
-   ```
 
 ## Where to put code?
 
