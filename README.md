@@ -105,7 +105,8 @@ Articles.prototype.edit = function(){
   // Handle edit article
 };
 ```
-Or use pass the prototype directly as the 2nd argument of the `controller` method.
+
+Or pass the prototype value directly as the 2nd argument of the `controller` method.
 
 ```js
 Paloma.controller('Articles', {
@@ -224,43 +225,39 @@ You can manipulate what controller/action should Paloma execute by calling `js` 
 
 ## Passing Parameters
 
-You can access the parameters on your Paloma Controller using `this.params` object.
+You can pass parameters to your Paloma Controller in two ways.
 
-
-1. Parameters only.
+1. Passing a hash. (*parameters only*)
  
-   `users_controller.rb`
-   ```ruby
-   def destroy
-       user = User.find params[:id]
-       user.destroy
+  ```ruby
+  def show
+    user = User.find params[:id]
        
-       js :id => user.id
-   end
-   ```
-
-  Paloma controller.
-
-  ```javascript
-  Paloma.controller('Users', {
-    destroy: function(){
-      alert('User ' + this.params['id'] + ' is deleted.');
-    }
-  });
+    js :id => user.id
+  end
+  ```
+   
+2. Passing path and a hash.
+  
+  ```ruby
+  def show
+    user = User.find params[:id]
+    
+    js 'Admin/Users', :id => user.id
+  end
   ```
 
-2. Path with parameters.
+Using both ways, you can access the passed params using the `params` property of your Paloma controller.
 
-   ```ruby
-   def destroy
-      user = User.find params[:id]
-      user.destroy
-      
-      js 'Accounts#delete', :id => user.id
-   end
-   ```
-   
-   
+```javascript
+Paloma.controller('Users', {
+  show: function(){
+    alert("User id: " + this.params.id);
+  }
+});
+```
+
+
 ## Preventing Paloma Execution
 
 If you want to Paloma not to execute in a specific Rails Controller action you need to pass `false` as the Paloma parameter.
@@ -355,8 +352,6 @@ Ideally, you just need to call `insert_paloma_hook` in your layouts, since the l
 
 ## Turbolinks Support
 
-As of version `4.1.0`, Paloma is compatible with Turbolinks without additional setup.
-
 ### Execute Paloma when user hits `Back` or `Forward` button.
 
 Paloma executes page-specific javascript by adding a `<script>` tag to the response body. Turbolinks, by default, executes any inline javascript in the response body when you visit a page, so the `<script>` tag appended by Paloma will automatically be executed. However, when Turbolinks restores a page from cache (*this happens when a user hits `Back` or `Forward` button in his browser*) any **inline javascript will not be executed** anymore. This is the intentional behavior of Turbolinks, and it is not a bug. If you want to execute Paloma again when Turbolinks restores a page, do something like this:
@@ -366,19 +361,6 @@ $(document).on('page:restore', function(){
   Paloma.start();
 });
 ```
-
-### Turbolinks without `jquery.turbolinks` gem
-
-You need to manually run Paloma every page load if you are not using `jquery.turbolinks` gem.
-
-In your `application.js`
-
-```js
-$(document).on('page:load', function(){
-   Paloma.start();
-});
-```
-
 
 ## Gotchas
 
