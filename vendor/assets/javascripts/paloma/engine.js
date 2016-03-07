@@ -1,5 +1,5 @@
 Paloma.Engine = function(config){
-  this.factory = config.factory;
+  this.builder = config.builder;
   this._clearRequest();
 };
 
@@ -29,7 +29,7 @@ Paloma.Engine.prototype = {
     this._logRequest();
     this._lastRequest = this._request;
 
-    var controllerClass = this.factory.get( this._request.controller );
+    var controllerClass = this.builder.get( this._request.controller );
 
     if (controllerClass){
       var controller = new controllerClass( this._request.params );

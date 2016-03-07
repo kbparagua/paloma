@@ -28,28 +28,37 @@
 //
 //
 
-var Main = Paloma.controller('Main');
-Main.prototype.index = function(){};
-Main.prototype.otherAction = function(){};
-Main.prototype.prevent = function(){};
-Main.prototype.basic_params = function(){};
-Main.prototype.multiple_calls_1 = function(){};
+var blank = function(){};
+
+Paloma.controller('Application', {
+  index: function(){
+    console.log('Inherited');
+  }
+});
+
+Paloma.controller('Main < Application', {
+  otherAction: blank,
+  prevent: blank,
+  basic_params: blank,
+  multiple_calls_1: blank
+});
 
 
-var OtherMain = Paloma.controller('OtherMain');
-OtherMain.prototype.show = function(){};
-OtherMain.prototype.otherAction = function(){};
-OtherMain.prototype.multiple_calls_2 = function(){};
+Paloma.controller('OtherMain', {
+  show: blank,
+  otherAction: blank,
+  multiple_calls_2: blank
+});
 
+Paloma.controller('Admins/Foos', {
+  index: blank,
+  otherAction: blank
+});
 
-var Foos = Paloma.controller('Admin/Foos');
-Foos.prototype.index = function(){};
-Foos.prototype.otherAction = function(){};
-
-
-var NotFoos = Paloma.controller('NotAdmin/Foos');
-NotFoos.prototype.show = function(){};
-NotFoos.prototype.otherAction = function(){};
+Paloma.controller('NotAdmin/Foos', {
+  show: blank,
+  otherAction: blank
+});
 
 
 $(document).ready(function(){

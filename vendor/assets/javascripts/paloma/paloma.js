@@ -1,19 +1,11 @@
 (function(Paloma){
 
-  Paloma._controllerFactory = new Paloma.ControllerFactory();
+  Paloma._controllerBuilder = new Paloma.ControllerBuilder();
+  Paloma.engine = new Paloma.Engine({builder: Paloma._controllerBuilder});
 
-  //
-  // Declare Paloma controllers using this method.
-  // Will return a new constructor if the no controller with the passed name
-  // is found, else it will just return the current constructor.
-  //
-  Paloma.controller = function(name){
-    return Paloma._controllerFactory.get(name) ||
-            Paloma._controllerFactory.make(name);
+  Paloma.controller = function(name, prototype){
+    return Paloma._controllerBuilder.build(name, prototype);
   };
-
-
-  Paloma.engine = new Paloma.Engine({factory: Paloma._controllerFactory});
 
   Paloma._executeHook = function(){
     var hook = document.querySelector('.js-paloma-hook script');
