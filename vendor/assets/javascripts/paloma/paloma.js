@@ -3,6 +3,10 @@
   Paloma._controllerBuilder = new Paloma.ControllerBuilder();
   Paloma.engine = new Paloma.Engine({builder: Paloma._controllerBuilder});
 
+  Paloma.baseController = function(prototype){
+    return Paloma.BaseController.prototype
+  };
+
   Paloma.controller = function(name, prototype){
     return Paloma._controllerBuilder.build(name, prototype);
   };

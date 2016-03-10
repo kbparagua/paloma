@@ -27,9 +27,7 @@ Paloma.ControllerBuilder.prototype = {
   },
 
   _updatePrototype: function(controller, newPrototype){
-    for (var k in newPrototype)
-      if (newPrototype.hasOwnProperty(k))
-        controller.prototype[k] = newPrototype[k];
+    Paloma.utils.merge(controller.prototype, newPrototype);
   },
 
   _getOrCreate: function(name){
@@ -38,10 +36,10 @@ Paloma.ControllerBuilder.prototype = {
 
   _create: function(name){
     var controller = function(params){
-      Paloma.Controller.call(this, params);
+      Paloma.BaseController.call(this, params);
     };
 
-    controller.prototype.__proto__ = Paloma.Controller.prototype;
+    controller.prototype.__proto__ = Paloma.BaseController.prototype;
 
     this._controllers[name] = controller;
     return controller;

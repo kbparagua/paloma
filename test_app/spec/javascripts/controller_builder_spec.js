@@ -16,7 +16,7 @@ describe('Paloma.ControllerBuilder', function(){
         var controller = newBuilder().build('MyController'),
             instance = new controller();
 
-        expect(instance instanceof Paloma.Controller).toBeTruthy();
+        expect(instance instanceof Paloma.BaseController).toBeTruthy();
       });
 
       describe('when prototype is present', function(){
