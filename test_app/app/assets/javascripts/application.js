@@ -31,9 +31,16 @@
 var blank = function(){};
 
 Paloma.controller('Application', {
+
+  before: [
+    'all -> logRequest',
+    'show index -> askUser changeBackground'
+  ],
+
   index: function(){
     console.log('Inherited');
   }
+
 });
 
 Paloma.controller('Main < Application', {
