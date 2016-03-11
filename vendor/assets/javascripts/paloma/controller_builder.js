@@ -27,7 +27,9 @@ Paloma.ControllerBuilder.prototype = {
   },
 
   _updatePrototype: function(controller, newPrototype){
-    Paloma.utils.merge(controller.prototype, newPrototype);
+    for (var k in newPrototype)
+      if (newPrototype.hasOwnProperty(k))
+        controller.prototype[k] = newPrototype[k];
   },
 
   _getOrCreate: function(name){
