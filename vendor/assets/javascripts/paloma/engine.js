@@ -40,10 +40,10 @@ Paloma.Engine.prototype = {
   },
 
   _executeActionOf: function(controller){
-    var callback = controller[ this._request.action ];
+    var action = controller[ this._request.action ];
 
-    if (callback){
-      callback.call(controller);
+    if (action){
+      controller.execute( this._request.action );
       this._lastRequest.executed = true;
     }
   },

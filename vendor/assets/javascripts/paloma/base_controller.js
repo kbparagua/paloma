@@ -10,7 +10,7 @@
 
     execute: function(methodName){
       var callbacks = getCallbacksFor.call(this, methodName);
-      executeCallbacks(this, callbacks);
+      executeCallbacks.call(this, callbacks);
     }
 
   };
