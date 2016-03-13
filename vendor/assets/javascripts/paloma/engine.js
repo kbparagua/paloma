@@ -43,7 +43,9 @@ Paloma.Engine.prototype = {
     var action = controller[ this._request.action ];
 
     if (action){
-      controller.execute( this._request.action );
+      var agent = Paloma.Agent(controller);
+      agent.perform( this._request.action );
+
       this._lastRequest.executed = true;
     }
   },
