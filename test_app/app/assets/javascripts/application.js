@@ -38,6 +38,7 @@ Paloma.controller('Application', {
   // ],
 
   before: [
+    'all -> performThis',
     'show -> doSomething'
   ],
 
@@ -47,6 +48,10 @@ Paloma.controller('Application', {
 
   doSomething: function(){
     console.log('Do something');
+  },
+
+  performThis: function(){
+    console.log('Perform This!');
   }
 
 });
