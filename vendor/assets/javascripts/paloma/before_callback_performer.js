@@ -12,8 +12,8 @@ Paloma.BeforeCallbackPerformer.prototype = {
   },
 
   _executeCallbacks: function(){
-    for (var i = 0, n = this._callbacks.length; i < n; i++)
-      this._executeCallback( this._callbacks[i] );
+    for (var i = 0, n = this._callbacks().length; i < n; i++)
+      this._executeCallback( this._callbacks()[i] );
   },
 
   _executeCallback: function(name){
@@ -43,7 +43,7 @@ Paloma.BeforeCallbackPerformer.prototype = {
       this._actionIsOn(parsedEntry.actions) ||
       this._allIsOn(parsedEntry.actions)
     )
-      return entry.callbacks;
+      return parsedEntry.callbacks;
 
     return [];
   },
