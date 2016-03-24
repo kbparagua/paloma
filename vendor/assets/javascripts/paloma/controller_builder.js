@@ -25,7 +25,7 @@ Paloma.ControllerBuilder.prototype = {
     };
 
     for (var k in this.options.params)
-      if (this.options.hasOwnProperty(k))
+      if (this.options.params.hasOwnProperty(k))
         params[k] = this.options.params[k];
 
     return params;
