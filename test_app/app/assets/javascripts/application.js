@@ -31,9 +31,29 @@
 var blank = function(){};
 
 Paloma.controller('Application', {
+
+  // before: [
+  //   'all -> logRequest',
+  //   'show index -> askUser changeBackground'
+  // ],
+
+  before: [
+    'all -> performThis',
+    'show -> doSomething'
+  ],
+
   index: function(){
     console.log('Inherited');
+  },
+
+  doSomething: function(){
+    console.log('Do something');
+  },
+
+  performThis: function(){
+    console.log('Perform This!');
   }
+
 });
 
 Paloma.controller('Main < Application', {
@@ -44,7 +64,7 @@ Paloma.controller('Main < Application', {
 });
 
 
-Paloma.controller('OtherMain', {
+Paloma.controller('OtherMain < Application', {
   show: blank,
   otherAction: blank,
   multiple_calls_2: blank
