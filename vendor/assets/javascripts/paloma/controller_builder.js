@@ -8,7 +8,7 @@ Paloma.ControllerBuilder.prototype = {
   build: function(options){
     this.options = options;
 
-    var ControllerClass = this._controllerClass(),
+    var ControllerClass = this._controllerClass();
     if ( !ControllerClass ) return null;
 
     return new ControllerClass( this._buildParams() );

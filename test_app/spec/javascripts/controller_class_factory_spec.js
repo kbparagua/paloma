@@ -1,19 +1,19 @@
-describe('Paloma.ControllerBuilder', function(){
+describe('Paloma.ControllerClassFactory', function(){
 
-  var _builder = null;
-  function builder(){ return _builder; }
+  var _factory = null;
+  function factory(){ return _factory; }
 
-  function newBuilder(){
-    _builder = new Paloma.ControllerBuilder();
-    return _builder;
+  function newFactory(){
+    _factory = new Paloma.ControllerClassFactory();
+    return _factory;
   }
 
 
 
-  describe('#build(controllerAndParent, prototype)', function(){
+  describe('#make(controllerAndParent, prototype)', function(){
     describe('when controller is not yet existing', function(){
       it('creates a new controller', function(){
-        var controller = newBuilder().build('MyController'),
+        var controller = newFactory().make('MyController'),
             instance = new controller();
 
         expect(instance instanceof Paloma.BaseController).toBeTruthy();
@@ -21,7 +21,7 @@ describe('Paloma.ControllerBuilder', function(){
 
       describe('when prototype is present', function(){
         it('adds the prototype to the controller', function(){
-          var controller = newBuilder().build('MyController', {a: 100});
+          var controller = newFactory().make('MyController', {a: 100});
 
           expect(controller.prototype.a).toEqual(100);
         });
@@ -29,8 +29,8 @@ describe('Paloma.ControllerBuilder', function(){
 
       describe('when parent is present', function(){
         it('creates a subclass of that parent', function(){
-          var parent = newBuilder().build('Parent'),
-              child = builder().build('Child < Parent');
+          var parent = newFactory().make('Parent'),
+              child = factory().make('Child < Parent');
 
           var controller = new child();
           expect(controller instanceof parent).toBeTruthy();
@@ -40,13 +40,13 @@ describe('Paloma.ControllerBuilder', function(){
 
     describe('when controller is already existing', function(){
       it('returns the existing controller', function(){
-        var controller = newBuilder().build('test2');
-        expect( builder().build('test2') ).toEqual(controller);
+        var controller = newFactory().make('test2');
+        expect( factory().make('test2') ).toEqual(controller);
       });
 
       describe('when prototype is present', function(){
-        var controller = newBuilder().build('Test', {number: 9});
-        builder().build('Test', {number: 10});
+        var controller = newFactory().make('Test', {number: 9});
+        factory().make('Test', {number: 10});
 
         it('updates the current prototype', function(){
           expect(controller.prototype.number).toEqual(10);
@@ -54,12 +54,12 @@ describe('Paloma.ControllerBuilder', function(){
       });
 
       describe('when parent is present', function(){
-        var oldParent = newBuilder().build('OldParent'),
-            newParent = builder().build('NewParent');
+        var oldParent = newFactory().make('OldParent'),
+            newParent = factory().make('NewParent');
 
         describe('when no previous parent', function(){
-          var child = builder().build('ChildA');
-          builder().build('ChildA < NewParent');
+          var child = factory().make('ChildA');
+          factory().make('ChildA < NewParent');
 
           var instance = new child();
 
@@ -69,8 +69,8 @@ describe('Paloma.ControllerBuilder', function(){
         });
 
         describe('when has previous parent', function(){
-          var child = builder().build('ChildB < OldParent');
-          builder().build('ChildB < NewParent');
+          var child = factory().make('ChildB < OldParent');
+          factory().make('ChildB < NewParent');
 
           var instance = new child();
 
@@ -89,14 +89,14 @@ describe('Paloma.ControllerBuilder', function(){
   describe('#get(name)', function(){
     describe('when name has no match', function(){
       it('returns null', function(){
-        expect( newBuilder().get('unknown') ).toBeNull();
+        expect( newFactory().get('unknown') ).toBeNull();
       });
     });
 
     describe('when name has match', function(){
       it('returns the matched controller', function(){
-        var controller = newBuilder().build('myController');
-        expect( builder().get('myController') ).toEqual(controller);
+        var controller = newFactory().make('myController');
+        expect( factory().get('myController') ).toEqual(controller);
       });
     });
   });
