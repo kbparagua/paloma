@@ -1,104 +1,49 @@
 describe('Paloma.ControllerBuilder', function(){
 
-  var _builder = null;
-  function builder(){ return _builder; }
-
-  function newBuilder(){
-    _builder = new Paloma.ControllerBuilder();
-    return _builder;
-  }
+  var TestController = Paloma.controller('Test');
 
 
+  describe('#build(options)', function(){
 
-  describe('#build(controllerAndParent, prototype)', function(){
-    describe('when controller is not yet existing', function(){
-      it('creates a new controller', function(){
-        var controller = newBuilder().build('MyController'),
-            instance = new controller();
+    describe('when options.controller has no match', function(){
+      var factory = {get: function(controller){ return null; }},
+          builder = new Paloma.ControllerBuilder(factory);
 
-        expect(instance instanceof Paloma.BaseController).toBeTruthy();
-      });
-
-      describe('when prototype is present', function(){
-        it('adds the prototype to the controller', function(){
-          var controller = newBuilder().build('MyController', {a: 100});
-
-          expect(controller.prototype.a).toEqual(100);
-        });
-      });
-
-      describe('when parent is present', function(){
-        it('creates a subclass of that parent', function(){
-          var parent = newBuilder().build('Parent'),
-              child = builder().build('Child < Parent');
-
-          var controller = new child();
-          expect(controller instanceof parent).toBeTruthy();
-        });
-      });
-    });
-
-    describe('when controller is already existing', function(){
-      it('returns the existing controller', function(){
-        var controller = newBuilder().build('test2');
-        expect( builder().build('test2') ).toEqual(controller);
-      });
-
-      describe('when prototype is present', function(){
-        var controller = newBuilder().build('Test', {number: 9});
-        builder().build('Test', {number: 10});
-
-        it('updates the current prototype', function(){
-          expect(controller.prototype.number).toEqual(10);
-        });
-      });
-
-      describe('when parent is present', function(){
-        var oldParent = newBuilder().build('OldParent'),
-            newParent = builder().build('NewParent');
-
-        describe('when no previous parent', function(){
-          var child = builder().build('ChildA');
-          builder().build('ChildA < NewParent');
-
-          var instance = new child();
-
-          it('assigns the new parent', function(){
-            expect(instance instanceof newParent).toBeTruthy();
-          });
-        });
-
-        describe('when has previous parent', function(){
-          var child = builder().build('ChildB < OldParent');
-          builder().build('ChildB < NewParent');
-
-          var instance = new child();
-
-          it('updates removes the oldParent', function(){
-            expect(instance instanceof oldParent).toBeFalsy();
-          });
-
-          it('assigns the new parent', function(){
-            expect(instance instanceof newParent).toBeTruthy();
-          });
-        });
-      });
-    });
-  });
-
-  describe('#get(name)', function(){
-    describe('when name has no match', function(){
       it('returns null', function(){
-        expect( newBuilder().get('unknown') ).toBeNull();
+        var options = {controller: 'Test', action: 'show'};
+        expect( builder.build(options) ).toBeNull();
       });
     });
 
-    describe('when name has match', function(){
-      it('returns the matched controller', function(){
-        var controller = newBuilder().build('myController');
-        expect( builder().get('myController') ).toEqual(controller);
+    describe('when options.controller has a match', function(){
+      var factory = {get: function(controller){ return TestController; }},
+          builder = new Paloma.ControllerBuilder(factory);
+
+      var options = {
+        controller: 'Test',
+        action: 'show',
+        params: {a: 1, b: 2}
+      };
+
+      var controller = builder.build(options);
+
+      it('returns a new instance of the controller class', function(){
+        expect(controller instanceof TestController).toBeTruthy();
+      });
+
+      it("initializes controller instance's params", function(){
+        var expectedParams = {_controller: 'Test', _action: 'show', a: 1, b: 2};
+        var correct = true;
+
+        for (var k in expectedParams){
+          if (controller.params[k] != expectedParams[k])
+            correct = false;
+        }
+
+        expect(correct).toBeTruthy();
       });
     });
+
   });
 
 });

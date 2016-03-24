@@ -1,61 +1,34 @@
-Paloma.ControllerBuilder = function(){
-  this._controllers = {};
-  this._inheritanceSymbol = '<';
+Paloma.ControllerBuilder = function(classFactory){
+  this.classFactory = classFactory;
+  this.options = {};
 };
 
 Paloma.ControllerBuilder.prototype = {
 
-  build: function(controllerAndParent, prototype){
-    var parts = this._extractParts(controllerAndParent),
-        controller = this._getOrCreate( parts.controller );
+  build: function(options){
+    this.options = options;
 
-    this._updatePrototype(controller, prototype);
-    this._updateParent(controller, parts.parent);
+    var ControllerClass = this._controllerClass();
+    if ( !ControllerClass ) return null;
 
-    return controller;
+    return new ControllerClass( this._buildParams() );
   },
 
-  get: function(name){
-    return this._controllers[name] || null;
+  _controllerClass: function(){
+    return this.classFactory.get( this.options.controller );
   },
 
-  _updateParent: function(controller, parent){
-    if (!parent) return;
-
-    var parentClass = this.get(parent);
-    if (parentClass) controller.prototype.__proto__ = parentClass.prototype;
-  },
-
-  _updatePrototype: function(controller, newPrototype){
-    for (var k in newPrototype)
-      if (newPrototype.hasOwnProperty(k))
-        controller.prototype[k] = newPrototype[k];
-  },
-
-  _getOrCreate: function(name){
-    return this.get(name) || this._create(name);
-  },
-
-  _create: function(name){
-    var controller = function(params){
-      Paloma.BaseController.call(this, params);
+  _buildParams: function(){
+    var params = {
+      _controller: this.options.controller,
+      _action: this.options.action
     };
 
-    controller.prototype.__proto__ = Paloma.BaseController.prototype;
+    for (var k in this.options.params)
+      if (this.options.params.hasOwnProperty(k))
+        params[k] = this.options.params[k];
 
-    this._controllers[name] = controller;
-    return controller;
-  },
-
-  _extractParts: function(controllerAndParent){
-    var parts = controllerAndParent.split( this._inheritanceSymbol );
-
-    var controller = parts[0].trim(),
-        parent = parts[1];
-
-    if (parent) parent = parent.trim();
-
-    return {controller: controller, parent: parent};
+    return params;
   }
 
 };

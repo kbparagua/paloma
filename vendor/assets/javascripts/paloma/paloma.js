@@ -1,10 +1,15 @@
 (function(Paloma){
 
-  Paloma._controllerBuilder = new Paloma.ControllerBuilder();
-  Paloma.engine = new Paloma.Engine({builder: Paloma._controllerBuilder});
+  var classFactory = new Paloma.ControllerClassFactory(),
+      controllerBuilder = new Paloma.ControllerBuilder(classFactory),
+      engine = new Paloma.Engine(controllerBuilder)
+
+  Paloma._controllerClassFactory = classFactory;
+  Paloma._controllerBuilder = controllerBuilder
+  Paloma.engine = engine;
 
   Paloma.controller = function(name, prototype){
-    return Paloma._controllerBuilder.build(name, prototype);
+    return classFactory.make(name, prototype);
   };
 
   Paloma._executeHook = function(){
@@ -13,12 +18,12 @@
   };
 
   Paloma.start = function(){
-    if ( !this.engine.hasRequest() ) this._executeHook();
-    if ( this.engine.hasRequest() ) this.engine.start();
+    if ( !engine.hasRequest() ) this._executeHook();
+    if ( engine.hasRequest() ) engine.start();
   };
 
   Paloma.isExecuted = function(){
-    return this.engine.lastRequest().executed;
+    return engine.lastRequest().executed;
   };
 
 })(window.Paloma);
