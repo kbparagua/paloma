@@ -37,13 +37,11 @@ Paloma.Engine.prototype = {
     var controller = this._buildController();
     if (!controller) return;
 
-    var action = controller[ this._request.action ];
-    if (!action) return;
-
     var callbackPerformer = new Paloma.BeforeCallbackPerformer(controller);
     callbackPerformer.perform( this._request.action );
 
-    action.call(controller);
+    var method = controller[ this._request.action ];
+    if (method) method.call(controller);
 
     this._lastRequest.executed = true;
   },
