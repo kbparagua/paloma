@@ -1,5 +1,5 @@
-Paloma.Engine = function(config){
-  this.builder = config.builder;
+Paloma.Engine = function(controllerBuilder){
+  this.controllerBuilder = controllerBuilder;
   this._clearRequest();
 };
 
@@ -29,27 +29,31 @@ Paloma.Engine.prototype = {
     this._logRequest();
     this._lastRequest = this._request;
 
-    var controllerClass = this.builder.get( this._request.controller );
-
-    if (controllerClass){
-      var controller = new controllerClass( this._request.params );
-      this._executeActionOf(controller);
-    }
-
+    this._executeControllerAction();
     this._clearRequest();
   },
 
-  _executeActionOf: function(controller){
+  _executeControllerAction: function(){
+    var controller = this._buildController();
+    if (!controller) return;
+
     var action = controller[ this._request.action ];
+    if (!action) return;
 
-    if (action){
-      var callbackPerformer = new Paloma.BeforeCallbackPerformer(controller);
-      callbackPerformer.perform( this._request.action );
+    var callbackPerformer = new Paloma.BeforeCallbackPerformer(controller);
+    callbackPerformer.perform( this._request.action );
 
-      action.call(controller);
+    action.call(controller);
 
-      this._lastRequest.executed = true;
-    }
+    this._lastRequest.executed = true;
+  },
+
+  _buildController: function(){
+    return this.controllerBuilder.build({
+      controller: this._request.controller,
+      action: this._request.action,
+      params: this._request.params
+    });
   },
 
   _shouldStop: function(){
@@ -71,4 +75,5 @@ Paloma.Engine.prototype = {
   _clearRequest: function(){
     this._request = null;
   }
+
 };
