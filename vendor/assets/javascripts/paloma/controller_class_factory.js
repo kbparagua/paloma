@@ -1,11 +1,11 @@
-Paloma.ControllerBuilder = function(){
+Paloma.ControllerClassFactory = function(){
   this._controllers = {};
   this._inheritanceSymbol = '<';
 };
 
-Paloma.ControllerBuilder.prototype = {
+Paloma.ControllerClassFactory.prototype = {
 
-  build: function(controllerAndParent, prototype){
+  make: function(controllerAndParent, prototype){
     var parts = this._extractParts(controllerAndParent),
         controller = this._getOrCreate( parts.controller );
 

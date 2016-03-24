@@ -1,10 +1,10 @@
 (function(Paloma){
 
-  Paloma._controllerBuilder = new Paloma.ControllerBuilder();
+  Paloma._controllerClassFactory = new Paloma.ControllerClassFactory();
   Paloma.engine = new Paloma.Engine({builder: Paloma._controllerBuilder});
 
   Paloma.controller = function(name, prototype){
-    return Paloma._controllerBuilder.build(name, prototype);
+    return Paloma._controllerClassFactory.make(name, prototype);
   };
 
   Paloma._executeHook = function(){
