@@ -32,13 +32,14 @@ describe('Paloma.ControllerBuilder', function(){
       });
 
       it("initializes controller instance's params", function(){
-        var expectedParams = {_controller: 'Test', _action: 'show', a: 1, b: 2};
+        var expectedParams = {a: 1, b: 2};
         var correct = true;
 
-        for (var k in expectedParams){
-          if (controller.params[k] != expectedParams[k])
-            correct = false;
-        }
+        for (var k in expectedParams)
+          if (controller.params[k] != expectedParams[k]) correct = false;
+
+        for (var k in controller.params)
+          if (expectedParams[k] != controller.params[k]) correct = false;
 
         expect(correct).toBeTruthy();
       });
