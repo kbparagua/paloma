@@ -11,7 +11,12 @@ Paloma.ControllerBuilder.prototype = {
     var ControllerClass = this._controllerClass();
     if ( !ControllerClass ) return null;
 
-    return new ControllerClass( this._buildParams() );
+    var controller = new ControllerClass( this._buildParams() );
+
+    controller.controller = this.options.controller;
+    controller.action = this.options.action;
+
+    return controller;
   },
 
   _controllerClass: function(){
@@ -20,7 +25,7 @@ Paloma.ControllerBuilder.prototype = {
 
   _buildParams: function(){
     var params = {};
-    
+
     for (var k in this.options.params)
       if (this.options.params.hasOwnProperty(k))
         params[k] = this.options.params[k];
