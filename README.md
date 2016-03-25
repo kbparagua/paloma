@@ -8,9 +8,9 @@ Page-specific javascript for Rails done right.
 ## Advantages
 * Choose what specific javascript code to run per page.
 * Easily make ruby variables available on your javascript files.
-* Can be written using vanilla javascript, coffeescript, and anything that compiles to js.
-* No external library dependency.
-* Easy to understand (*because it is patterned after Rails' controller module*).
+* Write in vanilla javascript, coffeescript, and anything that compiles to js.
+* No external JS library dependency.
+* Easy to understand (*because it is patterned after Rails controller*).
 
 ## Minimum Requirement
 * Rails 3.1 or higher
@@ -18,7 +18,6 @@ Page-specific javascript for Rails done right.
 ## Quick Example
 
 Paloma controller:
-
 ```javascript
 Paloma.controller('Users', {
   new: function(){
@@ -29,7 +28,6 @@ Paloma.controller('Users', {
 ```
 
 Rails controller:
-
 ```ruby
 def UsersController < ApplicationController
   def new
@@ -44,14 +42,17 @@ end
 
 1. Install gem.
   - Without bundler: `sudo gem install paloma`.
-  - With bundler, add this to your Gemfile: `gem 'paloma'`
+  - With bundler, add this to your Gemfile:
+    ```ruby
+    gem 'paloma', '~> 5.0.0'
+    ```
 
 1. Require `paloma` in your `application.js`:
 ```
 //= require paloma
 ```
 
-1. In your layouts insert Paloma's hook. This is responsible for connecting your ruby code to your javascript code.
+1. In your layouts, insert Paloma's hook. This is responsible for connecting your ruby code to your javascript code.
 
    `application.html.erb`
    ```html
@@ -66,7 +67,7 @@ end
    </html>
    ```
 
-1. Start Paloma to interpret the hook inserted on your HTML and execute the appropriate Paloma controller and its action. Most of the time this will be inside `document.ready`.
+1. Start Paloma to initialize the appropriate controller and execute a certain action. Most of the time this will be inside `document.ready`.
 
   ```js
   $(document).ready(function(){
@@ -76,7 +77,7 @@ end
 
 ### Controller
 
-Paloma controllers are just javascript classes that will be mapped with your Rails controller. Basically, both Paloma and Rails controllers will share the same name.
+Paloma controllers are javascript classes which will be mapped with your Rails controller. Basically, both Paloma and Rails controllers will share the same name.
 
 It is created or accessed (if existing), using `Paloma.controller` method.
 
@@ -84,13 +85,11 @@ It is created or accessed (if existing), using `Paloma.controller` method.
 var ArticlesController = Paloma.controller('Articles');
 ```
 
-It will return the constructor function of your controller.
-
-Note: Using `Paloma.controller` method, you can access the same controller constructor across different files.
+Note: Using `Paloma.controller` method, you can access the same controller across different files.
 
 ### Actions
 
-To handle specific actions of your Rails controller, simply add methods to your Paloma controller's prototype.
+To handle specific actions of your Rails controller, add methods to your Paloma controller's prototype.
 
 ```js
 var ArticlesController = Paloma.controller('Articles');
@@ -100,7 +99,7 @@ ArticlesController.prototype.edit = function(){
 };
 ```
 
-Or you can easily pass the prototype value as the 2nd argument of the `Paloma.controller` method.
+Or you can pass the prototype value as the 2nd argument of the `Paloma.controller` method.
 
 ```js
 Paloma.controller('Articles', {
@@ -112,10 +111,9 @@ Paloma.controller('Articles', {
 
 ### Namespace
 
-Namespaced controller should follow this format: `namespace/controller`.
+Namespaced controller should follow the format `namespace/controller`.
 
 Rails controller:
-
 ```ruby
 class Admin::UsersController < ApplicationController
   def new
@@ -125,7 +123,6 @@ end
 ```
 
 Paloma controller:
-
 ```js
 Paloma.controller('Admin/Users', {
   new: function(){
@@ -136,11 +133,9 @@ Paloma.controller('Admin/Users', {
 
 ### Controller Inheritance
 
-Controller inheritance is accomplished using the syntax:
-`Controller < ParentController` *(same as ruby's syntax)*
+Controller inheritance is accomplished using the syntax `Controller < ParentController` *(same as ruby's syntax)*.
 
 Parent:
-
 ```js
 Paloma.controller('Application', {
   index: function(){
@@ -154,7 +149,6 @@ Paloma.controller('Application', {
 ```
 
 Child:
-
 ```js
 Paloma.controller('Users < Application', {
   // Override Application's new action
@@ -162,6 +156,94 @@ Paloma.controller('Users < Application', {
     alert('Users: New');
   }
 });
+```
+
+## Before Callbacks
+
+Executing a method before doing an action can be done using the `before` property of a controller.
+
+```js
+Paloma.controller('Articles', {
+  before: ['show -> alert'],
+
+  show: function(){
+    // Handle show Article
+  },
+
+  alert: function(){
+    alert("You are about to show an article.");
+  }
+});
+```
+
+Multiple actions and callbacks should be separated by spaces.
+The callbacks order on the string will define the order of their execution.
+So in this case, `alert` will be executed first before `log`.
+
+```js
+Paloma.controller('Articles', {
+  before: ['show index -> alert log'],
+
+  index: function(){},
+  show: function(){},
+
+  alert: function(){
+    alert('Before index and show');
+  },
+
+  log: function(){
+    console.log('Before index and show');
+  }
+});
+```
+
+### Multiple Before Entries
+
+The order of execution is also based on the order of entries on the `before` array.
+
+```js
+Paloma.controller('Articles', {
+  before: [
+    'show -> beforeShow',
+    'index -> beforeIndex',
+    'show index -> beforeShowAndIndex'
+  ],
+
+  beforeShow: function(){ alert('Before Show'); },
+  beforeShowAndIndex: function(){ alert('Before Show and Index'); }
+});
+```
+
+When `show` is executed, the following callbacks will be called in this order: `beforeShow` then `beforeShowAndIndex`.
+
+### Before All Actions
+
+`all` is a special string that can be used to indicate a catch-all callback.
+
+```js
+Paloma.controller('Articles', {
+  before: ['all -> initialize'],
+
+  initialize: function(){
+    alert('execute before every action');
+  }
+});
+```
+
+## Execution Details
+
+You can access what `controller` and `action` Paloma is about to execute or already executed,
+by accessing the `controller` and `action` property of a Paloma controller.
+
+```js
+Paloma.controller('Users', {
+  before: ['all -> log'],
+
+  log: function(){
+    console.log('Controller: ' + this.controller);
+    console.log('Action: ' + this.action);
+  }
+})
 ```
 
 ## Advanced Usage
@@ -214,7 +296,7 @@ You can manipulate what controller/action should Paloma execute by calling `js` 
   end
   ```
 
-4. Changing controller (and action) with namespace.
+4. Changing controller and action with namespace.
 
   ```ruby
   def new
@@ -245,27 +327,27 @@ You can pass parameters to your Paloma Controller in two ways.
   def show
     user = User.find params[:id]
 
-    js :id => user.id, :string => 'test'
+    js :id => user.id, :myParam => 'test'
   end
   ```
 
-2. Passing a path and a hash.
+2. Passing a `namespace/controller#action` string and a hash.
 
   ```ruby
   def show
     user = User.find params[:id]
 
-    js 'Admin/Users', :id => user.id, :string => 'test'
+    js 'Admin/Users', :id => user.id, :myParam => 'test'
   end
   ```
 
-You can access the passed params using the `params` property of your Paloma controller.
+You can access the passed parameters using the `params` property of your Paloma controller.
 
 ```js
 Paloma.controller('Users', {
   show: function(){
     alert("User id: " + this.params.id);
-    alert("String: " + this.params.string);
+    alert("String: " + this.params.myParam);
   }
 });
 ```
@@ -282,96 +364,6 @@ def edit
 end
 ```
 
-## Before Callbacks
-
-Executing a method before doing an action can be done using the `before` property of any controller.
-
-```js
-Paloma.controller('Articles', {
-  before: ['show -> alert'],
-
-  show: function(){
-    // Handle show Article
-  },
-
-  alert: function(){
-    alert("You are about to show an article.");
-  }
-});
-```
-
-Multiple actions and callbacks should be separated by spaces.
-
-```js
-Paloma.controller('Articles', {
-  before: ['show index -> alert log'],
-
-  index: function(){},
-  show: function(){},
-
-  alert: function(){
-    alert('Before index and show');
-  },
-
-  log: function(){
-    console.log('Before index and show');
-  }
-});
-```
-
-Callback's order of execution is based on their order on the string.
-So in this case, `alert` will be executed first before `log`.
-
-### Multiple Before Entries
-
-The order of execution is also based on the order of entries on the `before` array.
-
-```js
-Paloma.controller('Articles', {
-  before: [
-    'show -> beforeShow',
-    'index -> beforeIndex',
-    'show index -> beforeShowAndIndex'
-  ],
-
-  beforeShow: function(){ alert('Before Show'); },
-  beforeShowAndIndex: function(){ alert('Before Show and Index'); }
-});
-```
-
-When `show` is executed, the following callbacks will be called in this order:
-`beforeShow beforeShowAndIndex`
-
-### Before All Actions
-
-`all` is a special string that can be used to indicate a catch-all callback.
-
-```js
-Paloma.controller('Articles', {
-  before: ['all -> initialize'],
-
-  initialize: function(){
-    alert('I will be executed for every action');
-  }
-});
-```
-
-## Paloma Execution Details
-
-You can access what `controller` and `action` Paloma is about to execute or already executed,
-by accessing the `controller` and `action` property of a Paloma controller.
-
-```js
-Paloma.controller('Users', {
-  before: ['all -> log'],
-
-  log: function(){
-    console.log('Controller: ' + this.controller);
-    console.log('Action: ' + this.action);
-  }
-})
-```
-
 ## Controller-wide Setup
 
 You can call `js` outside Rails controller actions for controller-wide settings.
@@ -380,16 +372,10 @@ You can call `js` outside Rails controller actions for controller-wide settings.
 
 ```ruby
 class UsersController < ApplicationController
+
   # use Accounts controller instead of Users for all actions.
   js 'Accounts'
 
-  def new
-    @user = User.new
-  end
-
-  def show
-    @user = User.find params[:id]
-  end
 end
 ```
 
@@ -416,7 +402,7 @@ end
 
 ### Overriding Controller-wide Setup
 
-If you want to override the controller-wide setup call `js` again inside a controller action. From there you can override the controller/action or pass additional parameters.
+If you want to override the controller-wide setup call `js` again inside a controller action. From there, you can override the controller/action or pass additional parameters.
 
 ```ruby
 class UsersController < ApplicationController
@@ -432,18 +418,16 @@ end
 ```
 
 ## Hook
-
-`insert_paloma_hook` is a helper method that you use in your views to insert Paloma's HTML hook. It is what connects your Ruby code to your javascript code. Basically, it contains a javascript code that has embedded ruby in it. That javascript code will register the Rails controller and action to Paloma's engine, then after that it will remove itself from the DOM.
+`insert_paloma_hook` is a helper method that you use in your views to insert Paloma's HTML hook. It is what connects your ruby code to your javascript code. Basically, it contains a javascript code that has embedded ruby in it. That javascript code will register the Rails controller and action to Paloma's engine, then after that it will remove itself from the DOM.
 
 Ideally, you just need to call `insert_paloma_hook` in your layouts, since the layout will always be included in every rendered view. But if you are rendering a view without a layout, make sure to call `insert_paloma_hook` in that view.
 
 
 ## Starting Paloma
-
 Once Paloma's HTML hook is already executed, you can now start Paloma by calling `Paloma.start()` in your javascript code. First, it will execute the HTML hook if not yet executed, then will initialize the correct Paloma controller, execute any before callbacks, and finally execute the correct action if available.
 
-## AJAX
 
+## AJAX
 1. Make sure that the AJAX response contains the HTML hook. (use `insert_paloma_hook`)
 2. Start Paloma on complete/success.
 
