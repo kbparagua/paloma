@@ -8,8 +8,3 @@
 1. Open your browser and visit [http://localhost:3000/specs](http://localhost:3000/specs).
 1. Run `bundle exec rake spec:units`.
 1. Run `bundle exec rake spec:integration`.
-
-## TODO
-
-1. Improve tests.
-1. Testing for turbolinks.
