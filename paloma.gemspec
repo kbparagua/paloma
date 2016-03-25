@@ -1,11 +1,11 @@
 Gem::Specification.new do |s|
   s.name        = 'paloma'
-  s.version     = '4.2.1'
+  s.version     = '5.0.0'
   s.summary     = "Provides an easy way to execute page-specific javascript for Rails."
   s.description = "Page-specific javascript for Rails done right"
   s.authors     = ['Karl Paragua']
   s.email       = 'kb.paragua@gmail.com'
-  s.files       = `git ls-files`.split("\n")
+  s.files       = `git ls-files app lib vendor`.split("\n")
   s.homepage    = 'https://github.com/kbparagua/paloma'
   s.license     = 'MIT'
 
