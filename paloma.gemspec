@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Karl Paragua']
   s.email       = 'kb.paragua@gmail.com'
   s.files       = `git ls-files app lib vendor`.split("\n")
-  s.homepage    =   'https://github.com/kbparagua/paloma'
+  s.homepage    =  'https://github.com/kbparagua/paloma'
   s.license     = 'MIT'
 
   s.add_development_dependency 'jquery-rails'
