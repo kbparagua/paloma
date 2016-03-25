@@ -1,3 +1,12 @@
+## 5.0.0
+* https://github.com/kbparagua/paloma/issues/84 - Easier syntax for creating controllers.
+* https://github.com/kbparagua/paloma/issues/56 - Paloma should be started manually using `Paloma.start()`.
+* Introduced before callbacks.
+  - https://github.com/kbparagua/paloma/issues/41
+  - https://github.com/kbparagua/paloma/issues/30
+* Create `controller` and `action` property for Paloma controllers.
+* Remove jQuery dependency.
+
 ## 4.2.1
 * https://github.com/kbparagua/paloma/issues/79 - Rendering "true" string fixed.
 * Catch situations where `js` function is called more than once.
