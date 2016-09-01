@@ -444,8 +444,20 @@ Once Paloma's HTML hook is already executed, you can now start Paloma by calling
 
 Paloma executes page-specific javascript by adding a `<script>` tag to the response body. Turbolinks, by default, executes any inline javascript in the response body when you visit a page, so the `<script>` tag appended by Paloma will automatically be executed. However, when Turbolinks restores a page from cache (*this happens when a user hits `Back` or `Forward` button in his browser*) any **inline javascript will not be executed** anymore. This is the intentional behavior of Turbolinks, and it is not a bug. If you want to execute Paloma again when Turbolinks restores a page, do something like this:
 
+Replace the usual initialize block:
+
 ```js
-$(document).on('page:restore', function(){
+$(document).ready(function(){
   Paloma.start();
 });
 ```
+
+With this one:
+  
+```js
+document.addEventListener("turbolinks:load", function() {
+  Paloma.start();
+});
+```
+
+As indicated in Turbolinks documentation that load event will trigger when visiting a page.
