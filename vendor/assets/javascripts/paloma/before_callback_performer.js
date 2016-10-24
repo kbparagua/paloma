@@ -1,6 +1,6 @@
 Paloma.BeforeCallbackPerformer = function(controller){
   this.controller = controller;
-  this.entries = controller.before;
+  this.entries = controller.before || [];
   this.action = null;
 };
 
