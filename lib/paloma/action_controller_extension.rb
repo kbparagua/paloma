@@ -14,11 +14,7 @@ module Paloma
       end
     end
 
-
-
-
-
-    module InstanceMethods
+    module InstanceMesthods
 
       #
       # Use on controllers to pass variables to Paloma controller.
@@ -27,7 +23,6 @@ module Paloma
         return session[:paloma_requests].pop if !params
         session[:paloma_requests].last[:params] = params
       end
-
 
       #
       # Executed every time a controller action is executed.
@@ -53,7 +48,7 @@ module Paloma
       # will execute the tracked Paloma requests.
       #
       def append_paloma_hook
-        return true if session[:paloma_requests].empty?
+        return true if session.nil? or session[:paloma_requests].empty?
 
         hook = view_context.render(
                   :partial => 'paloma/hook',
