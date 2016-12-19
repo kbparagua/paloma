@@ -1,3 +1,7 @@
+# This Project is No Longer Maintained
+## If you want to take over this project please email me at kb.paragua@gmail.com. Thanks everyone!
+
+
 **Important**
 - `master` branch contains the bleeding edge development code.
 - check `branches` or `tags` for the latest stable release or specific versions.
